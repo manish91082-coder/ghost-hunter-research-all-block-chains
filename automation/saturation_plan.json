@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "doctrine": {
+    "critical_before_promotion": "P2 must close before P3-P11 promotion",
+    "shadow_lane": "P3-P11 may collect preparatory evidence while P2 is open",
+    "no_fake_green": true,
+    "no_live_execution": true
+  },
+  "critical_tasks": [
+    "P2_REGRESSION",
+    "P2_DERIVED",
+    "P2_CONTROL_FUNCTION",
+    "P2_PROVENANCE"
+  ],
+  "shadow_tasks": [
+    "P3",
+    "P4",
+    "P5",
+    "P6",
+    "P7",
+    "P8",
+    "P9",
+    "P10"
+  ]
+}
