@@ -9,6 +9,13 @@
 - Continuity and auto-save protocol.
 - Status, progress, memory and decision ledgers.
 - Research evidence structure.
+- GitHub governance state record.
+- Chain research registry and reusable chain template.
+
+### Git Verification
+- Repository: manish91082-coder/ghost-hunter-research-all-block-chains
+- Branch: main
+- Latest verified HEAD will be recorded after the current update.
 
 ### Next execution sequence
 1. Build canonical chain universe registry.
