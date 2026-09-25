@@ -20,17 +20,17 @@ This file is the machine-readable-oriented human registry for execution-relevant
 
 | Object | Address | Domain | State | Primary evidence |
 |---|---|---|---|---|
-| ChildChainManagerProxy | `0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa` | Polygon | DOCUMENTED | 0xPolygon security scope |
-| EIP1559Burn | `0x7A8ed27F4C30512326878652d20fC85727401854` | Polygon | DOCUMENTED | 0xPolygon security scope |
-| MaticToken | `0x0000000000000000000000000000000000001010` | Polygon | DOCUMENTED | 0xPolygon security scope |
-| WMATIC | `0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270` | Polygon | DOCUMENTED | 0xPolygon security scope |
-| StateReceiver | `0x0000000000000000000000000000000000001001` | Polygon | DOCUMENTED | 0xPolygon security scope |
-| BorValidatorSet | `0x0000000000000000000000000000000000001000` | Polygon | DOCUMENTED | 0xPolygon security scope |
-| ChildChain | `0xD9c7C4ED4B66858301D0cb28Cc88bf655Fe34861` | Polygon | DOCUMENTED | 0xPolygon security scope |
-| MaticWeth | `0x8cc8538d60901d19692F5ba22684732Bc28F54A3` | Polygon | DOCUMENTED | 0xPolygon security scope |
-| FxChild | `0x8397259c983751DAf40400790063935a11afa28a` | Polygon | DOCUMENTED | 0xPolygon fx-portal |
-| sPOLChild | `0xd1CD49A08AeF3Af93457aEc17C786C2b7F48eCd7` | Polygon | DOCUMENTED | 0xPolygon sPOL security scope |
-| RootSetter | `0xEb1CD9e44aB6BfE5a55EE96c468086e51B1B873a` | Polygon | DOCUMENTED | Polygon PIP-54 |
+| ChildChainManagerProxy | `0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa` | Polygon | PARTIAL | 0xPolygon security scope |
+| EIP1559Burn | `0x7A8ed27F4C30512326878652d20fC85727401854` | Polygon | PARTIAL | 0xPolygon security scope |
+| MaticToken | `0x0000000000000000000000000000000000001010` | Polygon | PARTIAL | 0xPolygon security scope |
+| WMATIC | `0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270` | Polygon | PARTIAL | 0xPolygon security scope |
+| StateReceiver | `0x0000000000000000000000000000000000001001` | Polygon | PARTIAL | 0xPolygon security scope |
+| BorValidatorSet | `0x0000000000000000000000000000000000001000` | Polygon | PARTIAL | 0xPolygon security scope |
+| ChildChain | `0xD9c7C4ED4B66858301D0cb28Cc88bf655Fe34861` | Polygon | PARTIAL | 0xPolygon security scope |
+| MaticWeth | `0x8cc8538d60901d19692F5ba22684732Bc28F54A3` | Polygon | PARTIAL | 0xPolygon security scope |
+| FxChild | `0x8397259c983751DAf40400790063935a11afa28a` | Polygon | PARTIAL | 0xPolygon fx-portal |
+| sPOLChild | `0xd1CD49A08AeF3Af93457aEc17C786C2b7F48eCd7` | Polygon | PARTIAL | 0xPolygon sPOL security scope |
+| RootSetter | `0xEb1CD9e44aB6BfE5a55EE96c468086e51B1B873a` | Polygon | PARTIAL | Polygon PIP-54 |
 | GovernanceProxy | `0x6e7a5820baD6cebA8Ef5ea69c0C92EbbDAc9CE48` | Ethereum | DOCUMENTED | 0xPolygon security scope |
 | Plasma Registry | `0x33a02E6cC863D393d6Bf231B697b82F6e499cA71` | Ethereum | DOCUMENTED | 0xPolygon security scope |
 | ValidatorShare | `0x7e94d6cAbb20114b22a088d828772645f68CC67B` | Ethereum | DOCUMENTED | 0xPolygon security scope |
@@ -102,3 +102,19 @@ The current research environment cannot execute direct JSON-RPC POST calls. Ther
 ## Saturation rule
 
 This registry is not complete until independent discovery sources converge and the remaining bridge/state-sync surface has been enumerated. It must be reconciled before DEX/protocol discovery is treated as the next layer.
+
+## 2026-09-25 — P1 Run #30 live code reconciliation
+
+Run `36169503083` / artifact `10879647689` verified the bounded 11-address Polygon-side P1 target set at block `94,435,638`.
+
+- exact target set: 11/11;
+- independent successful code observations: at least 2 per target;
+- matching normalized runtime-code hashes;
+- chain ID 137 quorum: 3 endpoints;
+- head quorum: 3 endpoints at block 94,435,638;
+- conflicts: 0;
+- reconciliation: VERIFIED.
+
+Registry state is promoted from DOCUMENTED to PARTIAL for these 11 entries because runtime-code identity is verified, while proxy/control/creation/behavior/current-vs-historical fields remain pending.
+
+Detailed hashes and endpoint pairs: `chains/polygon-pos/P1_LIVE_VERIFICATION_RUN_30.md`.
