@@ -48,6 +48,18 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         source = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn('all(x["independent_observations"]>=2 and x["matching"] for x in result["transactions"])', source)
 
+    def test_provenance_fingerprint_excludes_rpc_transport_metadata(self):
+        import importlib.util
+        worker_path = ROOT / "tools" / "polygon_universe_worker.py"
+        spec = importlib.util.spec_from_file_location("polygon_universe_worker", worker_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        a = {"rpc": "tatum", "tx": {"hash": "0xabc", "blockNumber": "0x10"}, "receipt": {"status": "0x1", "logs": []}}
+        b = {"rpc": "quicknode-public", "tx": {"hash": "0xabc", "blockNumber": "0x10"}, "receipt": {"status": "0x1", "logs": []}}
+        c = {"rpc": "quicknode-public", "tx": {"hash": "0xdef", "blockNumber": "0x10"}, "receipt": {"status": "0x1", "logs": []}}
+        self.assertEqual(module.provenance_fingerprint(a), module.provenance_fingerprint(b))
+        self.assertNotEqual(module.provenance_fingerprint(a), module.provenance_fingerprint(c))
+
     def test_control_reconciliation_is_fail_closed(self):
         source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
         self.assertIn("Reconciliation skipped because live verifier did not produce a valid observation set", source)
