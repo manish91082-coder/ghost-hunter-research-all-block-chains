@@ -355,3 +355,8 @@ Evidence:
 - P2 provenance replay now reaches `REPLAYED` only when every candidate transaction has at least two independent observations and those observations match exactly.
 - P5 pair universe now canonicalizes by `pairAddress`, preventing duplicate pair rows from cross-token discovery calls from inflating saturation counts.
 - Regression coverage now guards both invariants.
+
+## 2026-09-26 — P2 derived runtime verification
+- P2 derived runtime-code sub-gate is now VERIFIED from conveyor Run #14 at Polygon observation block 94,439,097.
+- Four derived addresses were matched across two independent RPC observations each with zero conflicts and zero incomplete targets.
+- Canonical evidence: `chains/polygon-pos/P2_DERIVED_CONTROL_CODE_RUN_4.md`.
