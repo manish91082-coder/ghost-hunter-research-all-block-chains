@@ -119,3 +119,18 @@ Evidence boundary:
 - P1 remains closed until reconciliation is **VERIFIED**.
 
 This rotation mechanism is intended to solve provider-specific availability/rate-limit failures without weakening the independence or freshness requirements of Polygon ground truth.
+
+## 2026-09-25 — Run #30 live RPC evidence
+
+Run `36169503083` demonstrated the candidate-pool model on the GitHub runner.
+
+Successful identity/head endpoints:
+- OnFinality: chain 137, block 94,435,638
+- QuickNode public: chain 137, block 94,435,638
+- Tatum: chain 137, block 94,435,638
+
+Adaptive rotation assembled two independent code observations for every critical target. Some targets reconciled through OnFinality + QuickNode; others through QuickNode + Tatum. Failed candidates (403, 429, DNS, API-key-required) remained evidence and were not promoted to trust.
+
+Run result: **P1 code reconciliation VERIFIED**.
+
+Pool membership remains CANDIDATE, not EXECUTION-TRUSTED. Detailed evidence: `chains/polygon-pos/P1_LIVE_VERIFICATION_RUN_30.md`.
