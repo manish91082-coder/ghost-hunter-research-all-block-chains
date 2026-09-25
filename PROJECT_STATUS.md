@@ -122,3 +122,17 @@ P1 continuation: execute the read-only Polygon live-verification batch against i
 - P1 live verification: **NOT PASSED**.
 - Polygon saturation gate: **OPEN**.
 - DEX/protocol discovery remains blocked.
+
+## 2026-09-25 — Run #13: verifier serialization repaired, P1 remains blocked
+- Commit `84fadf926ee9cd96c3b2b0a228458ebb28d9b1a8` repaired the verifier's JSONL/checkpoint newline serialization introduced by the parallelization patch. The source now writes real newline characters rather than literal `\\n` text.
+- GitHub Actions run `36164386940` (#13) completed with **failure** at the intentional P1 quorum gate; source validation succeeded and artifact upload succeeded.
+- Artifact `10876891277` was independently parsed: `polygon_rpc_observations.jsonl` contains 51 physical lines, 51 valid JSON records, zero literal newline escape artifacts, and zero JSON parsing errors. This confirms the serialization defect is fixed.
+- Live evidence from Run #13: only RPC-3 (OnFinality) returned a valid chain ID and block. Observed chain ID is 137 and observed latest block is 94,433,671. The other two configured RPCs did not provide successful identity/head evidence. Therefore the mandatory two-independent-RPC quorum is not met.
+- Run #13 reconciliation observed code from only 4 of 11 critical targets, with only one independent endpoint for each observed target. Evidence state is **PARTIAL** and exact target-set coverage is false.
+- The current failure is therefore an **infrastructure evidence/quorum limitation**, not the previously confirmed serialization defect.
+
+## Gate state
+- P1 live verification: **NOT PASSED**.
+- Polygon saturation gate: **OPEN**.
+- DEX/protocol discovery remains blocked.
+- Next engineering action: preserve the corrected verifier and solve independent-RPC accessibility/rate-limit coverage without weakening the quorum or evidence gates.
