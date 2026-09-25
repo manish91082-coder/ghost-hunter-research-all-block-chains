@@ -570,3 +570,10 @@ Manual Next-driven execution was serializing independent evidence work and wasti
 
 ### Current state
 The conveyor is wired; actual runner evidence is still the authority for live gate promotion.
+
+## 2026-09-26 — Conveyor correctness pass
+- Fixed persistent round-robin task cursors.
+- Fixed critical-lane promotion so it never skips from P3 directly to a later stage.
+- Added content-aware stage predicates and a hard P10 CLOSED requirement before P11.
+- Fixed token deduplication and cyclic route enumeration in the first-pass universe worker.
+- Added explicit actions:read permission for checkpoint artifact restoration.
