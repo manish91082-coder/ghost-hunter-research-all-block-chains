@@ -433,3 +433,17 @@ Evidence:
 - Polygon saturation: **OPEN**.
 - DEX/protocol promotion: **BLOCKED** until P2 closes.
 \n\n## CURRENT CANONICAL STATUS — 2026-09-25\n- Canonical main HEAD: `b9bbd925eeeeb350381027d6c0d626f8c00a2a22`.\n- Polygon research gate: **P2_CLOSED**.\n- Critical stage: **P3**.\n- P2 storage: VERIFIED.\n- P2 derived runtime code: VERIFIED.\n- P2 control-function evidence: VERIFIED, 17/17 matching, zero conflicts/incomplete.\n- P2 provenance: REPLAYED, both canonical candidate transactions independently matched across two RPC endpoints.\n- P3-P10 remain preparation/shadow evidence until each stage-specific closure predicate becomes explicit.\n- P11 remains locked until P10 closure.\n- Live trading: OFF. Real-money deployment: OFF.\n\n### Immediate operating rule\nP3 discovery work may continue, but no protocol/address/venue is promoted to VERIFIED from discovery snapshots alone. Every later stage must preserve the same fail-closed evidence discipline used for P2.\n
+
+## CURRENT CANONICAL STATUS — P3 CLOSED / P4 ACTIVE
+- Canonical main HEAD: `5362d2db433ffbd320babd11bcfe9975195fa18f`.
+- Research gate: **P2_CLOSED**.
+- Critical stage: **P4**.
+- P2: CLOSED.
+- P3 protocol/DEX discovery: **CLOSED** after two consecutive stable multi-source snapshots.
+- P4 token discovery: active critical stage, still discovery evidence until an explicit P4 closure predicate passes.
+- P5-P10: shadow/preparation.
+- P11: locked.
+- Live trading: OFF. Real-money deployment: OFF.
+
+### P3 evidence boundary
+P3 closure confirms multi-source discovery convergence and snapshot stability only. It does not verify on-chain protocol contracts, pools, liquidity, or profitability. Those remain downstream evidence tasks.
