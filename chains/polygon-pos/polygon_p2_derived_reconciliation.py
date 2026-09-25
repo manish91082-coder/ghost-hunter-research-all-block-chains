@@ -54,7 +54,7 @@ def main():
     state="VERIFIED" if (
         len(targets)==4
         and head.get("chain_id_agreement")
-        and head.get("head_agreement")
+        and head.get("head_quorum_agreement")
         and not incomplete
         and not conflicts
     ) else "PARTIAL" if rows else "UNVERIFIED"
