@@ -318,3 +318,10 @@ Evidence:
 - Added a regression test proving an HTTP 403 response is not evidence.
 - Commit fc126f0f2e06db43de6d9082f8d07e2e7d0b773e adds the regression guard; the reconciliation correction is commit b6539dcf941a718018f915e274e3a03763e167ca.
 - The control-function workflow is automatically re-triggered by these path changes. Its gate remains pending until the resulting artifact is inspected.
+
+## 2026-09-26 — P2 provenance and control-surface expansion
+- Added `chains/polygon-pos/P2_EXTERNAL_PROVENANCE_CANDIDATES.md` separating explorer/forum discovery from live verification.
+- External evidence identified historical deployment/control relationships for the EIP1559Burn proxy, the sPOL parent/admin pair, and the current sPOL implementation candidate. These remain EXTERNAL/HISTORICAL candidates only.
+- Expanded `p2_control_function_targets.txt` from 8 to 17 read-only probes, adding sPOL `authority()` plus ProxyAdmin owner/pendingOwner and proxy relationship probes for the two derived admin addresses.
+- Added regression coverage for the expanded manifest.
+- No external explorer claim has been promoted to VERIFIED.
