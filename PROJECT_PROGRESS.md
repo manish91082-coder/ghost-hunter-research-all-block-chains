@@ -678,3 +678,27 @@ Run the corrected conveyor through its narrow bootstrap trigger, inspect the raw
 
 ### Next atomic step
 Inspect the corrected control-function CI artifact. Then run the corrected conveyor path so provenance can obtain its second independent observation and P2 can close only when every existing gate predicate is satisfied.
+
+
+## 2026-09-25 — P2 control-function semantic-quorum recovery repair
+
+### Run #19 artifact diagnosis
+- Control-function artifact from GitHub Actions run `36181173124` had fresh two-endpoint head quorum (block span 1) and **0 semantic conflicts**.
+- The remaining P2 control-function gap was **8/17 probes with only one semantic RPC observation**.
+- Raw evidence showed QuickNode could supply the semantic result while OnFinality was HTTP 429 and Tatum returned provider-policy `-16401`. Those non-semantic responses must not consume an independent evidence slot.
+
+### Repair
+- `chains/polygon-pos/polygon_p2_control_function_verifier.py` now counts a probe toward the independent-evidence quorum only when the HTTP-200 response is semantic contract evidence: success, EVM execution/revert code 3, or JSON-RPC execution-layer codes `-32099..-32000`.
+- Provider-policy errors such as Tatum `-16401`, malformed-request `-32602`, and transport/rate-limit failures remain raw observations but do not satisfy the quorum.
+- Recovery rounds now honor the requested count and wait for cooled endpoints to re-enter before consuming a recovery pass.
+- Regression coverage was added for semantic/non-semantic probe classification and recovery-round count.
+
+### Git / CI checkpoint
+- Repair commit: `b722866860fb2d3a919fd388eac38260a08d9383`.
+- Regression commit: `357969627248bea4be97dff542fab0cde73deaa5`.
+- Latest main HEAD at this checkpoint: `357969627248bea4be97dff542fab0cde73deaa5`.
+- GitHub Actions control-function run **21** is pending on that exact HEAD; predecessor run **20** is still in progress and will be superseded by the concurrency policy.
+
+### Gate
+- P2 remains **OPEN**.
+- No P2 promotion is allowed until the new artifact is completed and independently reconciled as VERIFIED, and P2 provenance is REPLAYED.
