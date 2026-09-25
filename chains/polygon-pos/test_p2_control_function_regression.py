@@ -73,6 +73,11 @@ class ControlFunctionRegressionTests(unittest.TestCase):
         b = {"outcome": {"ok": False, "error_code": -32000}}
         self.assertEqual(RECONCILER.fingerprint(a), RECONCILER.fingerprint(b))
 
+
+    def test_transport_failure_is_not_evidence(self):
+        row = {"outcome": {"ok": False, "http_status": 403, "error_message": "Forbidden"}}
+        self.assertIsNone(RECONCILER.fingerprint(row))
+
     def test_conflicting_outcomes_do_not_match(self):
         a = {"outcome": {"ok": True, "result": "0x1234"}}
         b = {"outcome": {"ok": False, "error_code": -32000}}
