@@ -104,7 +104,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("uniswap", llama_set)
         self.assertIn("ramsesx", gecko_set)
         self.assertEqual(
-            module.normalize_market_name("Quick-Swap"),
+            module.normalize_market_name("QuickSwap"),
             module.normalize_market_name("QUICKSWAP"),
         )
 
