@@ -193,3 +193,22 @@ Official Polygon JSON-RPC tooling documents the same core probe family: net_vers
 
 ### Next atomic step
 Use the GitHub-hosted runner as the primary live execution path. If its run output becomes accessible, capture and verify artifacts. If runner/network policy prevents live RPC, fall back to a user-run Colab/laptop execution without changing the verifier or evidence schema.
+## 2026-09-25 — GitHub P1 verification execution wiring
+
+### Added
+- Added `chains/polygon-pos/verification_targets.txt` with a bounded, Polygon-side critical system-contract target set for the first live read-only code-verification pass.
+- Updated `.github/workflows/polygon-readonly-verification.yml` so the GitHub-hosted runner performs a Python syntax check and then passes the canonical target file to the hardened verifier.
+- Kept the target set bounded and Polygon-side only. Ethereum-side governance/bridge objects remain separately classified and are not mixed into this first chain-137 code pass.
+
+### Safety/evidence rule
+- The workflow remains read-only and uses the verifier's HTTPS-only endpoint guard and RPC method allowlist.
+- No transaction submission, signing, credentials, or mutation capability was added.
+- The workflow still does not constitute a successful live verification until its actual run output/artifacts are observed and reconciled.
+
+### Gate state
+- Polygon saturation gate: OPEN.
+- P1 live verification: NOT PASSED yet.
+- DEX/protocol discovery: still blocked by the infrastructure gate.
+
+### Next atomic step
+Observe the GitHub-hosted run and, if artifacts become accessible, reconcile chain identity, head freshness, and per-target code hashes across independent RPCs. Any disagreement remains unresolved/quarantined rather than majority-selected.
