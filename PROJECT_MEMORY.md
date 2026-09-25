@@ -88,3 +88,8 @@ Never force a trade simply to make a profit appear every minute. Continuous scan
 - P1 evidence now has a dedicated deterministic reconciliation layer in the canonical repo.
 - Conflicting RPC observations are preserved/quarantined; no majority vote is used to manufacture agreement.
 - GitHub Actions uploads the reconciliation artifact alongside raw JSONL/checkpoint/head evidence.
+
+
+## 2026-09-25 — CI command-path lock
+- The Polygon workflow uses explicit multiline shell commands to avoid command-concatenation ambiguity.
+- Validation, verification, reconciliation, and artifact upload remain separate stages.
