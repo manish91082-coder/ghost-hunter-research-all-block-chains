@@ -620,3 +620,22 @@ The automation design is now materially more robust. A fresh scheduled/manual ru
 
 ### Next atomic step
 Run the corrected conveyor through its narrow bootstrap trigger, inspect the raw artifact, then promote P2 only if control-function reconciliation and provenance replay both satisfy their existing gates.
+
+## 2026-09-26 — P2 control-function head-recovery repair
+### Defect identified
+- Conveyor Run #18 showed two valid chain-137 head observations separated by four blocks while the configured tolerance was two.
+- The control-function verifier's recovery loop stopped as soon as it selected any two-endpoint quorum, even when that quorum's block span exceeded the allowed tolerance.
+- Therefore the configured recovery rounds were not actually used to seek a fresh quorum in this condition.
+
+### Repair
+- Added `head_quorum_ready()`.
+- Recovery now stops only when the selected independent quorum exists **and** its block span is within the existing tolerance.
+- Evidence threshold and tolerance were not weakened.
+- Added regression coverage for fresh-quorum acceptance and stale-quorum rejection.
+
+### Gate state
+- P2 ERC-1967 storage: PASSED.
+- P2 derived runtime-code: VERIFIED.
+- P2 provenance: repaired, pending corrected conveyor replay.
+- P2 control-function: repaired, pending fresh CI artifact and reconciliation.
+- Overall P2: IN PROGRESS.
