@@ -256,3 +256,29 @@ The Polygon verification workflow was rewritten with explicit YAML block-scalar 
 
 ### Next atomic step
 Observe actual workflow artifacts/run output. If unavailable through the connector, use the unchanged verifier in a permitted outbound-RPC environment rather than changing evidence semantics.
+
+
+## 2026-09-25 — GitHub live-run artifact audit
+
+### Actual evidence captured
+- Workflow run `36155696574` executed from main commit `cf4f955efebb797068e5e902c727c1864a1e2f72` and completed successfully.
+- Artifact `polygon-readonly-verification` was retrieved and inspected directly.
+- The verifier checkpoint records **51 failed probes** across the three configured RPC endpoints.
+- The raw JSONL observations show HTTP 403 Forbidden from all three endpoints for chain ID, head, gas and all 11 target `eth_getCode` probes.
+- Reconciliation output is `PARTIAL`; no chain-ID quorum, no head agreement, and no successful target code observations exist.
+
+### Critical finding
+The prior verifier could return exit code 0 when every RPC probe failed because it only rejected a non-empty but incorrect chain-ID observation set. This created a false-green CI result even though the artifact correctly showed no live evidence.
+
+### Correction committed
+- `1d6a3ae20417e32450da7b162b605a6f053dddd4`: fail-closed verifier quorum. Success now requires >=2 successful independent chain-ID observations, unanimous 137, >=2 successful block observations, and exact latest-block agreement.
+- `8fd9d0699b64aaf610905edb13b5a8927b518f49`: hardened reconciliation. VERIFIED now requires exact target-set coverage, >=2 successful independent code observations for every target, matching hashes, chain-ID quorum, and head agreement.
+
+### Gate state
+- P1 live verification: **NOT PASSED**.
+- Polygon saturation gate: **OPEN**.
+- DEX/protocol discovery remains blocked.
+- The next GitHub Actions run is an evidence-quality test: continued RPC 403s should now produce a **failed** workflow instead of a false green.
+
+### Next atomic step
+Inspect the post-hardening GitHub Actions run. If the public endpoints still return 403, classify them as inaccessible from GitHub-hosted runner context and switch the same unchanged verifier to another permitted outbound-JSON-RPC environment or replace the endpoint set with independently reachable public endpoints. Do not weaken the evidence gate.
