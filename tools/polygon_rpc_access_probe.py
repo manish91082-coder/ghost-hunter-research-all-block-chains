@@ -27,6 +27,7 @@ CANDIDATES = [
     ("llama", "https://polygon.llamarpc.com"),
     ("ankr", "https://rpc.ankr.com/polygon"),
     ("blastapi", "https://polygon-mainnet.public.blastapi.io"),
+    ("nodeflare", "https://rpc.nodeflare.app/polygon/public"),
 ]
 
 def call(url, method, timeout=8):
