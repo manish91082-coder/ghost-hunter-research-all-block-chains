@@ -27,6 +27,16 @@ def http_json(url, timeout=20):
     except Exception as e:
         return None, None, f"{type(e).__name__}: {e}"
 
+def load_json(path, default=None):
+    p = Path(path)
+    if not p.exists():
+        return {} if default is None else default
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except (OSError, ValueError, TypeError):
+        return {} if default is None else default
+
+
 def write_json(name, payload):
     ensure(); p=EVID/name; p.write_text(json.dumps(payload, indent=2, sort_keys=True)+"\n", encoding="utf-8"); return str(p)
 
