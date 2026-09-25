@@ -28,7 +28,8 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
     def test_conveyor_heartbeat_and_bootstrap_trigger_are_narrow(self):
         self.assertIn("cron: '2-59/5 * * * *'", self.workflow)
         self.assertIn("  push:\n    paths:\n      - 'automation/conveyor_bootstrap.trigger'", self.workflow)
-        self.assertNotIn("tools/saturation_conveyor.py", self.workflow.split("  push:", 1)[1])
+        push_block = self.workflow.split("  push:\n", 1)[1].split("concurrency:\n", 1)[0]
+        self.assertNotIn("tools/saturation_conveyor.py", push_block)
 
     def test_checkpoint_and_actions_read_permission(self):
         self.assertIn("actions: read", self.workflow)
