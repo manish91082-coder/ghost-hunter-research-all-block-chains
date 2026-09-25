@@ -155,12 +155,23 @@ def task_p9_economics():
     candidates=[{"pair_key":x["pair_key"],"gross_spread_pct":round(x["price_spread"]*100,6) if x.get("price_spread") is not None else None,"status":"NOT_EXACTLY_CERTIFIED","reason":"Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation"} for x in data if x.get("price_spread") is not None]
     return write_json("P9_ECONOMIC_SCREEN.json",{"task":"p9_economic_screen","time":now(),"candidates":candidates[:5000],"evidence_class":"SCREENING_ONLY"})
 
+def task_p11_closure():
+    audit_path=EVID/"P10_SATURATION_AUDIT.json"
+    audit=json.loads(audit_path.read_text(encoding="utf-8")) if audit_path.exists() else {}
+    return write_json("P11_CLOSURE_REPORT.json",{
+        "task":"p11_research_closure",
+        "time":now(),
+        "status":"LOCKED" if audit.get("stage_gate")!="CLOSED" else "READY",
+        "next_chain_unlock": audit.get("stage_gate")=="CLOSED",
+        "evidence_class":"CLOSURE_GATE"
+    })
+
 def task_p10_audit():
     files={p.name:p.stat().st_size for p in EVID.glob("P*.json")}
     summary={"task":"p10_saturation_audit","time":now(),"evidence_files":files,"universe_counts":{"tokens":len(load_jsonl(UNIV/"tokens.jsonl")),"pairs":len(load_jsonl(UNIV/"pairs.jsonl"))},"stage_gate":"OPEN","open_reason":["P2 live control/provenance gates pending","P3-P6 are incremental discovery snapshots","P9 exact simulation not complete"],"evidence_class":"AUDIT"}
     return write_json("P10_SATURATION_AUDIT.json",summary)
 
-HANDLERS={"P2_PROVENANCE":task_p2_provenance_replay,"P3":task_p3_protocols,"P4":task_p4_tokens,"P5":task_p5_pairs,"P6":task_p6_routes,"P7":task_p7_strategies,"P8":task_p8_features,"P9":task_p9_economics,"P10":task_p10_audit}
+HANDLERS={"P2_PROVENANCE":task_p2_provenance_replay,"P3":task_p3_protocols,"P4":task_p4_tokens,"P5":task_p5_pairs,"P6":task_p6_routes,"P7":task_p7_strategies,"P8":task_p8_features,"P9":task_p9_economics,"P10":task_p10_audit,"P11":task_p11_closure}
 
 if __name__=="__main__":
     import argparse
