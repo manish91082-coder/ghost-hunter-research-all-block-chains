@@ -225,7 +225,13 @@ def task_p3_protocols():
 
     llama_dex, gecko_dex = p3_dex_sets(protocols, gecko_rows)
     overlap = sorted(llama_dex & gecko_dex)
-    llama_dupes = max(0, sum(1 for x in llama_dex if x) - len(llama_dex))
+    llama_names = [
+        normalize_market_name(x.get("name") or x.get("slug"))
+        for x in protocols
+        if normalize_market_name(x.get("name") or x.get("slug"))
+        and normalize_market_name(x.get("category")) in {"dexs", "dex", "dexes"}
+    ]
+    llama_duplicate_count = len(llama_names) - len(set(llama_names))
     gecko_names = [
         normalize_market_name(
             (x.get("attributes") or {}).get("name") if isinstance(x, dict) else ""
@@ -258,7 +264,7 @@ def task_p3_protocols():
     if universe_fingerprint and universe_fingerprint == previous_fp:
         stable_runs += 1
     else:
-        stable_runs = 0
+        stable_runs = 1
 
     snapshot = {
         "task": "p3_protocol_discovery",
@@ -286,7 +292,7 @@ def task_p3_protocols():
         "geckoterminal_dex_count": len(gecko_dex),
         "dex_name_overlap_count": len(overlap),
         "dex_name_overlap": overlap,
-        "llama_duplicate_dex_names": llama_dupes,
+        "llama_duplicate_dex_names": llama_duplicate_count,
         "gecko_duplicate_dex_names": gecko_duplicate_count,
         "universe_fingerprint": universe_fingerprint,
         "stable_runs": stable_runs,
@@ -299,7 +305,7 @@ def task_p3_protocols():
     }
     snapshot["stage_gate"] = "CLOSED" if p3_closure_ready(snapshot, {
         "fingerprint": previous_fp,
-        "stable_runs": stable_runs - 1 if universe_fingerprint == previous_fp else 0,
+        "stable_runs": stable_runs,
     }) else "OPEN"
 
     write_json(
