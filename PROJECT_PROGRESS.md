@@ -577,3 +577,21 @@ The conveyor is wired; actual runner evidence is still the authority for live ga
 - Added content-aware stage predicates and a hard P10 CLOSED requirement before P11.
 - Fixed token deduplication and cyclic route enumeration in the first-pass universe worker.
 - Added explicit actions:read permission for checkpoint artifact restoration.
+
+## 2026-09-26 — Screenshot-driven conveyor repair
+### Observed
+The Autonomous Polygon Saturation Conveyor showed repeated red runs (#1 onward) while the CI State Evidence Collector succeeded.
+
+### Root cause
+Control-function reconciliation began requiring HTTP 200 for semantic evidence, but the regression fixtures for matching success/error outcomes did not carry HTTP 200. The regression suite therefore failed before the actual saturation worker executed.
+
+### Repair
+- Corrected success/error fixtures.
+- Added conveyor regression suite.
+- Removed push-trigger storm; retained 5-minute schedule + manual dispatch.
+- Persist full evidence/universe working set in the checkpoint artifact.
+- Fail closed on checkpoint API/restore errors.
+- Require explicit stage_gate=CLOSED before P3-P10 promotion.
+
+### Current state
+The automation design is now materially more robust. A fresh scheduled/manual run is required to validate the repaired conveyor on a GitHub-hosted runner.
