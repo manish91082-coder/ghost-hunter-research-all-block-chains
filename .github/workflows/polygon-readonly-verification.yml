@@ -46,8 +46,9 @@ jobs:
           reconciliation_status=0
           python chains/polygon-pos/polygon_readonly_verifier.py \
             --rpc-pool-file chains/polygon-pos/rpc_pool.txt \
-            --min-request-interval 0.5 \
+            --min-request-interval 1.0 \
             --min-code-endpoints 2 \
+            --code-recovery-rounds 2 \
             --stale-block-tolerance 2 \
             --address "@chains/polygon-pos/verification_targets.txt" || verifier_status=$?
           python chains/polygon-pos/polygon_verification_reconciliation.py || reconciliation_status=$?
