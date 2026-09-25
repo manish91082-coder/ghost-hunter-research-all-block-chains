@@ -267,3 +267,10 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - `P2_PROVENANCE` status `REPLAYED` means independent observations plus exact match, not merely two successful RPC responses.
 - Pair-universe counts are keyed by canonical `pairAddress`; discovery duplicates must never count as separate pairs.
 - Saturation metrics must represent unique universe objects, not API observation rows.
+
+## 2026-09-26 — Current execution checkpoint
+- Canonical repository: `manish91082-coder/ghost-hunter-research-all-block-chains`.
+- Current main HEAD after provenance repair + regression lock: `2c9426d9feb0ac1f8ba46de2ee0c18971bd72ad4`.
+- Verified project execution model remains: live GitHub state is authoritative; CI/artifact evidence is required for promotion; no green-by-file-existence.
+- Current blocker split: P2 control-function live quorum and P2 provenance semantic replay. P2 derived runtime-code is already VERIFIED.
+- Provenance comparison now excludes provider identity from the semantic fingerprint while retaining provider identity in evidence metadata.
