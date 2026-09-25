@@ -118,3 +118,21 @@ Run `36169503083` / artifact `10879647689` verified the bounded 11-address Polyg
 Registry state is promoted from DOCUMENTED to PARTIAL for these 11 entries because runtime-code identity is verified, while proxy/control/creation/behavior/current-vs-historical fields remain pending.
 
 Detailed hashes and endpoint pairs: `chains/polygon-pos/P1_LIVE_VERIFICATION_RUN_30.md`.
+
+## 2026-09-25 — P2 ERC-1967 storage sub-gate passed
+
+Run `36171378222` / artifact `10880421099` produced `evidence_state=VERIFIED` for all 33 target×slot combinations at block `94,436,387`.
+
+- 33 expected combinations;
+- 66 successful independent observations;
+- 2 independent endpoints minimum per combination;
+- 0 insufficient observations;
+- 0 conflicts.
+
+Non-zero standard ERC-1967 values were observed for:
+- EIP1559Burn implementation: `0xae88570eb386a9c902488a6535f0957a46a68765`
+- EIP1559Burn admin: `0x409834270b6f2591dd6c1e9f351e4194b112da44`
+- sPOLChild implementation: `0x3c05a871e867fde9a8364fc8d38d97a7d42541c8`
+- sPOLChild admin: `0xf68a9a2417a10e7d907a28b9876db8ad3dbbab7d`
+
+These are live storage observations, not yet full proxy/control verification. The affected registry entries remain PARTIAL until implementation/admin runtime identity, roles, creation evidence and behavior are reconciled.
