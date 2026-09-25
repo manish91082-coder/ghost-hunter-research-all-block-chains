@@ -523,3 +523,19 @@ The first control-function verifier revision renamed the per-probe evidence set 
 - No verifier thresholds were changed.
 - The purpose is to obtain fresh runner evidence after the workflow, verifier and regression corrections were locked.
 - Gate promotion still requires raw artifact inspection plus reconciliation.
+
+## 2026-09-25 — Control-function evidence gate hardened
+### Defect
+Matching transport failures could previously be fingerprinted like contract outcomes during reconciliation.
+
+### Correction
+- Only HTTP 200 JSON-RPC responses are eligible for control-function evidence fingerprints.
+- Deterministic JSON-RPC success and JSON-RPC error/revert outcomes remain valid evidence.
+- Transport failures remain non-evidence.
+- Regression test added for HTTP 403 exclusion.
+
+### State
+- P2 ERC-1967 storage: PASSED.
+- P2 derived runtime-code: fresh evidence acquisition pending inspection.
+- P2 control-function: fresh evidence acquisition re-triggered after this hardening.
+- Overall P2: IN PROGRESS.
