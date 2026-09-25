@@ -92,3 +92,21 @@ P1 continuation: execute the read-only Polygon live-verification batch against i
 - Python validation and live verification are separate steps.
 - Reconciliation runs after verifier execution and artifacts upload remains unconditional.
 - P1 remains NOT PASSED until actual live evidence is observed.
+
+
+## 2026-09-25 — First GitHub-hosted live-run evidence and false-green correction
+- GitHub Actions run `36155696574` on main commit `cf4f955efebb797068e5e902c727c1864a1e2f72` completed with workflow status **Success** and produced artifact `polygon-readonly-verification`.
+- Artifact inspection showed all three configured public RPC endpoints returned HTTP **403 Forbidden** for chain identity, block/head and address-code probes. No live chain ID, latest block, or runtime code observation was obtained.
+- The reconciliation artifact classified the evidence as **PARTIAL**, with chain-ID agreement false, head agreement false, and all 11 target code observations unsuccessful. Therefore P1 was correctly **NOT PASSED**.
+- Root cause of the misleading green workflow: the verifier previously exited successfully when zero RPC chain IDs/heads were observed because its failure condition only checked non-empty observations. This has now been corrected.
+
+## 2026-09-25 — P1 quorum fail-closed hardening committed
+- Commit `1d6a3ae20417e32450da7b162b605a6f053dddd4`: verifier now requires at least two independent successful chain-ID observations, unanimous chain ID 137, at least two successful block observations, and exact latest-block agreement before returning success.
+- Commit `8fd9d0699b64aaf610905edb13b5a8927b518f49`: reconciliation now requires the exact canonical target set, at least two successful independent code observations per target, matching code hashes, chain-ID quorum, and head agreement before classifying evidence as VERIFIED.
+- Latest canonical main HEAD: `8fd9d0699b64aaf610905edb13b5a8927b518f49`.
+- Expected next CI behavior: if the public RPCs continue returning 403, the workflow must fail rather than appear green. This is intentional fail-closed behavior and is evidence-quality progress, not a project failure.
+
+## Gate state
+- P1 live verification: **NOT PASSED**.
+- Polygon saturation gate: **OPEN**.
+- DEX/protocol discovery remains blocked until P1 infrastructure evidence is genuinely verified.
