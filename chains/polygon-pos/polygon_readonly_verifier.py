@@ -278,14 +278,14 @@ def main():
     with open(args.out, "a", encoding="utf-8") as out:
         for endpoint_id, records, local_completed, local_chain_id, local_block_number in endpoint_results:
             for record in records:
-                out.write(json.dumps(record, sort_keys=True) + "\\n")
+                out.write(json.dumps(record, sort_keys=True) + "\n")
                 out.flush()
             checkpoint["completed"].update(local_completed)
             if local_chain_id is not None:
                 chain_ids[endpoint_id] = local_chain_id
             if local_block_number is not None:
                 block_numbers[endpoint_id] = local_block_number
-            cp.write_text(json.dumps(checkpoint, indent=2) + "\\n")
+            cp.write_text(json.dumps(checkpoint, indent=2) + "\n")
 
     freshest = max(block_numbers.values()) if block_numbers else None
     chain_id_values = sorted(set(chain_ids.values()))
