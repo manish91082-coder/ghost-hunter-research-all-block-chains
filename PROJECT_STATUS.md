@@ -263,3 +263,8 @@ Evidence:
 - New workflow: `.github/workflows/polygon-p2-derived-control-verification.yml`
 - The four addresses must each obtain matching `eth_getCode` hashes from at least two independent chain-137 RPC endpoints.
 - Overall P2 remains IN PROGRESS.
+## 2026-09-25 — Derived-control head freshness correction
+- Derived-control Run #2 proved all four derived addresses had matching runtime-code hashes from OnFinality + QuickNode, but the run failed because a third successful Tatum head was three blocks behind the freshest head and the verifier's all-endpoint head agreement was too strict for this sub-gate.
+- Added an optional deterministic fresh-head quorum mode. The default P1 behavior remains unchanged; derived-control verification explicitly requires any two independent fresh endpoints within the configured tolerance.
+- No majority vote is used. The verifier chooses the smallest-span deterministic pair and records the chosen endpoints, span and excluded stale endpoints as evidence.
+- Corrected derived-control workflow now uses `--min-head-endpoints 2` and reconciliation consumes `head_quorum_agreement`.
