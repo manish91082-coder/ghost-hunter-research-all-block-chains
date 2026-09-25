@@ -30,6 +30,8 @@ This file is the machine-readable-oriented human registry for execution-relevant
 | MaticWeth | `0x8cc8538d60901d19692F5ba22684732Bc28F54A3` | Polygon | DOCUMENTED | 0xPolygon security scope |
 | FxChild | `0x8397259c983751DAf40400790063935a11afa28a` | Polygon | DOCUMENTED | 0xPolygon fx-portal |
 | sPOLChild | `0xd1CD49A08AeF3Af93457aEc17C786C2b7F48eCd7` | Polygon | DOCUMENTED | 0xPolygon sPOL security scope |
+| RootSetter | `0xEb1CD9e44aB6BfE5a55EE96c468086e51B1B873a` | Polygon | DOCUMENTED | Polygon PIP-54 |
+| GovernanceProxy | `0x6e7a5820baD6cebA8Ef5ea69c0C92EbbDAc9CE48` | Ethereum | DOCUMENTED | 0xPolygon security scope |
 
 ## Ethereum-side control/bridge objects
 
@@ -61,6 +63,10 @@ The Polygon security scope and PIP-54 also identify legacy Plasma-side contracts
 | EventsHubProxy | `0x6dF5CB08d3f0193C768C8A01f42ac4424DC5086b` | Ethereum | DOCUMENTED | determine current operational relevance |
 | Plasma RootChainProxy | `0x86E4Dc95c7FBdBf52e33D563BbDB00823894C287` | Ethereum | DOCUMENTED | historical/current classification |
 | Plasma StakeManagerProxy | `0x5e3Ef299fDDf15eAa0432E6e66473ace8c13D908` | Ethereum | DOCUMENTED | historical/current classification |
+
+## Administrative/control discovery
+
+PIP-54 identifies additional role/control surfaces that matter for upgradeability and state-transition authority, including `MAPPER_ROLE`, `MANAGER_ROLE`, `DEFAULT_ADMIN_ROLE`, ownership and ProxyAdmin relationships. These are control-plane objects and must be tracked separately from liquidity/execution venues. citeturn0search1
 
 ## Verification schema
 
