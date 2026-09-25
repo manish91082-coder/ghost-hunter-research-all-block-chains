@@ -58,6 +58,11 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn('by_address={str(x.get("pairAddress","")).lower():x for x in existing_pairs if x.get("pairAddress")}', source)
         self.assertIn('"new_unique_pairs"', source)
 
+    def test_jsonl_recovery_and_real_newlines_are_present(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn('for chunk in line.split("\\\\n"):', worker)
+        self.assertIn('json.dumps(x,sort_keys=True)+"\\n"', worker)
+
     def test_polygon_seed_manifest_and_pair_expansion_are_present(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         seed = (ROOT / "chains" / "polygon-pos" / "p4_seed_tokens.txt").read_text(encoding="utf-8")
