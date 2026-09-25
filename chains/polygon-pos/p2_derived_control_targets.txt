@@ -1,0 +1,6 @@
+# Derived Polygon chain-137 control addresses discovered from P2 ERC-1967 storage.
+# Format: one address per line.
+0xae88570eb386a9c902488a6535f0957a46a68765
+0x409834270b6f2591dd6c1e9f351e4194b112da44
+0x3c05a871e867fde9a8364fc8d38d97a7d42541c8
+0xf68a9a2417a10e7d907a28b9876db8ad3dbbab7d
