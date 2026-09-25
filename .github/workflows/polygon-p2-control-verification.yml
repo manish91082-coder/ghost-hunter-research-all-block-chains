@@ -43,7 +43,7 @@ jobs:
           set -euo pipefail
           verifier_status=0
           reconciliation_status=0
-          python chains/polygon-pos/polygon_p2_control_verifier.py             --rpc-pool-file chains/polygon-pos/rpc_pool.txt             --min-request-interval 1.0             --address "@chains/polygon-pos/p2_control_targets.txt" || verifier_status=$?
+          python chains/polygon-pos/polygon_p2_control_verifier.py             --rpc-pool-file chains/polygon-pos/rpc_pool.txt             --min-request-interval 1.0             --min-slot-endpoints 2             --recovery-rounds 2             --address "@chains/polygon-pos/p2_control_targets.txt" || verifier_status=$?
           python chains/polygon-pos/polygon_p2_control_reconciliation.py || reconciliation_status=$?
           if [ "$verifier_status" -ne 0 ]; then
             exit "$verifier_status"
