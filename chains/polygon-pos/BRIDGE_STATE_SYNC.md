@@ -59,6 +59,10 @@ These are **research hypotheses**, not claims of profitable opportunities:
 
 No bridge strategy enters the execution set without exact current state, complete costs, competition analysis and simulation.
 
+## Newly identified predicate/control surfaces
+
+Polygon PIP-54 documents additional Ethereum-side predicate proxies and bridge-control surfaces, including Mintable ERC20/ERC721/ERC1155 predicates, EtherPredicateProxy and ChainExitERC1155Predicate. It also identifies Plasma-era DepositManagerProxy, WithdrawManagerProxy and EventsHubProxy. These are discovery evidence only and require current-vs-historical classification and live verification before any execution use. citeturn0search4
+
 ## Remaining census work
 
 The bridge layer is **not saturated**. Required next discovery passes:
