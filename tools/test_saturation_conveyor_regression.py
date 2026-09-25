@@ -175,6 +175,13 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn('if not checks[2][1]:', source)
         self.assertIn('if int(load_json(p6,{}).get("pair_nodes",0)) <= 0:', source)
 
+    def test_commit_signal_is_reported_ephemerally(self):
+        source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
+        self.assertIn("commit_required = (", source)
+        self.assertIn("state['commit_required']=False", source)
+        self.assertIn("'commit_required':commit_required", source)
+
+
     def test_stage_metadata_tracks_closed_and_current_stages(self):
         import importlib.util
         spec = importlib.util.spec_from_file_location("saturation_conveyor_stage_sync", CONVEYOR)
