@@ -262,3 +262,8 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - The conveyor's durable working set includes checkpoint state plus evidence and universe files. Losing the latter would invalidate multi-run saturation progress.
 - Artifact restore errors are fail-closed; first-run absence of an artifact is the only permitted clean bootstrap case.
 - Stage files are preparation artifacts. Promotion requires an explicit CLOSED gate marker.
+
+## 2026-09-26 — New non-negotiable evidence rules
+- `P2_PROVENANCE` status `REPLAYED` means independent observations plus exact match, not merely two successful RPC responses.
+- Pair-universe counts are keyed by canonical `pairAddress`; discovery duplicates must never count as separate pairs.
+- Saturation metrics must represent unique universe objects, not API observation rows.
