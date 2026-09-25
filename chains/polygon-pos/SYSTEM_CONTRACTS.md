@@ -22,14 +22,14 @@ No address in this document should be treated as execution-authorized merely bec
 
 | Contract | Address | Evidence source | Current state |
 |---|---|---|---|
-| ChildChainManagerProxy | 0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa | 0xPolygon security scope + Polygon PIP-54 | DOCUMENTED / LIVE VERIFICATION PENDING |
-| EIP1559Burn | 0x7A8ed27F4C30512326878652d20fC85727401854 | 0xPolygon security scope + Polygon PIP-54 | DOCUMENTED / LIVE VERIFICATION PENDING |
-| MaticToken | 0x0000000000000000000000000000000000001010 | 0xPolygon security scope | DOCUMENTED / LIVE VERIFICATION PENDING |
-| WMATIC | 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270 | 0xPolygon security scope | DOCUMENTED / LIVE VERIFICATION PENDING |
-| StateReceiver | 0x0000000000000000000000000000000000001001 | 0xPolygon security scope | DOCUMENTED / LIVE VERIFICATION PENDING |
-| BorValidatorSet | 0x0000000000000000000000000000000000001000 | 0xPolygon security scope | DOCUMENTED / LIVE VERIFICATION PENDING |
-| ChildChain | 0xD9c7C4ED4B66858301D0cb28Cc88bf655Fe34861 | 0xPolygon security scope | DOCUMENTED / LIVE VERIFICATION PENDING |
-| MaticWeth | 0x8cc8538d60901d19692F5ba22684732Bc28F54A3 | 0xPolygon security scope | DOCUMENTED / LIVE VERIFICATION PENDING |
+| ChildChainManagerProxy | 0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa | 0xPolygon security scope + Polygon PIP-54 | PARTIAL / LIVE CODE VERIFIED; PROXY-CONTROL PENDING |
+| EIP1559Burn | 0x7A8ed27F4C30512326878652d20fC85727401854 | 0xPolygon security scope + Polygon PIP-54 | PARTIAL / LIVE CODE VERIFIED; PROXY-CONTROL PENDING |
+| MaticToken | 0x0000000000000000000000000000000000001010 | 0xPolygon security scope | PARTIAL / LIVE CODE VERIFIED; PROXY-CONTROL PENDING |
+| WMATIC | 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270 | 0xPolygon security scope | PARTIAL / LIVE CODE VERIFIED; PROXY-CONTROL PENDING |
+| StateReceiver | 0x0000000000000000000000000000000000001001 | 0xPolygon security scope | PARTIAL / LIVE CODE VERIFIED; PROXY-CONTROL PENDING |
+| BorValidatorSet | 0x0000000000000000000000000000000000001000 | 0xPolygon security scope | PARTIAL / LIVE CODE VERIFIED; PROXY-CONTROL PENDING |
+| ChildChain | 0xD9c7C4ED4B66858301D0cb28Cc88bf655Fe34861 | 0xPolygon security scope | PARTIAL / LIVE CODE VERIFIED; PROXY-CONTROL PENDING |
+| MaticWeth | 0x8cc8538d60901d19692F5ba22684732Bc28F54A3 | 0xPolygon security scope | PARTIAL / LIVE CODE VERIFIED; PROXY-CONTROL PENDING |
 
 ## Ethereum-side bridge/control addresses relevant to Polygon PoS
 
@@ -88,3 +88,18 @@ Build the live address verifier for every candidate:
 address -> eth_getCode -> bytecode hash -> proxy detection -> implementation -> ABI/function probes -> event probes -> creation evidence -> observation block -> evidence record.
 
 Until that verifier runs successfully, these addresses remain DOCUMENTED rather than VERIFIED.
+
+## 2026-09-25 — P1 Run #30 live code verification
+
+Run `36169503083` verified the bounded Polygon-side P1 target set at block `94,435,638`.
+
+- 11/11 canonical targets observed;
+- at least 2 independent RPC endpoints per target;
+- matching normalized runtime-code hashes;
+- chain ID 137 quorum across 3 endpoints;
+- head quorum across 3 endpoints;
+- reconciliation state: VERIFIED.
+
+Full per-address evidence: `chains/polygon-pos/P1_LIVE_VERIFICATION_RUN_30.md`.
+
+Boundary: runtime-code verification does not yet certify proxy implementation, admin/owner/roles, creation evidence, ABI/source identity, selector/event behavior or current-vs-historical classification.
