@@ -236,3 +236,24 @@ P2: reconcile proxy implementations, admin/owner/roles, creation evidence, contr
 - No slot-value conflicts were observed in the available dual observations.
 - The P2 verifier has now been hardened to perform request-level rotation per target/slot and bounded recovery rounds. Chain-137 endpoints with a valid identity can participate in storage rotation even when their head probe is temporarily unavailable; a separate two-endpoint fresh-head quorum remains mandatory.
 - This preserves the two-independent-endpoint rule while giving temporarily rate-limited RPCs a chance to recover.
+
+## 2026-09-25 — P2 ERC-1967 storage sub-gate PASSED
+
+Run `36171378222` completed successfully.
+
+Evidence:
+- artifact `10880421099`;
+- digest `sha256:5693d27acbd6b5aff22a5c0a4d9fccd15a0641c7bb6463efc792a75784216e3f`;
+- observation block **94,436,387**;
+- target×slot matrix **33/33**;
+- independent successful observations **66**;
+- conflicts **0**;
+- insufficient observations **0**;
+- reconciliation **VERIFIED**.
+
+### P2 state
+- ERC-1967 storage consistency: **PASSED**
+- Overall P2: **IN PROGRESS**
+- Next P2 atomic work: verify the four non-zero derived implementation/admin addresses, then owner/role/control functions and creation evidence.
+- Polygon saturation: **OPEN**
+- DEX/protocol discovery: **BLOCKED**
