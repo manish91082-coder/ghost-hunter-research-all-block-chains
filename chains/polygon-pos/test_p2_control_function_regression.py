@@ -45,6 +45,11 @@ class ControlFunctionRegressionTests(unittest.TestCase):
         self.assertIn("eth_call", READONLY.ALLOWED)
         self.assertNotIn("eth_sendTransaction", READONLY.ALLOWED)
 
+    def test_head_recovery_requires_fresh_quorum(self):
+        self.assertTrue(VERIFIER.head_quorum_ready(("rpc-a", "rpc-b"), 2, 2, 2))
+        self.assertFalse(VERIFIER.head_quorum_ready(("rpc-a", "rpc-b"), 3, 2, 2))
+        self.assertFalse(VERIFIER.head_quorum_ready((), 0, 2, 2))
+
     def test_no_stale_successful_name_reference(self):
         source = (POLYGON_DIR / "polygon_p2_control_function_verifier.py").read_text(
             encoding="utf-8"
