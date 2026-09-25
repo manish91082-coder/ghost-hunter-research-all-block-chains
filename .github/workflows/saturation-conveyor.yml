@@ -1,0 +1,98 @@
+name: Autonomous Polygon Saturation Conveyor
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+  push:
+    paths:
+      - 'tools/saturation_conveyor.py'
+      - 'tools/polygon_universe_worker.py'
+      - 'tools/automation_state_store.py'
+      - 'automation/saturation_plan.json'
+      - '.github/workflows/saturation-conveyor.yml'
+
+concurrency:
+  group: polygon-saturation-conveyor
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  conveyor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    env:
+      TATUM_API_KEY: ${{ secrets.TATUM_API_KEY }}
+    steps:
+      - name: Checkout canonical repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Restore latest conveyor checkpoint
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python tools/automation_state_store.py restore --target automation/saturation_state.json
+
+      - name: Validate automation sources
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/saturation_conveyor.py
+          python -m py_compile tools/polygon_universe_worker.py
+          python -m py_compile tools/automation_state_store.py
+          python chains/polygon-pos/test_p2_control_function_regression.py
+
+      - name: Execute bounded conveyor round
+        run: |
+          set -euo pipefail
+          python tools/saturation_conveyor.py --max-critical 1 --max-shadow 2 --time-budget 720 | tee automation/conveyor_stdout.json
+
+      - name: Upload conveyor evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: saturation-conveyor-state
+          path: automation/saturation_state.json
+          retention-days: 90
+          overwrite: true
+
+      - name: Upload evidence batches
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: saturation-conveyor-evidence-${{ github.run_id }}
+          path: |
+            automation/conveyor_report.json
+            automation/evidence/
+            automation/universe/
+            automation/conveyor_stdout.json
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Commit gate-transition state only
+        if: always()
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, pathlib
+          p=pathlib.Path('automation/conveyor_report.json')
+          data=json.loads(p.read_text(encoding='utf-8')) if p.exists() else {}
+          print('commit_required=', data.get('commit_required'))
+          pathlib.Path('/tmp/commit_required').write_text('1' if data.get('commit_required') else '0', encoding='utf-8')
+          PY
+          if [ "$(cat /tmp/commit_required)" != '1' ]; then
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add automation/saturation_state.json automation/saturation_plan.json automation/evidence
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'chore: advance saturation gate [skip ci]'
+          git push origin HEAD:main
