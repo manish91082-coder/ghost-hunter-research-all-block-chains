@@ -51,11 +51,34 @@ def main():
         return 2
 
     head = branch["commit"]["sha"]
+    trigger = {
+        "event_name": os.environ.get("GITHUB_EVENT_NAME"),
+        "workflow": os.environ.get("GITHUB_WORKFLOW"),
+        "run_id": os.environ.get("GITHUB_RUN_ID"),
+    }
+    event_path = os.environ.get("GITHUB_EVENT_PATH")
+    if event_path and Path(event_path).exists():
+        try:
+            event = json.loads(Path(event_path).read_text(encoding="utf-8"))
+            workflow_run = event.get("workflow_run")
+            if isinstance(workflow_run, dict):
+                trigger["workflow_run"] = {
+                    "id": workflow_run.get("id"),
+                    "name": workflow_run.get("name"),
+                    "head_sha": workflow_run.get("head_sha"),
+                    "status": workflow_run.get("status"),
+                    "conclusion": workflow_run.get("conclusion"),
+                    "html_url": workflow_run.get("html_url"),
+                }
+        except (OSError, json.JSONDecodeError):
+            trigger["event_parse_error"] = True
+
     report = {
         "repository": f"{OWNER}/{REPO}",
         "branch": "main",
         "head_sha": head,
         "default_branch": repo.get("default_branch"),
+        "trigger": trigger,
         "workflows": {},
     }
 
