@@ -88,9 +88,12 @@ def task_p4_tokens():
     for x in data.get("dex_profile_candidates",[]):
         a=x.get("tokenAddress")
         if a and len(a)==42 and a.lower().startswith("0x"): tokens[a.lower()]={"address":a,"source":"dexscreener_profile","first_seen":now()}
-    rows=list(tokens.values())
-    append_jsonl(UNIV/"tokens.jsonl",rows)
-    return write_json("P4_TOKEN_SNAPSHOT.json",{"task":"p4_token_discovery","time":now(),"new_candidates":rows,"total_candidates":len(load_jsonl(UNIV/"tokens.jsonl")),"evidence_class":"DISCOVERY"})
+    existing={x.get("address","").lower():x for x in load_jsonl(UNIV/"tokens.jsonl")}
+    for row in tokens.values(): existing[row["address"].lower()]=row
+    rows=list(existing.values())
+    token_path=UNIV/"tokens.jsonl"
+    token_path.write_text("".join(json.dumps(x,sort_keys=True)+"\\n" for x in rows),encoding="utf-8")
+    return write_json("P4_TOKEN_SNAPSHOT.json",{"task":"p4_token_discovery","time":now(),"new_candidates":list(tokens.values()),"total_candidates":len(rows),"evidence_class":"DISCOVERY"})
 
 def task_p5_pairs():
     rows=[]; token_file=UNIV/"tokens.jsonl"
@@ -122,7 +125,11 @@ def task_p6_routes():
         if 2<=len(path)<=4 and node==start: routes.append(list(path)); return
         if len(path)>=4: return
         for nxt,pair in adj.get(node,[])[:100]:
-            if pair in used or nxt in [x[0] for x in path]: continue
+            if pair in used: continue
+            if nxt==start and len(path)>=3:
+                routes.append(path+[(start,pair)])
+                continue
+            if nxt in [x[0] for x in path]: continue
             dfs(start,nxt,path+[(nxt,pair)],used|{pair})
     for token in list(adj)[:200]: dfs(token,token,[(token,"")],set())
     return write_json("P6_ROUTE_SNAPSHOT.json",{"task":"p6_route_enumeration","time":now(),"pair_nodes":len(adj),"unique_pairs":len(seen),"route_candidates":routes[:5000],"route_count_sampled":len(routes),"evidence_class":"DERIVED"})
