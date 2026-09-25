@@ -491,3 +491,18 @@ A probe needs two independent chain-137 RPC observations. A JSON-RPC success or 
 - Overall P2: IN PROGRESS.
 - Polygon saturation: OPEN.
 - DEX/protocol discovery: BLOCKED.
+## 2026-09-25 — Control-function regression gate added
+### Defect caught
+The first control-function verifier revision renamed the per-probe evidence set from successful to observed so reproducible JSON-RPC errors could count as evidence. Two stale successful[...] references remained and would have caused a runtime NameError.
+
+### Correction
+- Removed all stale successful[...] references.
+- Added test_p2_control_function_regression.py.
+- CI now executes the regression test before live probes.
+- Workflow path triggers now include the regression test file.
+
+### Current state
+- P2 ERC-1967 storage consistency: PASSED.
+- P2 derived runtime-code: corrected workflow evidence pending.
+- P2 control-function probes: harness + regression gate wired; live evidence pending.
+- Overall P2: IN PROGRESS.
