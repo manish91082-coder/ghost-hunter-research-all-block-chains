@@ -275,3 +275,10 @@ Evidence:
 - Commit 5b0212d5ca8ce094f4438f60e424189bc0259e6a fixes the workflow: it passes --min-head-endpoints 2, syntax-checks the reconciliation source, and initializes optional shell status variables safely.
 - A fresh CI artifact from the corrected workflow is now required before the derived-control sub-gate can be marked VERIFIED.
 - Overall P2 remains IN PROGRESS; Polygon saturation remains OPEN; DEX/protocol discovery remains BLOCKED.
+
+## 2026-09-25 — P2 control-function probe harness added
+- Added `chains/polygon-pos/p2_control_function_targets.txt` for read-only selector candidates on the two parent contracts identified by P2 ERC-1967 provenance.
+- Added `polygon_p2_control_function_verifier.py` and reconciliation logic with adaptive RPC rotation, two-endpoint fresh-head quorum, and evidence-preserving handling of JSON-RPC success or error outcomes.
+- A reproducible revert/error is now treated as RPC evidence rather than as a missing observation; transport failures such as HTTP 403/429 are still not counted as evidence.
+- Added GitHub Actions workflow `polygon-p2-control-function-verification.yml` with fail-closed reconciliation and unconditional artifact upload.
+- Overall P2 remains IN PROGRESS. No control-function semantics are promoted from selector identity alone.
