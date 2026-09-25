@@ -214,3 +214,9 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - The canonical research process now includes a read-only GitHub CI state extractor at tools/github_ci_state.py.
 - This tool is for evidence discovery only. It must never be used to trigger, rerun or mutate Actions.
 - A workflow is not GREEN merely because source code exists or a trigger was expected; the extractor observed run/job/artifact state is authoritative for CI-state reporting.
+
+## 2026-09-25 — Automated CI evidence lock
+- `.github/workflows/github-ci-state-evidence.yml` is the canonical read-only observability layer for Actions completion state.
+- It listens to the four Polygon verification workflows and stores a state snapshot artifact.
+- `tools/github_ci_state.py` records both current main HEAD and triggering workflow-run context when available.
+- The observer never triggers or reruns workflows. Evidence promotion still requires inspection of the actual verifier/reconciliation artifacts.
