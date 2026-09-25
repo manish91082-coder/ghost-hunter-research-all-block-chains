@@ -53,9 +53,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: saturation-conveyor-state
-          path: automation/saturation_state.json
+          path: |
+            automation/saturation_state.json
+            automation/evidence/
+            automation/universe/
           retention-days: 90
           overwrite: true
+          if-no-files-found: warn
 
       - name: Upload evidence batches
         if: always()
