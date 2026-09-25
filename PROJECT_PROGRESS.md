@@ -149,3 +149,10 @@ Added `chains/polygon-pos/RPC_CAPABILITY_MATRIX.md` defining the deterministic, 
 
 ### Next atomic step
 Build the machine-readable verifier output schema and Colab runner contract, then execute only read-only probes against independent Polygon RPC endpoints. DEX discovery remains blocked until P1 passes.
+
+## 2026-09-25 — Machine-readable verifier contract
+
+Added `polygon-verification-record.schema.json` and `COLAB_VERIFIER_RUNNER.md`. The schema fixes the evidence record shape, while the runner contract defines deterministic read-only probing, method allowlisting, secret exclusion, bounded retries, resumable checkpoints, SHA-256 normalization, cross-RPC reconciliation, and P1 acceptance criteria. Official Bor documentation confirms trace APIs are optional and archive-node dependent, reinforcing capability measurement rather than assumption. citeturn0search0
+
+### Next atomic step
+Implement the actual Colab-ready verifier script against this contract, with only read-only JSON-RPC methods and no credentials embedded. Then run it in an environment that permits outbound JSON-RPC POST and bring the resulting evidence artifacts back into the canonical repository.
