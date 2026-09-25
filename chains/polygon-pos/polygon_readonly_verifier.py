@@ -10,6 +10,7 @@ Safety:
 import argparse
 import hashlib
 import json
+import os
 import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -68,10 +69,13 @@ def rpc(url, method, params, request_id, timeout, retries, min_request_interval=
         if min_request_interval > 0:
             time.sleep(min_request_interval)
         started = time.perf_counter()
+        headers = {"Content-Type": "application/json"}
+        if "tatum.io" in url and os.environ.get("TATUM_API_KEY"):
+            headers["X-API-Key"] = os.environ["TATUM_API_KEY"]
         req = Request(
             url,
             data=payload,
-            headers={"Content-Type": "application/json"},
+            headers=headers,
             method="POST",
         )
         try:
@@ -313,7 +317,8 @@ def main():
         "stale_endpoints": stale_endpoints,
         "successful_chain_id_endpoint_count": len(chain_ids),
         "successful_block_endpoint_count": len(block_numbers),
-        "head_agreement": len(block_numbers) >= 2 and len(set(block_numbers.values())) == 1,
+        "head_block_span": (max(block_numbers.values()) - min(block_numbers.values())) if len(block_numbers) >= 2 else None,
+        "head_agreement": len(block_numbers) >= 2 and (max(block_numbers.values()) - min(block_numbers.values()) <= args.stale_block_tolerance),
     }
     Path("polygon_rpc_head_summary.json").write_text(
         json.dumps(summary, indent=2) + "\n"
