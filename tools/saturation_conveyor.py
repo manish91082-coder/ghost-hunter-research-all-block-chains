@@ -181,6 +181,37 @@ def shadow_dependency_override(task):
 
     return task
 
+def sync_stage_metadata(state):
+    """Keep human-readable stage metadata aligned with the authoritative critical stage."""
+    stages = state.setdefault("stages", {})
+    current = state.get("critical_stage", "P2")
+    order = ["P2"] + PROMOTION
+    if current not in order:
+        current_index = 0
+    else:
+        current_index = order.index(current)
+
+    for index, stage in enumerate(order):
+        entry = stages.setdefault(stage, {})
+        if stage == "P11":
+            entry["mode"] = "SHADOW"
+            entry["status"] = "LOCKED" if current_index < order.index("P11") else entry.get("status", "PREPARE")
+            continue
+        if index < current_index:
+            entry["status"] = "CLOSED"
+        elif index == current_index:
+            entry["mode"] = "CRITICAL"
+            entry["status"] = "OPEN"
+        else:
+            entry["mode"] = "SHADOW"
+            entry["status"] = "PREPARE"
+
+    if state.get("research_gate") == "P2_CLOSED":
+        stages.setdefault("P2", {})["status"] = "CLOSED"
+        if current == "P2":
+            stages["P2"]["mode"] = "CRITICAL"
+
+
 def p2_gate(state):
     conditions={
       'storage_checkpoint': Path('chains/polygon-pos/P2_ERC1967_STORAGE_RUN_4.md').exists(),
@@ -271,6 +302,7 @@ def main():
                 state['critical_stage']=PROMOTION[idx+1]
     else:
         state['critical_stage']='P2'
+    sync_stage_metadata(state)
     state.setdefault('cursors',{'critical':0,'shadow':0})
     state['last_run']=now()
     state['commit_required']=(old_gate!=state['research_gate'] or old_stage!=state['critical_stage'])
