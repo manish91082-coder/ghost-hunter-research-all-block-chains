@@ -349,3 +349,8 @@ Observe the new push-triggered run and inspect its artifact. If the new pool is 
 - Rotation architecture: PROVEN WORKING at live-run level.
 - Evidence reconciliation: pending corrected run.
 - P1: NOT PASSED.
+## 2026-09-25 — RPC cooldown recovery hardening
+- Added adaptive per-endpoint pacing: successful endpoints slowly return toward the configured base interval; HTTP 429 doubles the local interval up to a bounded cap.
+- Added a bounded second address-code recovery pass after cooldown, allowing temporarily rate-limited providers to re-enter rotation.
+- CI base pacing changed to 1.0 second per endpoint and recovery rounds fixed at 2.
+- No evidence threshold changed: every target still needs two distinct successful RPC endpoints with matching code hashes.
