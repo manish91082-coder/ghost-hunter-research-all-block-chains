@@ -6,6 +6,7 @@ on:
       - "chains/polygon-pos/polygon_readonly_verifier.py"
       - "chains/polygon-pos/verification_targets.txt"
       - "chains/polygon-pos/polygon_verification_reconciliation.py"
+      - "chains/polygon-pos/rpc_pool.txt"
       - ".github/workflows/polygon-readonly-verification.yml"
   workflow_dispatch:
 
@@ -17,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      TATUM_API_KEY: ${{ secrets.TATUM_API_KEY }}
+      TATUM_API_KEY: \${{ secrets.TATUM_API_KEY }}
     steps:
       - name: Checkout canonical repo
         uses: actions/checkout@v4
@@ -30,14 +31,21 @@ jobs:
       - name: Validate Python sources
         run: |
           set -euo pipefail
-          python -m py_compile chains/polygon-pos/polygon_readonly_verifier.py chains/polygon-pos/polygon_verification_reconciliation.py
+          python -m py_compile \
+            chains/polygon-pos/polygon_readonly_verifier.py \
+            chains/polygon-pos/polygon_verification_reconciliation.py
 
-      - name: Run read-only Polygon verification
+      - name: Run read-only Polygon verification with adaptive RPC rotation
         run: |
           set -euo pipefail
           verifier_status=0
           reconciliation_status=0
-          python chains/polygon-pos/polygon_readonly_verifier.py --rpc "https://polygon-mainnet.gateway.tatum.io/" --rpc "https://rpc-mainnet.matic.quiknode.pro" --min-request-interval 0.5 --address "@chains/polygon-pos/verification_targets.txt" || verifier_status=$?
+          python chains/polygon-pos/polygon_readonly_verifier.py \
+            --rpc-pool-file chains/polygon-pos/rpc_pool.txt \
+            --min-request-interval 0.5 \
+            --min-code-endpoints 2 \
+            --stale-block-tolerance 2 \
+            --address "@chains/polygon-pos/verification_targets.txt" || verifier_status=$?
           python chains/polygon-pos/polygon_verification_reconciliation.py || reconciliation_status=$?
           if [ "$verifier_status" -ne 0 ]; then
             exit "$verifier_status"
