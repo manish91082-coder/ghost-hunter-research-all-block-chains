@@ -69,3 +69,10 @@ Cold path: LLM/research/strategy discovery.
 
 ### Explicit Non-Goal
 Never force a trade simply to make a profit appear every minute. Continuous scanning is required; continuous trading is not.
+
+
+## 2026-09-25 — P1 execution wiring memory
+- Canonical live-verification target file: `chains/polygon-pos/verification_targets.txt`.
+- First pass intentionally covers only Polygon-side critical system contracts. Ethereum-side bridge/governance objects are not mixed into the chain-137 code probe.
+- GitHub Actions now syntax-checks and runs the verifier with the target file.
+- Actual live evidence is still unconfirmed until workflow artifacts/results are observed. Never promote an address to VERIFIED from workflow configuration alone.
