@@ -25,6 +25,8 @@ CANDIDATES = [
     ("spectrum", "https://spectrumnodes.com/"),
     ("publicnode-bor", "https://polygon-bor-rpc.publicnode.com"),
     ("llama", "https://polygon.llamarpc.com"),
+    ("ankr", "https://rpc.ankr.com/polygon"),
+    ("blastapi", "https://polygon-mainnet.public.blastapi.io"),
 ]
 
 def call(url, method, timeout=8):
