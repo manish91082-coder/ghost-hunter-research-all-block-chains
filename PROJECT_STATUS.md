@@ -325,3 +325,11 @@ Evidence:
 - Expanded `p2_control_function_targets.txt` from 8 to 17 read-only probes, adding sPOL `authority()` plus ProxyAdmin owner/pendingOwner and proxy relationship probes for the two derived admin addresses.
 - Added regression coverage for the expanded manifest.
 - No external explorer claim has been promoted to VERIFIED.
+
+## 2026-09-26 — Autonomous P2-P11 saturation conveyor implemented
+- Added `tools/saturation_conveyor.py`, `tools/polygon_universe_worker.py`, `tools/automation_state_store.py` and `.github/workflows/saturation-conveyor.yml`.
+- The conveyor runs on a 5-minute schedule plus manual dispatch, maintains a persistent checkpoint artifact, and commits to main only on actual gate/stage transitions.
+- P2 remains the critical promotion gate. P3-P10 run in a shadow preparation lane while P2 evidence is being resolved.
+- The first-pass worker now continuously prepares protocol, token, pair, route, strategy, feature, economic-screening and saturation-audit evidence.
+- P11 is defined as research closure / next-chain-unlock candidate, not an automatic next-chain authorization.
+- This automation changes execution cadence, not evidence standards.
