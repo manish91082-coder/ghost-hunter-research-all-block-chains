@@ -35,9 +35,10 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("automation/evidence/", self.workflow)
         self.assertIn("automation/universe/", self.workflow)
 
-    def test_state_store_is_fail_closed(self):
+    def test_state_store_uses_runner_native_artifact_restore(self):
         source = (ROOT / "tools" / "automation_state_store.py").read_text(encoding="utf-8")
-        self.assertIn("return 2", source)
+        self.assertIn('"gh", "run", "list"', source)
+        self.assertIn('"gh", "run", "download"', source)
         self.assertIn("safe_member", source)
         self.assertIn("automation/saturation_state.json", source)
 
