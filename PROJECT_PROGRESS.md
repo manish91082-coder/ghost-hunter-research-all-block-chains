@@ -652,3 +652,29 @@ Run the corrected conveyor through its narrow bootstrap trigger, inspect the raw
 - P2 provenance: repaired, pending replay.
 - P2 control-function: repaired, pending live CI artifact.
 - Overall P2: IN PROGRESS.
+
+
+## 2026-09-26 — P2 control-function evidence classification repair
+### Evidence findings from Run 16
+- Fresh-head quorum was valid: two independent Polygon endpoints, block span within the configured tolerance.
+- The 10 apparent semantic conflicts were not all contract conflicts.
+- Tatum returned HTTP 200 with JSON-RPC error `-16401` and message indicating `eth_call` is restricted by plan. Tatum documents `-16401` as a plan-restricted gateway error, so it is provider-access evidence, not chain semantic evidence. citeturn402236search0turn402236search6
+- One ProxyAdmin calldata entry for the second parent contained a one-hex-character address encoding defect, producing JSON-RPC `-32602` invalid-argument behavior.
+
+### Repair
+- P2 control-function reconciliation now admits successful HTTP-200 call results and EVM execution/revert error fingerprints, while excluding provider-policy and malformed-request errors from semantic evidence.
+- Added regression coverage for Tatum-style entitlement errors, malformed request errors and genuine EVM revert evidence.
+- Corrected both ProxyAdmin calldata entries for the second parent address.
+- Existing two-independent-endpoint and fresh-head quorum gates remain unchanged.
+
+### Current gate
+- P1: PASSED.
+- P2 ERC-1967 storage: PASSED.
+- P2 derived runtime-code: VERIFIED.
+- P2 provenance: PARTIAL in Run #21 because one candidate transaction had only one independent observation.
+- P2 control-function: OPEN pending corrected live artifact.
+- Overall P2: IN PROGRESS.
+- Polygon saturation gate: OPEN.
+
+### Next atomic step
+Inspect the corrected control-function CI artifact. Then run the corrected conveyor path so provenance can obtain its second independent observation and P2 can close only when every existing gate predicate is satisfied.
