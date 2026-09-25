@@ -213,7 +213,7 @@ def p3_closure_ready(snapshot, previous_state):
 def task_p3_protocols():
     st, llama, err = http_json(DefiLlamaProtocolsURL)
     st2, dex, err2 = http_json(DexProfilesURL)
-    gt_url = "https://api.geckoterminal.com/api/v2/networks/polygon/dexes"
+    gt_url = "https://api.geckoterminal.com/api/v2/networks/polygon_pos/dexes"
     st3, gecko, err3 = http_json(gt_url)
 
     protocols = []
