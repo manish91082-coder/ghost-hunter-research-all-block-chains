@@ -32,6 +32,11 @@ def load_rows(path):
 
 def fingerprint(row):
     outcome = row.get("outcome", {})
+    # Only HTTP 200 JSON-RPC responses are semantic call evidence.
+    # Transport failures such as 403/429/timeouts must never reconcile as
+    # matching contract outcomes.
+    if outcome.get("http_status") != 200:
+        return None
     if outcome.get("ok") is True:
         return ("success", str(outcome.get("result", "")).lower())
     error_code = outcome.get("error_code")
@@ -59,7 +64,11 @@ def main():
     for target in targets:
         key = (target["parent"], target["probe_id"])
         endpoint_rows = grouped.get(key, {})
-        fps = {endpoint: fingerprint(row) for endpoint, row in endpoint_rows.items()}
+        fps = {
+            endpoint: fingerprint(row)
+            for endpoint, row in endpoint_rows.items()
+            if fingerprint(row) is not None
+        }
         unique = set(fps.values())
         matched = len(fps) >= 2 and len(unique) == 1
 
