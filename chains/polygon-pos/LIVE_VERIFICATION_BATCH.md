@@ -55,6 +55,21 @@ Classification:
 - disagreement → CONFLICTED;
 - historical address with empty current code → candidate for HISTORICAL/DEPRECATED classification, not automatically invalid.
 
+## P1 completion record — Batch A + Batch B
+
+Run `36169503083` completed the network identity/head and bounded chain-137 runtime-code batches.
+
+- chain ID quorum: VERIFIED;
+- head quorum: VERIFIED;
+- exact 11-target set: VERIFIED;
+- minimum two independent successful code observations per target: VERIFIED;
+- code-hash reconciliation: VERIFIED;
+- conflicts: none.
+
+Evidence: `chains/polygon-pos/P1_LIVE_VERIFICATION_RUN_30.md`.
+
+The P1 gate is **PASSED** for the bounded critical target set.
+
 ## Batch C — Proxy and implementation discovery
 
 For proxy candidates, inspect standard EIP-1967 storage slots where applicable:
@@ -278,3 +293,16 @@ The Polygon infrastructure layer can proceed toward DEX discovery only after:
 5. cross-RPC consistency is measured;
 6. unresolved objects are explicitly listed;
 7. no critical identity conflict remains unexplained.
+
+## P2 continuation
+
+Next work:
+1. proxy implementation/admin slots where applicable;
+2. owner and role/control probes;
+3. creation/deployment evidence;
+4. contract-specific identity/function probes;
+5. bounded event probes;
+6. current-vs-historical bridge/predicate classification;
+7. cross-RPC reconciliation of control-plane fields.
+
+No DEX discovery is promoted until the remaining P2 infrastructure/address-control surface is sufficiently reconciled.
