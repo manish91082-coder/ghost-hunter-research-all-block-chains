@@ -296,3 +296,10 @@ Inspect the post-hardening GitHub Actions run. If the public endpoints still ret
 
 ### Next atomic step
 Observe the new push-triggered run and inspect its artifact. If the new pool is also inaccessible from GitHub-hosted runners, stop rotating blindly and move the unchanged verifier to another permitted outbound-RPC execution environment, while retaining every failure as evidence.
+
+## 2026-09-25 — Run #13 progress
+- Fixed the parallel-verifier JSONL/checkpoint serialization defect in commit `84fadf926ee9cd96c3b2b0a228458ebb28d9b1a8`.
+- CI Run #13 `36164386940` produced a structurally valid evidence artifact: 51 JSONL records parsed successfully with real line boundaries.
+- P1 still fails closed because only one independent RPC supplied chain/head evidence and only 4/11 critical targets had successful code observations from that single endpoint.
+- This separates the problem into two resolved/open tracks: **serialization defect = resolved; independent RPC evidence coverage = unresolved**.
+- No quorum rule, target coverage rule, or safety gate was relaxed.
