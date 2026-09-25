@@ -106,3 +106,13 @@ Never force a trade simply to make a profit appear every minute. Continuous scan
 - Head quorum logic now uses the configured stale-block tolerance. Run #23 observed Tatum block 94,434,648 and QuickNode block 94,434,649 and classified the fresh one-block span as head agreement.
 - Verifier supports `TATUM_API_KEY` via environment variable; workflow maps GitHub secret `TATUM_API_KEY` without exposing it.
 - Do not weaken the two-endpoint code-hash agreement gate. The remaining dependency is authenticated/free-tier Tatum capacity or an equivalent second independent code-capable RPC environment.
+
+## 2026-09-25 — RPC rotation memory lock
+- The Polygon P1 verifier now treats RPC access as a dynamic candidate pool rather than a fixed pair.
+- Rotation happens at request level for critical `eth_getCode` probes. An endpoint that returns 429/403/other failure is cooled down and the next eligible endpoint is tried.
+- The verifier first proves chain ID 137 before an endpoint becomes eligible for address-code evidence.
+- Two distinct endpoint IDs with successful code responses remain mandatory per critical target. Matching runtime/code hashes are reconciled later; there is no majority selection.
+- Per-endpoint request pacing is enforced independently, so one provider's rate limit does not globally slow or terminate the pool.
+- Tatum authentication remains optional via the `TATUM_API_KEY` GitHub Actions secret only.
+- Fresh-state rule remains in force: checkpoint reuse is opt-in, not the default, to avoid silently reusing stale live evidence.
+- This rotation architecture is the research-repo precedent for the future production RPC fabric: health-aware routing + cooldown + evidence diversity + fail-closed authorization.
