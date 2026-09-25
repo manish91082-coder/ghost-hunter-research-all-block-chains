@@ -67,3 +67,9 @@ No live execution should be enabled from this repository until all required vali
 
 ## Next gate
 P1 continuation: execute the read-only Polygon live-verification batch against independent RPC endpoints, reconcile critical identity/control conflicts, then complete the remaining bridge/state-sync census. DEX discovery remains blocked until the infrastructure gate is sufficiently verified.
+
+
+## Latest P1 Execution Wiring
+- A bounded Polygon-side critical-address target file is now canonical at `chains/polygon-pos/verification_targets.txt`.
+- GitHub Actions now syntax-checks the verifier and invokes it with that target file, so the next push-triggered/manual run can perform actual `eth_getCode` probes rather than only network capability probes.
+- This is execution wiring, not live evidence. P1 remains NOT PASSED until run artifacts/results are observed and reconciled.
