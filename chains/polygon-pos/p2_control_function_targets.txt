@@ -1,0 +1,16 @@
+# P2 parent control-function probe candidates
+# Format:
+# parent_address | probe_id | selector_calldata | semantic_candidate
+#
+# These are read-only eth_call probes only. A matching result across two
+# independent Polygon chain-137 RPCs is reproducible evidence for the call
+# result, not proof that the selector is semantically implemented by the
+# contract. Interpretation remains a separate step.
+0x7A8ed27F4C30512326878652d20fC85727401854 | owner | 0x8da5cb5b | Ownable.owner()
+0x7A8ed27F4C30512326878652d20fC85727401854 | admin | 0xf851a440 | TransparentProxy.admin()
+0x7A8ed27F4C30512326878652d20fC85727401854 | implementation | 0x5c60da1b | Transparent/UUPS implementation()
+0x7A8ed27F4C30512326878652d20fC85727401854 | proxiable_uuid | 0x52d1902d | ERC1822.proxiableUUID()
+0xd1CD49A08AeF3Af93457aEc17C786C2b7F48eCd7 | owner | 0x8da5cb5b | Ownable.owner()
+0xd1CD49A08AeF3Af93457aEc17C786C2b7F48eCd7 | admin | 0xf851a440 | TransparentProxy.admin()
+0xd1CD49A08AeF3Af93457aEc17C786C2b7F48eCd7 | implementation | 0x5c60da1b | Transparent/UUPS implementation()
+0xd1CD49A08AeF3Af93457aEc17C786C2b7F48eCd7 | proxiable_uuid | 0x52d1902d | ERC1822.proxiableUUID()
