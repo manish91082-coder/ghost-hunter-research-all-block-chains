@@ -1,2 +1,2 @@
-bootstrap=2026-09-26T00:55:00+05:30
-purpose=one-shot live validation of repaired saturation conveyor
+bootstrap=2026-09-26T01:00:00+05:30
+purpose=one-shot live validation of provenance semantic-fingerprint repair and P2 gate conveyor
