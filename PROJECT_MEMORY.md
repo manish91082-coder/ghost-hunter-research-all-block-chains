@@ -82,3 +82,9 @@ Never force a trade simply to make a profit appear every minute. Continuous scan
 - Verification targets are validated as 20-byte hexadecimal EVM addresses before RPC calls.
 - Changing the target file now triggers the Polygon read-only workflow.
 - Workflow configuration is not evidence. Only observed runner output/artifacts can advance P1.
+
+
+## 2026-09-25 — Reconciliation memory lock
+- P1 evidence now has a dedicated deterministic reconciliation layer in the canonical repo.
+- Conflicting RPC observations are preserved/quarantined; no majority vote is used to manufacture agreement.
+- GitHub Actions uploads the reconciliation artifact alongside raw JSONL/checkpoint/head evidence.
