@@ -136,3 +136,10 @@ P1 continuation: execute the read-only Polygon live-verification batch against i
 - Polygon saturation gate: **OPEN**.
 - DEX/protocol discovery remains blocked.
 - Next engineering action: preserve the corrected verifier and solve independent-RPC accessibility/rate-limit coverage without weakening the quorum or evidence gates.
+
+## 2026-09-25 — Runner RPC saturation diagnosis and P1 gate hardening
+- GitHub runner reconnaissance established two endpoints with basic Polygon reachability: Tatum and QuickNode public. QuickNode returned all 11 critical target code probes in the main verification run; anonymous Tatum was progressively rate-limited with HTTP 429 during the code phase.
+- The verifier was strengthened so reconciliation must itself pass before CI can be green. A partial reconciliation can no longer produce a successful workflow.
+- Head quorum was corrected to use the existing explicit stale-block tolerance rather than requiring identical latest block numbers. Two fresh endpoints within the configured tolerance now satisfy the head agreement condition; exact code-hash agreement remains mandatory for every critical target.
+- Tatum's current public documentation states a free plan with 3 RPS and free API keys. The workflow now supports an optional GitHub Actions secret named `TATUM_API_KEY`; the secret is never written to the repository.
+- P1 remains **NOT PASSED** until two independent RPC endpoints provide matching critical-address code evidence for all 11 targets and reconciliation classifies the evidence as VERIFIED.
