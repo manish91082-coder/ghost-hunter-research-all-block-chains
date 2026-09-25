@@ -341,3 +341,12 @@ Evidence:
 - P10 -> P11 requires the P10 audit to explicitly report stage_gate=CLOSED.
 - P4 token candidates are deduplicated and P6 route enumeration now permits cyclic route closure.
 - Checkpoint restore uses GitHub Actions artifact state, while real stage/gate transitions are the only automation commits to main.
+
+## 2026-09-26 — Conveyor red-run root cause and persistence repair
+- Screenshot review showed the Autonomous Polygon Saturation Conveyor repeatedly failing across rapid push-triggered runs while the CI State Evidence Collector was green.
+- Root cause identified in the P2 regression fixtures: after the reconciler was hardened to require HTTP 200, two matching success/error fixtures lacked `http_status=200`, causing valid fingerprints to become `None` and the match tests to fail.
+- Fixed the fixtures and added conveyor-specific regression coverage.
+- Removed the conveyor push trigger. It now runs on the 5-minute schedule or manual dispatch, preventing development-commit storms.
+- Fixed persistent checkpointing so the state artifact restores `automation/saturation_state.json`, `automation/evidence/`, and `automation/universe/` across runs.
+- Artifact API/restore failures are now fail-closed instead of silently resetting state.
+- Stage promotion remains explicit and content-aware; first-pass snapshots cannot be promoted to CLOSED merely because a file exists.
