@@ -23,6 +23,8 @@ CANDIDATES = [
     ("quicknode-public", "https://rpc-mainnet.matic.quiknode.pro"),
     ("onfinality", "https://polygon.api.onfinality.io/public"),
     ("spectrum", "https://spectrumnodes.com/"),
+    ("publicnode-bor", "https://polygon-bor-rpc.publicnode.com"),
+    ("llama", "https://polygon.llamarpc.com"),
 ]
 
 def call(url, method, timeout=8):
