@@ -436,3 +436,11 @@ Four derived addresses are now live-evidence candidates:
 
 ### Next atomic step
 Verify code identity of those derived addresses across independent RPCs, then probe proxy/control functions on the corresponding parent contracts.
+## 2026-09-25 — P2 derived address verification
+Added:
+- `p2_derived_control_targets.txt`
+- `p2_derived_control_provenance.txt`
+- `polygon_p2_derived_reconciliation.py`
+- `.github/workflows/polygon-p2-derived-control-verification.yml`
+
+Scope: runtime-code verification of the four non-zero addresses discovered from P2 ERC-1967 storage. This bridges storage-level evidence to live deployed-code evidence without assuming proxy semantics.
