@@ -68,6 +68,43 @@ class ControlFunctionRegressionTests(unittest.TestCase):
             "control verifier must use the observed evidence set, not stale successful[]",
         )
 
+    def test_semantic_probe_observation_classifies_provider_and_transport_errors(self):
+        self.assertTrue(VERIFIER.semantic_probe_observation({"ok": True, "http_status": 200}))
+        self.assertTrue(VERIFIER.semantic_probe_observation({
+            "ok": False,
+            "http_status": 200,
+            "body": {"error": {"code": 3}},
+        }))
+        self.assertTrue(VERIFIER.semantic_probe_observation({
+            "ok": False,
+            "http_status": 200,
+            "body": {"error": {"code": -32000}},
+        }))
+        self.assertFalse(VERIFIER.semantic_probe_observation({
+            "ok": False,
+            "http_status": 200,
+            "body": {"error": {"code": -16401}},
+        }))
+        self.assertFalse(VERIFIER.semantic_probe_observation({
+            "ok": False,
+            "http_status": 200,
+            "body": {"error": {"code": -32602}},
+        }))
+        self.assertFalse(VERIFIER.semantic_probe_observation({
+            "ok": False,
+            "http_status": 429,
+            "body": None,
+        }))
+
+    def test_recovery_rounds_honor_requested_count(self):
+        source = (POLYGON_DIR / "polygon_p2_control_function_verifier.py").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn(
+            "range(1, max(1, args.recovery_rounds) + 1)",
+            source,
+        )
+
     def test_matching_success_fingerprint(self):
         a = {"outcome": {"ok": True, "result": "0x1234", "http_status": 200}}
         b = {"outcome": {"ok": True, "result": "0x1234", "http_status": 200}}
