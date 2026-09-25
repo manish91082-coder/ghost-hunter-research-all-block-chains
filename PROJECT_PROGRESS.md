@@ -212,3 +212,18 @@ Use the GitHub-hosted runner as the primary live execution path. If its run outp
 
 ### Next atomic step
 Observe the GitHub-hosted run and, if artifacts become accessible, reconcile chain identity, head freshness, and per-target code hashes across independent RPCs. Any disagreement remains unresolved/quarantined rather than majority-selected.
+
+
+## 2026-09-25 — Verification input hardening
+
+### Added
+- Hardened the read-only verifier with strict EVM address validation before any RPC call.
+- Updated the GitHub Actions path trigger to rerun when the canonical verification target file changes.
+- Rechecked the workflow remains read-only and the target list remains bounded to Polygon-side critical addresses.
+
+### Gate state
+- P1 live verification: NOT PASSED until an actual GitHub runner result/artifact is observed and reconciled.
+- Polygon saturation gate: OPEN.
+
+### Next atomic step
+Obtain/observe the actual GitHub Actions execution evidence. If the connector still cannot expose push-triggered runs, use an explicit workflow-dispatch-capable GitHub action if available; otherwise use the same verifier unchanged in a permitted outbound-RPC environment. No DEX expansion before P1 reconciliation.
