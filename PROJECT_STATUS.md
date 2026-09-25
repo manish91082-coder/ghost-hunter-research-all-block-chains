@@ -79,3 +79,9 @@ P1 continuation: execute the read-only Polygon live-verification batch against i
 - Verifier now rejects malformed/non-hex EVM target addresses before network access.
 - Target-file changes are included in the GitHub Actions trigger paths.
 - P1 remains NOT PASSED pending actual live execution evidence.
+
+
+## Latest P1 Reconciliation Layer
+- Automated deterministic reconciliation is now part of the GitHub verification workflow.
+- It produces `polygon_verification_reconciliation.json` and preserves conflicts instead of majority-selecting an RPC.
+- P1 remains NOT PASSED until actual runner output is observed.
