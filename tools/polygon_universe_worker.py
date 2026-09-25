@@ -81,19 +81,47 @@ def task_p3_protocols():
     payload={"task":"p3_protocol_discovery","time":now(),"sources":[DefiLlamaProtocolsURL,DexProfilesURL],"http":[st,st2],"protocol_candidates":protocols,"dex_profile_candidates":profiles,"evidence_class":"DISCOVERY"}
     return write_json("P3_PROTOCOL_SNAPSHOT.json",payload)
 
+def load_seed_tokens():
+    path=ROOT/"chains/polygon-pos/p4_seed_tokens.txt"
+    seeds=[]
+    if path.exists():
+        for line in path.read_text(encoding="utf-8").splitlines():
+            line=line.strip()
+            if not line or line.startswith("#"): continue
+            parts=line.split("|",2)
+            if len(parts)>=2:
+                address=parts[0].strip()
+                label=parts[1].strip()
+                if len(address)==42 and address.lower().startswith("0x"):
+                    seeds.append({"address":address,"label":label,"source":"polygon_seed_manifest","first_seen":now()})
+    return seeds
+
 def task_p4_tokens():
     p=EVID/"P3_PROTOCOL_SNAPSHOT.json"
     data=json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
     tokens={}
+    for row in load_seed_tokens():
+        tokens[row["address"].lower()]=row
     for x in data.get("dex_profile_candidates",[]):
         a=x.get("tokenAddress")
-        if a and len(a)==42 and a.lower().startswith("0x"): tokens[a.lower()]={"address":a,"source":"dexscreener_profile","first_seen":now()}
+        if a and len(a)==42 and a.lower().startswith("0x"):
+            tokens[a.lower()]={"address":a,"source":"dexscreener_profile","first_seen":now()}
     existing={x.get("address","").lower():x for x in load_jsonl(UNIV/"tokens.jsonl")}
+    before=len(existing)
     for row in tokens.values(): existing[row["address"].lower()]=row
     rows=list(existing.values())
     token_path=UNIV/"tokens.jsonl"
     token_path.write_text("".join(json.dumps(x,sort_keys=True)+"\\n" for x in rows),encoding="utf-8")
-    return write_json("P4_TOKEN_SNAPSHOT.json",{"task":"p4_token_discovery","time":now(),"new_candidates":list(tokens.values()),"total_candidates":len(rows),"evidence_class":"DISCOVERY"})
+    return write_json("P4_TOKEN_SNAPSHOT.json",{
+        "task":"p4_token_discovery",
+        "time":now(),
+        "seed_candidates":len(load_seed_tokens()),
+        "profile_candidates":sum(1 for x in data.get("dex_profile_candidates",[]) if x.get("tokenAddress")),
+        "new_unique_candidates":max(0,len(rows)-before),
+        "new_candidates":list(tokens.values()),
+        "total_candidates":len(rows),
+        "evidence_class":"DISCOVERY"
+    })
 
 def task_p5_pairs():
     rows=[]; token_file=UNIV/"tokens.jsonl"
@@ -112,11 +140,22 @@ def task_p5_pairs():
     existing_pairs=load_jsonl(pair_path)
     by_address={str(x.get("pairAddress","")).lower():x for x in existing_pairs if x.get("pairAddress")}
     before=len(by_address)
+    discovered_tokens={}
     for row in rows:
         address=str(row.get("pairAddress","")).lower()
         if address:
             by_address[address]=row
+        for side in ("baseToken","quoteToken"):
+            token=(row.get(side) or {}).get("address")
+            if token and len(str(token))==42 and str(token).lower().startswith("0x"):
+                discovered_tokens[str(token).lower()]={"address":str(token),"source":"dexscreener_pair_token","first_seen":now()}
     merged=list(by_address.values())
+    token_path=UNIV/"tokens.jsonl"
+    existing_tokens={str(x.get("address","")).lower():x for x in load_jsonl(token_path)}
+    tokens_before=len(existing_tokens)
+    existing_tokens.update(discovered_tokens)
+    token_path.write_text("".join(json.dumps(x,sort_keys=True)+"\\n" for x in existing_tokens.values()),encoding="utf-8")
+    new_tokens=max(0,len(existing_tokens)-tokens_before)
     pair_path.write_text("".join(json.dumps(x,sort_keys=True)+"\\n" for x in merged),encoding="utf-8")
     cursor=min(len(tokens),cursor+len(batch))
     write_json("P5_CURSOR.json",{"cursor":cursor,"total_tokens":len(tokens)})
@@ -126,6 +165,7 @@ def task_p5_pairs():
         "processed_tokens":len(batch),
         "observed_pair_rows":len(rows),
         "new_unique_pairs":max(0,len(merged)-before),
+        "new_unique_tokens":new_tokens,
         "cursor":cursor,
         "total_pair_records":len(merged),
         "evidence_class":"DISCOVERY"
