@@ -16,6 +16,8 @@ jobs:
   polygon-rpc-probe:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      TATUM_API_KEY: ${{ secrets.TATUM_API_KEY }}
     steps:
       - name: Checkout canonical repo
         uses: actions/checkout@v4
@@ -35,7 +37,7 @@ jobs:
           set -euo pipefail
           verifier_status=0
           reconciliation_status=0
-          python chains/polygon-pos/polygon_readonly_verifier.py --rpc "https://polygon-mainnet.gateway.tatum.io/" --rpc "https://rpc-mainnet.matic.quiknode.pro" --min-request-interval 3.0 --address "@chains/polygon-pos/verification_targets.txt" || verifier_status=$?
+          python chains/polygon-pos/polygon_readonly_verifier.py --rpc "https://polygon-mainnet.gateway.tatum.io/" --rpc "https://rpc-mainnet.matic.quiknode.pro" --min-request-interval 0.5 --address "@chains/polygon-pos/verification_targets.txt" || verifier_status=$?
           python chains/polygon-pos/polygon_verification_reconciliation.py || reconciliation_status=$?
           if [ "$verifier_status" -ne 0 ]; then
             exit "$verifier_status"
