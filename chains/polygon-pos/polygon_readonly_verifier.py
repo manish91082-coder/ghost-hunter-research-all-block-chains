@@ -34,6 +34,7 @@ ALLOWED = {
     "eth_blockNumber",
     "eth_getBlockByNumber",
     "eth_getCode",
+    "eth_getStorageAt",
     "eth_call",
     "eth_getLogs",
     "eth_getTransactionByHash",
