@@ -108,6 +108,14 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
             module.normalize_market_name("QUICKSWAP"),
         )
 
+    def test_p3_closure_state_loader_has_safe_default(self):
+        import importlib.util
+        worker_path = ROOT / "tools" / "polygon_universe_worker.py"
+        spec = importlib.util.spec_from_file_location("polygon_universe_worker_p3_loader", worker_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        self.assertEqual(module.load_json(ROOT / "does-not-exist-p3-state.json", {"stable_runs": 0}), {"stable_runs": 0})
+
     def test_p3_sources_and_closure_markers_are_present(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn("https://api.geckoterminal.com/api/v2/networks/polygon/dexes", worker)
