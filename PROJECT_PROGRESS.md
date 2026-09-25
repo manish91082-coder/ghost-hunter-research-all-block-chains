@@ -367,3 +367,21 @@ Observe the new push-triggered run and inspect its artifact. If the new pool is 
 
 ### Gate decision
 **P1 PASSED.** The bounded targets move to PARTIAL, preserving unresolved control/proxy/behavior fields. Next atomic work is P2 address/control/bridge census.
+
+## 2026-09-25 — P2 control-plane probe launched
+### Added
+- `chains/polygon-pos/p2_control_targets.txt`
+- `chains/polygon-pos/polygon_p2_control_verifier.py`
+- `chains/polygon-pos/polygon_p2_control_reconciliation.py`
+- `.github/workflows/polygon-p2-control-verification.yml`
+
+### Scope
+The first P2 slice reads the three ERC-1967 storage locations per critical Polygon target:
+- implementation;
+- admin;
+- beacon.
+
+Each result is captured across the dynamically eligible Polygon RPC pool and reconciled without majority selection. The standard defines these storage slots for proxy metadata. citeturn422867search0
+
+### Execution
+Run `36170466071` is **IN_PROGRESS**. P2 is not declared passed until the artifact is inspected and reconciliation returns VERIFIED.
