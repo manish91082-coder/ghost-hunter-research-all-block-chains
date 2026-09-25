@@ -1,0 +1,34 @@
+name: Polygon RPC Access Reconnaissance
+
+on:
+  push:
+    paths:
+      - "tools/polygon_rpc_access_probe.py"
+      - ".github/workflows/polygon-rpc-access-recon.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  polygon-rpc-access-recon:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout canonical repo
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate probe
+        run: python -m py_compile tools/polygon_rpc_access_probe.py
+      - name: Probe documented candidates
+        run: python tools/polygon_rpc_access_probe.py
+      - name: Upload reconnaissance evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: polygon-rpc-access-recon
+          path: polygon_rpc_access_candidates.json
+          if-no-files-found: warn
