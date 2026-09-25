@@ -121,3 +121,23 @@ Build the live-verification batch specification for the expanded registry: exact
 
 ### Next atomic step
 Prepare the verifier implementation contract/schema and endpoint capability matrix, then execute it only in a permitted live-RPC environment. DEX discovery remains blocked until critical infrastructure verification is complete.
+
+
+## 2026-09-25 — Polygon Discovery Baseline + Governance Freshness Step
+
+### Added
+- Expanded address registry with Polygon security-scope Plasma/PoS discovery objects: Registry, ValidatorShare, Plasma predicates, Plasma EIP1559Burn and Ethereum MaticToken.
+- Strengthened live-verification specification with governance-freshness and current-vs-historical classification.
+- Explicitly separated published PIP/security evidence from observed on-chain ownership, roles and proxy state.
+
+### Evidence result
+The official Polygon security scope publishes the deployed contract census, while PIP-54 describes upgradeability/control responsibilities. These are discovery and governance evidence layers; current runtime ownership still requires on-chain verification. citeturn0search2turn0search1
+
+### Gate state
+- Polygon saturation gate remains OPEN.
+- Bridge/system discovery baseline is substantially expanded.
+- No address is promoted to VERIFIED without live chain-137 evidence.
+- DEX discovery remains blocked pending live verification and reconciliation.
+
+### Next atomic step
+Implement the read-only verifier schema/output contract and endpoint capability matrix so the same batch can run from Colab or another permitted JSON-RPC environment without changing the evidence model.
