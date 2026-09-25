@@ -166,3 +166,17 @@ The script is committed but has **not** been run against live Polygon RPCs from 
 
 ### Next atomic step
 Run the verifier in a permitted outbound-JSON-RPC environment with multiple independent Polygon endpoints, capture the raw evidence artifacts, reconcile chain/head results, then expand into address-level code/proxy/control probes.
+
+## 2026-09-25 — Verifier hardening checkpoint
+
+Hardened `polygon_readonly_verifier.py` before any live run: HTTPS-only endpoint guard, embedded-credential rejection, explicit read-only allowlist/transaction denylist, bounded retries with recorded failures, address-level `eth_getCode` probes, resumable per-probe checkpoint state, and cross-RPC head-staleness summary generation.
+
+A connector-side static integrity check confirmed all required safety/probing guards are present. Full Python execution and live JSON-RPC POST remain unavailable in this environment, so no live Polygon result is claimed.
+
+Official Bor documentation confirms that trace APIs are optional and archive-node dependent; therefore trace remains a separately measured capability rather than a universal endpoint requirement. citeturn635553search0
+
+### Gate decision
+The verifier implementation is now ready for external live execution. The Polygon P1 gate is **not passed yet** because live multi-RPC evidence has not been captured.
+
+### Next atomic step
+Run the hardened verifier from an outbound JSON-RPC environment against independent Polygon endpoints, then ingest the resulting head/code evidence into the canonical registry. Do not start DEX discovery until the P1 gate passes.
