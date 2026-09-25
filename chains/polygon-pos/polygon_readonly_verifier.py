@@ -51,7 +51,7 @@ def validate_endpoint(url):
     if "@" in url.split("://", 1)[1].split("/", 1)[0]:
         raise ValueError("Embedded endpoint credentials are forbidden")
 
-def rpc(url, method, params, request_id, timeout, retries):
+def rpc(url, method, params, request_id, timeout, retries, min_request_interval=0.0):
     if method in DENIED or method not in ALLOWED:
         raise ValueError(f"Method not allowed: {method}")
     validate_endpoint(url)
@@ -65,6 +65,8 @@ def rpc(url, method, params, request_id, timeout, retries):
 
     last_error = None
     for attempt in range(retries + 1):
+        if min_request_interval > 0:
+            time.sleep(min_request_interval)
         started = time.perf_counter()
         req = Request(
             url,
@@ -90,6 +92,7 @@ def rpc(url, method, params, request_id, timeout, retries):
                 "rate_limited": exc.code == 429,
                 "latency_ms": round((time.perf_counter() - started) * 1000, 2),
                 "attempt": attempt,
+                "retry_after_seconds": None,
             }
         except (URLError, TimeoutError, ValueError) as exc:
             last_error = {
@@ -99,9 +102,11 @@ def rpc(url, method, params, request_id, timeout, retries):
                 "rate_limited": False,
                 "latency_ms": round((time.perf_counter() - started) * 1000, 2),
                 "attempt": attempt,
+                "retry_after_seconds": None,
             }
         if attempt < retries:
-            time.sleep(min(2 ** attempt, 8))
+            retry_after = last_error.get("retry_after_seconds") if last_error else None
+            time.sleep(min(retry_after if retry_after is not None else 2 ** attempt, 8))
     return {"ok": False, **last_error}
 
 def make_record(endpoint_id, method, params, obs, address=None):
@@ -191,6 +196,8 @@ def main():
     parser.add_argument("--checkpoint", default="polygon_verifier_checkpoint.json")
     parser.add_argument("--timeout", type=float, default=12)
     parser.add_argument("--retries", type=int, default=2)
+    parser.add_argument("--min-request-interval", type=float, default=0.0,
+                        help="Minimum seconds between request attempts per RPC endpoint")
     parser.add_argument("--stale-block-tolerance", type=int, default=2)
     args = parser.parse_args()
 
@@ -224,7 +231,7 @@ def main():
             key = f"{endpoint_id}:{method}:network"
             if checkpoint["completed"].get(key) == "ok":
                 continue
-            obs = rpc(url, method, params, key, args.timeout, args.retries)
+            obs = rpc(url, method, params, key, args.timeout, args.retries, args.min_request_interval)
             records.append(make_record(endpoint_id, method, params, obs))
             local_completed[key] = "ok" if obs.get("ok") else "failed"
             if method == "eth_chainId" and obs.get("ok"):
@@ -249,6 +256,7 @@ def main():
                 key,
                 args.timeout,
                 args.retries,
+                args.min_request_interval,
             )
             records.append(
                 make_record(
