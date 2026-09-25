@@ -17,7 +17,7 @@ Polygon's official RPC reference states:
 - JSON-RPC methods follow the JSON-RPC standard.
 - Polygon documents a public-RPC set and explicitly warns that public RPCs may have rate limits or traffic restrictions.
 
-Source: Polygon Developer Docs, RPC endpoints. citeturn1view0
+Source: https://docs.polygon.technology/pos/reference/rpc-endpoints
 
 ## Documented public RPC candidates
 
@@ -35,7 +35,7 @@ These are **discovery candidates**, not yet execution-trusted endpoints:
 | OnFinality | https://polygon.api.onfinality.io/public | DOCUMENTED |
 | Spectrum/Simplystaking | https://spectrumnodes.com/ | DOCUMENTED |
 
-The list above is reproduced from Polygon's current RPC reference page. It does **not** establish that every endpoint is unrestricted, healthy, low-latency, archive-capable, trace-capable, or suitable for execution. citeturn1view0
+The list above is reproduced from Polygon's current RPC reference page. It does **not** establish that every endpoint is unrestricted, healthy, low-latency, archive-capable, trace-capable, or suitable for execution.
 
 ## Required live verification
 
