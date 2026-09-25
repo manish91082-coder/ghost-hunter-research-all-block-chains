@@ -414,3 +414,25 @@ Run `36170466071` is **IN_PROGRESS**. P2 is not declared passed until the artifa
 - Workflow now enables two recovery rounds.
 
 P2 remains NOT PASSED until every target/slot combination has two independent matching observations.
+
+## 2026-09-25 — P2 ERC-1967 storage sub-gate PASSED
+
+### Run #4
+- Run `36171378222`
+- Artifact `10880421099`
+- Digest `sha256:5693d27acbd6b5aff22a5c0a4d9fccd15a0641c7bb6463efc792a75784216e3f`
+- Observation block: 94,436,387
+- 33/33 target×slot combinations verified
+- 66 independent successful observations
+- 0 conflicts
+- 0 insufficient observations
+
+### Non-zero proxy/control discoveries
+Four derived addresses are now live-evidence candidates:
+- `0xae88570eb386a9c902488a6535f0957a46a68765`
+- `0x409834270b6f2591dd6c1e9f351e4194b112da44`
+- `0x3c05a871e867fde9a8364fc8d38d97a7d42541c8`
+- `0xf68a9a2417a10e7d907a28b9876db8ad3dbbab7d`
+
+### Next atomic step
+Verify code identity of those derived addresses across independent RPCs, then probe proxy/control functions on the corresponding parent contracts.
