@@ -203,3 +203,9 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - Two independent chain-137 RPC outcomes are required per probe. A deterministic JSON-RPC error is evidence of the call outcome and may be reproducibly reconciled; transport failures and rate limits are not evidence.
 - Reconciliation deliberately stops short of semantic interpretation. Owner/admin/implementation/proxy-role conclusions require contract-specific analysis after raw call evidence is verified.
 - Commit b45635d76ca7503ffd849187b3fd3a0aa5030f51 is the canonical correction for counting reproducible JSON-RPC errors as observations.
+## 2026-09-25 — Control-function runtime-regression lock
+- Never count a verifier implementation change as validated merely because Python syntax compiles.
+- When evidence state changes from successful-only to outcome-based observation, regression tests must cover both success and deterministic error outcomes.
+- The control-function verifier must contain no stale successful[...] reference after the observed evidence-set migration.
+- CI runs the deterministic regression suite before touching Polygon RPCs.
+- Commit b24a9820ad632a983c44873cb4c3c98e9564b109 is the canonical runtime-reference correction.
