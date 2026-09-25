@@ -124,6 +124,52 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("P3_CLOSURE_STATE.json", worker)
 
 
+    def test_p4_verification_batch_is_bounded_and_skips_matches(self):
+        import importlib.util
+        worker_path = ROOT / "tools" / "polygon_universe_worker.py"
+        spec = importlib.util.spec_from_file_location("polygon_universe_worker_p4_batch", worker_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        candidates = [f"0x{i:040x}" for i in range(50)]
+        verification = {candidates[0]: {"matching": True}, candidates[2]: {"matching": True}}
+        batch = module.p4_verification_batch(candidates, verification, batch_size=4)
+
+        self.assertEqual(
+            batch,
+            [candidates[1], candidates[3], candidates[4], candidates[5]],
+        )
+        self.assertLessEqual(len(batch), 4)
+
+    def test_p4_closure_requires_complete_verification_cycle(self):
+        import importlib.util
+        worker_path = ROOT / "tools" / "polygon_universe_worker.py"
+        spec = importlib.util.spec_from_file_location("polygon_universe_worker_p4_cycle", worker_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        base = {
+            "candidate_count": 8,
+            "provider_overlap_count": 3,
+            "duplicate_address_count": 0,
+            "verified_token_count": 8,
+            "chain_137_verified_count": 8,
+            "identity_conflict_count": 0,
+            "verification_cycle_complete": False,
+            "universe_fingerprint": "abc",
+            "checks": {
+                "geckoterminal_top_pools_ok": True,
+                "dexscreener_profiles_ok": True,
+                "dexscreener_tokens_ok": True,
+            },
+        }
+        self.assertFalse(module.p4_closure_ready(
+            base,
+            {"fingerprint": "abc", "stable_runs": 5, "verification_cycle_complete": True},
+        ))
+
+
+
     def test_p4_helper_parses_gecko_and_dex_token_addresses(self):
         import importlib.util
         worker_path = ROOT / "tools" / "polygon_universe_worker.py"
