@@ -506,3 +506,9 @@ The first control-function verifier revision renamed the per-probe evidence set 
 - P2 derived runtime-code: corrected workflow evidence pending.
 - P2 control-function probes: harness + regression gate wired; live evidence pending.
 - Overall P2: IN PROGRESS.
+
+## 2026-09-25 — CI observability hardening
+- Added tools/github_ci_state.py as a deterministic read-only CI-state extractor.
+- The report covers the canonical Polygon read-only, P2 storage, P2 derived-control and P2 control-function workflows.
+- It records latest main SHA, workflow runs, job status/conclusion and artifact identifiers/digests.
+- It does not trigger or rerun any workflow.
