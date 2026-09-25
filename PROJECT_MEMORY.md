@@ -182,3 +182,8 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - Four non-zero ERC-1967-derived addresses form the immediate runtime-code verification queue.
 - Each derived address requires two independent matching `eth_getCode` observations.
 - Passing derived-code verification does not itself establish ownership/role semantics or creation provenance.
+## 2026-09-25 — Fresh-head quorum memory lock
+- Head freshness and code independence are separate evidence dimensions.
+- For narrow derived-control verification, a deterministic two-endpoint fresh-head quorum is sufficient when the selected pair is within the configured block-span tolerance and both independently identify chain 137.
+- This is not majority voting and does not authorize conflicting state. The excluded endpoint remains recorded as stale/outlier evidence.
+- P1's existing all-successful-endpoint head behavior remains the default for the primary verifier path.
