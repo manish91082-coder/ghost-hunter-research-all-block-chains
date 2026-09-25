@@ -303,3 +303,9 @@ Observe the new push-triggered run and inspect its artifact. If the new pool is 
 - P1 still fails closed because only one independent RPC supplied chain/head evidence and only 4/11 critical targets had successful code observations from that single endpoint.
 - This separates the problem into two resolved/open tracks: **serialization defect = resolved; independent RPC evidence coverage = unresolved**.
 - No quorum rule, target coverage rule, or safety gate was relaxed.
+
+## 2026-09-25 — P1 RPC access path isolated
+- Runs #18 through #21 tested public Tatum pacing at 0.5s, 1s, 2s and 3s intervals. Tatum remained HTTP 429-limited during the address-code phase; the result improved with pacing but did not reach 11/11 independent code observations.
+- Run #23 confirms head quorum is now correctly tolerant to a one-block tip difference while both endpoints are fresh and within the configured tolerance. Chain ID agreement is true and head agreement is true, but reconciliation remains PARTIAL because Tatum code coverage is incomplete.
+- Current engineering path: use the same free public Tatum endpoint with an optional free Tatum API key supplied only through GitHub Actions secret `TATUM_API_KEY`. QuickNode remains the second independent endpoint. No key is stored in source, artifacts or chat.
+- P1 remains NOT PASSED until 11/11 target code observations are independently matched across both endpoints.
