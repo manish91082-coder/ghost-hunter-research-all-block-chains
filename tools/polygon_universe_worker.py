@@ -1,9 +1,431 @@
+#!/usr/bin/env python3
+"""Autonomous Polygon universe evidence worker for P3-P10 plus P2 provenance replay.
+stdlib-only; every external snapshot is labeled discovery evidence, never VERIFIED.
+"""
+import hashlib, json, time, urllib.error, urllib.parse, urllib.request
+from collections import defaultdict
+from pathlib import Path
+
+ROOT = Path(".")
+EVID = ROOT / "automation" / "evidence"
+UNIV = ROOT / "automation" / "universe"
+RPC_POOL = ROOT / "chains" / "polygon-pos" / "rpc_pool.txt"
+P2_PROV = ROOT / "chains" / "polygon-pos" / "P2_EXTERNAL_PROVENANCE_CANDIDATES.md"
+
+DexProfilesURL = "https://api.dexscreener.com/token-profiles/latest/v1"
+DefiLlamaProtocolsURL = "https://api.llama.fi/protocols"
+
+def now(): return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+def sha(v): return hashlib.sha256(json.dumps(v, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+def ensure(): EVID.mkdir(parents=True, exist_ok=True); UNIV.mkdir(parents=True, exist_ok=True)
+
+def http_json(url, timeout=20):
+    req = urllib.request.Request(url, headers={"Accept":"application/json","User-Agent":"ghost-hunter-saturation/1.0"})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return r.status, json.loads(r.read()), None
+    except Exception as e:
+        return None, None, f"{type(e).__name__}: {e}"
+
+def load_json(path, default=None):
+    p = Path(path)
+    if not p.exists():
+        return {} if default is None else default
+    try:
+        return json.loads(p.read_text(encoding="utf-8"))
+    except (OSError, ValueError, TypeError):
+        return {} if default is None else default
+
+
+def write_json(name, payload):
+    ensure(); p=EVID/name; p.write_text(json.dumps(payload, indent=2, sort_keys=True)+"\n", encoding="utf-8"); return str(p)
+
+def append_jsonl(path, rows):
+    ensure();
+    with open(path,"a",encoding="utf-8") as f:
+        for row in rows: f.write(json.dumps(row, sort_keys=True)+"\n")
+
+def load_jsonl(path):
+    p=Path(path)
+    if not p.exists(): return []
+    raw=p.read_text(encoding="utf-8")
+    records=[]
+    for line in raw.splitlines():
+        # Recover legacy artifacts where a writer emitted the two-character
+        # sequence "\\n" instead of a real line feed.
+        for chunk in line.split("\\n"):
+            if chunk.strip():
+                records.append(json.loads(chunk))
+    return records
+
+def provenance_fingerprint(observation):
+    """Fingerprint semantic transaction+receipt payload, excluding transport metadata."""
+    return sha({
+        "tx": observation.get("tx"),
+        "receipt": observation.get("receipt"),
+    })
+
+
+def complete_provenance_observation(tx_response, receipt_response):
+    """Require both transaction and receipt objects before counting an RPC observation."""
+    if not tx_response.get("ok") or not receipt_response.get("ok"):
+        return False
+    tx_body = tx_response.get("body")
+    receipt_body = receipt_response.get("body")
+    if not isinstance(tx_body, dict) or not isinstance(receipt_body, dict):
+        return False
+    tx_result = tx_body.get("result")
+    receipt_result = receipt_body.get("result")
+    return isinstance(tx_result, dict) and isinstance(receipt_result, dict)
+
+
+def task_p2_provenance_replay():
+    text=P2_PROV.read_text(encoding="utf-8") if P2_PROV.exists() else ""
+    import re
+    txs=sorted(set(re.findall(r"(?im)(?:tx|creation tx)\s*=\s*(0x[a-fA-F0-9]{64})", text)))
+    result={"task":"p2_provenance_replay","time":now(),"status":"DISCOVERY_ONLY","transactions":[],"source":"canonical provenance candidate file"}
+    try:
+        import sys
+        sys.path.insert(0, str(Path('chains/polygon-pos').resolve()))
+        from polygon_readonly_verifier import RpcPool, load_rpc_endpoints
+    except Exception as e:
+        result["status"]="BLOCKED_IMPORT"; result["error"]=f"{type(e).__name__}: {e}"; return write_json("P2_PROVENANCE_REPLAY.json",result)
+    if not RPC_POOL.exists(): result["status"]="BLOCKED_NO_RPC_POOL"; return write_json("P2_PROVENANCE_REPLAY.json",result)
+
+    endpoints=load_rpc_endpoints(None,str(RPC_POOL))
+    pool=RpcPool(endpoints,1.0)
+    recovery_rounds=2
+
+    for tx in txs:
+        obs=[]
+        observed_endpoints=set()
+        diagnostics=[]
+
+        for recovery_round in range(1,recovery_rounds + 1):
+            for item in pool.ordered():
+                eid=item["id"]
+                if eid in observed_endpoints:
+                    continue
+
+                a=pool.request(eid,"eth_getTransactionByHash",[tx],f"{eid}:tx:{tx}:r{recovery_round}",12,1)
+                b=pool.request(eid,"eth_getTransactionReceipt",[tx],f"{eid}:receipt:{tx}:r{recovery_round}",12,1)
+
+                complete=complete_provenance_observation(a,b)
+                diagnostics.append({
+                    "rpc":eid,
+                    "round":recovery_round,
+                    "transaction_ok":bool(a.get("ok")),
+                    "receipt_ok":bool(b.get("ok")),
+                    "transaction_http_status":a.get("http_status"),
+                    "receipt_http_status":b.get("http_status"),
+                    "transaction_error":a.get("message") or ((a.get("body") or {}).get("error") if isinstance(a.get("body"),dict) else None),
+                    "receipt_error":b.get("message") or ((b.get("body") or {}).get("error") if isinstance(b.get("body"),dict) else None),
+                    "complete":complete,
+                })
+
+                if a.get("ok") or b.get("ok"):
+                    pool.mark_success(eid)
+                else:
+                    pool.mark_failure(eid,b if not b.get("ok") else a)
+
+                if complete:
+                    observed_endpoints.add(eid)
+                    obs.append({
+                        "rpc":eid,
+                        "tx":a["body"]["result"],
+                        "receipt":b["body"]["result"],
+                    })
+                    if len(obs)>=2:
+                        break
+
+            if len(obs)>=2:
+                break
+
+            if recovery_round < recovery_rounds:
+                cooldowns=[
+                    pool.state[eid]["cooldown_until"] - time.monotonic()
+                    for eid in pool.state
+                    if eid not in observed_endpoints
+                    and pool.state[eid]["cooldown_until"] > time.monotonic()
+                ]
+                if cooldowns:
+                    time.sleep(min(max(0.0,max(cooldowns)),60.0))
+
+        fingerprints=[provenance_fingerprint(x) for x in obs]
+        result["transactions"].append({
+            "tx_hash":tx,
+            "independent_observations":len(obs),
+            "matching":len(obs)>=2 and len(set(fingerprints))==1,
+            "semantic_fingerprints":fingerprints,
+            "observations":obs,
+            "endpoint_diagnostics":diagnostics,
+            "recovery_rounds":recovery_rounds,
+        })
+
+    result["status"]="REPLAYED" if txs and all(x["independent_observations"]>=2 and x["matching"] for x in result["transactions"]) else "PARTIAL"
+    return write_json("P2_PROVENANCE_REPLAY.json",result)
+
+def normalize_market_name(value):
+    import re
+    text = str(value or "").strip().lower()
+    text = re.sub(r"[^a-z0-9]+", " ", text)
+    return " ".join(text.split())
+
+
+def p3_dex_sets(protocols, gecko_rows):
+    llama = set()
+    for row in protocols:
+        category = normalize_market_name(row.get("category"))
+        if category in {"dexs", "dex", "dexes"}:
+            key = normalize_market_name(row.get("name") or row.get("slug"))
+            if key:
+                llama.add(key)
+    gecko = set()
+    for row in gecko_rows:
+        attrs = row.get("attributes") if isinstance(row, dict) else {}
+        raw = attrs.get("name") if isinstance(attrs, dict) else None
+        key = normalize_market_name(raw or (row.get("id") if isinstance(row, dict) else None))
+        if key:
+            gecko.add(key)
+    return llama, gecko
+
+
+def p3_closure_ready(snapshot, previous_state):
+    checks = snapshot.get("checks", {})
+    current_fp = snapshot.get("universe_fingerprint")
+    previous_fp = previous_state.get("fingerprint")
+    stable_count = int(previous_state.get("stable_runs", 0) or 0)
+    return (
+        checks.get("defillama_protocols_ok") is True
+        and checks.get("geckoterminal_dexes_ok") is True
+        and int(snapshot.get("polygon_protocol_count", 0)) > 0
+        and int(snapshot.get("polygon_dex_protocol_count", 0)) > 0
+        and int(snapshot.get("geckoterminal_dex_count", 0)) > 0
+        and int(snapshot.get("dex_name_overlap_count", 0)) >= 3
+        and int(snapshot.get("llama_duplicate_dex_names", 0)) == 0
+        and int(snapshot.get("gecko_duplicate_dex_names", 0)) == 0
+        and current_fp
+        and current_fp == previous_fp
+        and stable_count >= 1
+    )
+
+
+def task_p3_protocols():
+    st, llama, err = http_json(DefiLlamaProtocolsURL)
+    st2, dex, err2 = http_json(DexProfilesURL)
+    gt_url = "https://api.geckoterminal.com/api/v2/networks/polygon_pos/dexes"
+    st3, gecko, err3 = http_json(gt_url)
+
+    protocols = []
+    if isinstance(llama, list):
+        for p in llama:
+            chains = [str(x).lower() for x in (p.get("chains") or [])]
+            if "polygon" in chains:
+                protocols.append(p)
+
+    profiles = []
+    if isinstance(dex, list):
+        profiles = [x for x in dex if str(x.get("chainId", "")).lower() == "polygon"]
+
+    gecko_rows = []
+    if isinstance(gecko, dict):
+        data = gecko.get("data")
+        if isinstance(data, list):
+            gecko_rows = data
+
+    llama_dex, gecko_dex = p3_dex_sets(protocols, gecko_rows)
+    overlap = sorted(llama_dex & gecko_dex)
+    llama_names = [
+        normalize_market_name(x.get("name") or x.get("slug"))
+        for x in protocols
+        if normalize_market_name(x.get("name") or x.get("slug"))
+        and normalize_market_name(x.get("category")) in {"dexs", "dex", "dexes"}
+    ]
+    llama_duplicate_count = len(llama_names) - len(set(llama_names))
+    gecko_names = [
+        normalize_market_name(
+            (x.get("attributes") or {}).get("name") if isinstance(x, dict) else ""
+        )
+        for x in gecko_rows
+    ]
+    gecko_names = [x for x in gecko_names if x]
+    gecko_duplicate_count = max(0, len(gecko_names) - len(set(gecko_names)))
+
+    normalized_universe = {
+        "llama_protocols": sorted(
+            normalize_market_name(x.get("name") or x.get("slug"))
+            for x in protocols
+            if normalize_market_name(x.get("name") or x.get("slug"))
+        ),
+        "llama_dexes": sorted(llama_dex),
+        "gecko_dexes": sorted(gecko_dex),
+        "dexscreener_polygon_profiles": sorted(
+            str(x.get("tokenAddress", "")).lower()
+            for x in profiles
+            if x.get("tokenAddress")
+        ),
+    }
+    universe_fingerprint = sha(normalized_universe)
+
+    closure_path = EVID / "P3_CLOSURE_STATE.json"
+    previous = load_json(closure_path, {})
+    previous_fp = previous.get("fingerprint")
+    stable_runs = int(previous.get("stable_runs", 0) or 0)
+    if universe_fingerprint and universe_fingerprint == previous_fp:
+        stable_runs += 1
+    else:
+        stable_runs = 1
+
+    snapshot = {
+        "task": "p3_protocol_discovery",
+        "time": now(),
+        "network": "polygon",
+        "chain_id": 137,
+        "sources": [
+            DefiLlamaProtocolsURL,
+            DexProfilesURL,
+            gt_url,
+        ],
+        "http": {
+            "defillama_protocols": st,
+            "dexscreener_token_profiles": st2,
+            "geckoterminal_dexes": st3,
+        },
+        "errors": {
+            "defillama_protocols": err,
+            "dexscreener_token_profiles": err2,
+            "geckoterminal_dexes": err3,
+        },
+        "polygon_protocol_count": len(protocols),
+        "polygon_dex_protocol_count": len(llama_dex),
+        "dexscreener_polygon_profile_count": len(profiles),
+        "geckoterminal_dex_count": len(gecko_dex),
+        "dex_name_overlap_count": len(overlap),
+        "dex_name_overlap": overlap,
+        "llama_duplicate_dex_names": llama_duplicate_count,
+        "gecko_duplicate_dex_names": gecko_duplicate_count,
+        "universe_fingerprint": universe_fingerprint,
+        "stable_runs": stable_runs,
+        "checks": {
+            "defillama_protocols_ok": st == 200 and isinstance(llama, list),
+            "geckoterminal_dexes_ok": st3 == 200 and isinstance(gecko, dict),
+            "dexscreener_profiles_ok": st2 == 200 and isinstance(dex, list),
+        },
+        "evidence_class": "DISCOVERY",
+    }
+    snapshot["stage_gate"] = "CLOSED" if p3_closure_ready(snapshot, {
+        "fingerprint": previous_fp,
+        "stable_runs": stable_runs,
+    }) else "OPEN"
+
+    write_json(
+        "P3_CLOSURE_STATE.json",
+        {
+            "fingerprint": universe_fingerprint,
+            "stable_runs": stable_runs,
+            "updated_at": snapshot["time"],
+            "stage_gate": snapshot["stage_gate"],
+        },
+    )
+    return write_json("P3_PROTOCOL_SNAPSHOT.json", snapshot)
+
+def load_seed_tokens():
+    path=ROOT/"chains/polygon-pos/p4_seed_tokens.txt"
+    seeds=[]
+    if path.exists():
+        for line in path.read_text(encoding="utf-8").splitlines():
+            line=line.strip()
+            if not line or line.startswith("#"): continue
+            parts=line.split("|",2)
+            if len(parts)>=2:
+                address=parts[0].strip()
+                label=parts[1].strip()
+                if len(address)==42 and address.lower().startswith("0x"):
+                    seeds.append({"address":address,"label":label,"source":"polygon_seed_manifest","first_seen":now()})
+    return seeds
+
+def _extract_address(value):
+    if not isinstance(value, str):
+        return None
+    value = value.strip()
+    lower = value.lower()
+    if len(value) == 42 and lower.startswith("0x"):
+        try:
+            int(value[2:], 16)
+        except ValueError:
+            return None
+        return "0x" + value[2:].lower()
+    if lower.startswith("token_polygon_pos_0x") and len(value.split("_", 3)[-1]) == 42:
+        return _extract_address(value.split("_", 3)[-1])
+    return None
+
+
+def extract_gecko_token_addresses(payload):
+    found = set()
+    resources = []
+    if isinstance(payload, dict):
+        for key in ("data", "included"):
+            rows = payload.get(key)
+            if isinstance(rows, list):
+                resources.extend(rows)
+    elif isinstance(payload, list):
+        resources = payload
+
+    for resource in resources:
+        if not isinstance(resource, dict):
+            continue
+        address = _extract_address(resource.get("id"))
+        if address:
+            found.add(address)
+        attrs = resource.get("attributes")
+        if isinstance(attrs, dict):
+            attribute_address = _extract_address(attrs.get("address"))
+            if attribute_address:
+                found.add(attribute_address)
+
+        relationships = resource.get("relationships")
+        if isinstance(relationships, dict):
+            for rel in relationships.values():
+                if not isinstance(rel, dict):
+                    continue
+                rel_data = rel.get("data")
+                if isinstance(rel_data, dict):
+                    rel_data = [rel_data]
+                if isinstance(rel_data, list):
+                    for item in rel_data:
+                        if isinstance(item, dict):
+                            address = _extract_address(item.get("id"))
+                            if address:
+                                found.add(address)
+    return sorted(found)
+
+
+def extract_dex_token_addresses(rows):
+    found = set()
+    if isinstance(rows, dict):
+        rows = rows.get("pairs") or rows.get("data") or []
+    if not isinstance(rows, list):
+        return []
+
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        if str(row.get("chainId", "")).lower() != "polygon":
+            continue
+        for side in ("baseToken", "quoteToken"):
+            token = row.get(side)
+            if isinstance(token, dict):
+                address = _extract_address(token.get("address"))
+                if address:
+                    found.add(address)
+    return sorted(found)
+
+
 P4_VERIFY_STATE = EVID / "P4_VERIFICATION_STATE.json"
 P4_VERIFY_BATCH_SIZE = 24
 
 
 def p4_verification_batch(candidates, verification_state, batch_size=P4_VERIFY_BATCH_SIZE):
-    """Select only currently unverified/non-matching candidates for bounded progress."""
     batch = []
     for address in candidates:
         row = verification_state.get(address, {})
@@ -44,33 +466,14 @@ def _p4_rpc_token_verification(candidates, verification_state):
         sys.path.insert(0, str((ROOT / "chains" / "polygon-pos").resolve()))
         from polygon_readonly_verifier import RpcPool, load_rpc_endpoints
     except Exception as exc:
-        return {
-            "state": verification_state,
-            "verified_count": sum(1 for x in verification_state.values() if x.get("matching")),
-            "chain_137_verified_count": sum(1 for x in verification_state.values() if x.get("matching")),
-            "identity_conflict_count": sum(1 for x in verification_state.values() if x.get("conflict")),
-            "error": f"{type(exc).__name__}: {exc}",
-            "batch": [],
-            "cycle_complete": False,
-        }
+        return {"state": verification_state, "verified_count": 0, "chain_137_verified_count": 0, "identity_conflict_count": 0, "error": f"{type(exc).__name__}: {exc}", "batch": [], "cycle_complete": False}
 
     if not RPC_POOL.exists():
-        return {
-            "state": verification_state,
-            "verified_count": sum(1 for x in verification_state.values() if x.get("matching")),
-            "chain_137_verified_count": sum(1 for x in verification_state.values() if x.get("matching")),
-            "identity_conflict_count": sum(1 for x in verification_state.values() if x.get("conflict")),
-            "error": "RPC pool file missing",
-            "batch": [],
-            "cycle_complete": False,
-        }
+        return {"state": verification_state, "verified_count": 0, "chain_137_verified_count": 0, "identity_conflict_count": 0, "error": "RPC pool file missing", "batch": [], "cycle_complete": False}
 
     endpoints = load_rpc_endpoints(None, str(RPC_POOL))
     pool = RpcPool(endpoints, 0.35)
     chain_ok = []
-
-    # Two matching observations are the hard evidence requirement. A third
-    # Polygon endpoint is retained only as bounded failover if one provider fails.
     for item in pool.ordered():
         eid = item["id"]
         obs = pool.request(eid, "eth_chainId", [], f"p4:{eid}:chain", 12, 1)
@@ -85,7 +488,6 @@ def _p4_rpc_token_verification(candidates, verification_state):
             break
 
     batch = p4_verification_batch(candidates, verification_state)
-    conflicts = 0
 
     for address in batch:
         observations = []
@@ -108,11 +510,9 @@ def _p4_rpc_token_verification(candidates, verification_state):
             code = result_of(code_obs)
             decimals = result_of(dec_obs)
             total_supply = result_of(supply_obs)
-
             valid_code = isinstance(code, str) and code not in {"", "0x", "0X"}
             valid_decimals = isinstance(decimals, str) and decimals.startswith("0x")
             valid_supply = isinstance(total_supply, str) and total_supply.startswith("0x")
-
             if valid_decimals:
                 try:
                     valid_decimals = 0 <= int(decimals, 16) <= 255
@@ -127,12 +527,7 @@ def _p4_rpc_token_verification(candidates, verification_state):
                     "total_supply": total_supply.lower(),
                 })
             else:
-                errors.append({
-                    "rpc": eid,
-                    "code": code,
-                    "decimals": decimals,
-                    "total_supply": total_supply,
-                })
+                errors.append({"rpc": eid, "code": code, "decimals": decimals, "total_supply": total_supply})
 
             if len(observations) >= 2:
                 break
@@ -140,15 +535,12 @@ def _p4_rpc_token_verification(candidates, verification_state):
         if len(observations) >= 2:
             fingerprints = {(x["code_hash"], x["decimals"], x["total_supply"]) for x in observations[:2]}
             matching = len(fingerprints) == 1
-            conflict = not matching
-            if conflict:
-                conflicts += 1
             verification_state[address] = {
                 "chain_id": 137,
                 "rpc_endpoints": [x["rpc"] for x in observations[:2]],
                 "observations": observations[:2],
                 "matching": matching,
-                "conflict": conflict,
+                "conflict": not matching,
                 "last_verified_at": now(),
             }
         else:
@@ -163,12 +555,7 @@ def _p4_rpc_token_verification(candidates, verification_state):
             }
 
     candidate_set = set(candidates)
-    verification_state = {
-        address: row
-        for address, row in verification_state.items()
-        if address in candidate_set
-    }
-
+    verification_state = {address: row for address, row in verification_state.items() if address in candidate_set}
     verified_count = sum(1 for x in verification_state.values() if x.get("matching"))
     conflict_count = sum(1 for x in verification_state.values() if x.get("conflict"))
     cycle_complete = verified_count == len(candidates) and len(candidates) > 0
@@ -231,8 +618,7 @@ def task_p4_tokens():
         batch = candidate_seed_batch[offset:offset + 30]
         if not batch:
             continue
-        url = "https://api.dexscreener.com/tokens/v1/polygon/" + ",".join(batch)
-        st_dex, dex_rows, _ = http_json(url, timeout=20)
+        st_dex, dex_rows, _ = http_json("https://api.dexscreener.com/tokens/v1/polygon/" + ",".join(batch), timeout=20)
         if st_dex == 200:
             for address in extract_dex_token_addresses(dex_rows):
                 dex_addresses.add(address)
@@ -251,11 +637,7 @@ def task_p4_tokens():
     verification_state_payload = load_json(P4_VERIFY_STATE, {})
     verification_state = verification_state_payload.get("verification", {})
     previous_context_fp = verification_state_payload.get("universe_fingerprint_context")
-
-    universe_fingerprint = sha({
-        "candidates": candidate_list,
-        "provider_overlap": sorted(provider_overlap),
-    })
+    universe_fingerprint = sha({"candidates": candidate_list, "provider_overlap": sorted(provider_overlap)})
 
     if previous_context_fp != sha(candidate_list):
         verification_state = {}
@@ -322,6 +704,7 @@ def task_p4_tokens():
             "dexscreener_tokens_ok": len(dex_addresses) > 0,
         },
     }
+
     snapshot["stage_gate"] = "CLOSED" if p4_closure_ready(snapshot, {
         "fingerprint": previous_closure.get("fingerprint"),
         "stable_runs": stable_runs,
