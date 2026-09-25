@@ -232,3 +232,10 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - HTTP 403, 429, timeout, DNS and other transport failures are never evidence, even when two providers fail in the same way.
 - JSON-RPC errors returned inside an HTTP 200 response remain reproducible call outcomes and may be reconciled.
 - Regression test commit fc126f0f2e06db43de6d9082f8d07e2e7d0b773e is locked as the anti-false-green guard.
+
+## 2026-09-26 — P2 provenance/control-surface lock
+- External explorer/forum material is discovery input, never direct verification.
+- The sPOL parent/admin historical transaction and the current sPOL implementation creation record are now preserved in the canonical provenance candidate file.
+- The control-function target manifest intentionally includes both standard proxy selectors and contract-specific authority/owner surfaces.
+- ProxyAdmin owner/pendingOwner and proxy relationship calls are read-only and require two independent chain-137 outcomes before interpretation.
+- No external historical claim is allowed to override live RPC evidence.
