@@ -1,0 +1,53 @@
+{
+  "evidence_class": "DISCOVERY",
+  "new_candidates": [
+    {
+      "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+      "first_seen": "2026-09-25T20:00:39Z",
+      "label": "WPOL-WMATIC",
+      "source": "polygon_seed_manifest"
+    },
+    {
+      "address": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+      "first_seen": "2026-09-25T20:00:39Z",
+      "label": "WETH",
+      "source": "polygon_seed_manifest"
+    },
+    {
+      "address": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+      "first_seen": "2026-09-25T20:00:39Z",
+      "label": "USDC",
+      "source": "polygon_seed_manifest"
+    },
+    {
+      "address": "0x2791Bca1f2de4661ED88A30C99A7A9449Aa84174",
+      "first_seen": "2026-09-25T20:00:39Z",
+      "label": "USDC.e",
+      "source": "polygon_seed_manifest"
+    },
+    {
+      "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+      "first_seen": "2026-09-25T20:00:39Z",
+      "label": "USDT0",
+      "source": "polygon_seed_manifest"
+    },
+    {
+      "address": "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063",
+      "first_seen": "2026-09-25T20:00:39Z",
+      "label": "DAI",
+      "source": "polygon_seed_manifest"
+    },
+    {
+      "address": "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6",
+      "first_seen": "2026-09-25T20:00:39Z",
+      "label": "WBTC",
+      "source": "polygon_seed_manifest"
+    }
+  ],
+  "new_unique_candidates": 0,
+  "profile_candidates": 0,
+  "seed_candidates": 7,
+  "task": "p4_token_discovery",
+  "time": "2026-09-25T20:00:39Z",
+  "total_candidates": 51
+}

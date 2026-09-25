@@ -1,0 +1,11 @@
+{
+  "cursor": 37,
+  "evidence_class": "DISCOVERY",
+  "new_unique_pairs": 131,
+  "new_unique_tokens": 13,
+  "observed_pair_rows": 162,
+  "processed_tokens": 30,
+  "task": "p5_pair_discovery",
+  "time": "2026-09-25T20:00:42Z",
+  "total_pair_records": 341
+}

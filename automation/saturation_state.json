@@ -1,11 +1,26 @@
 {
-  "schema_version": 1,
   "automation": "GHOST_HUNTER_SATURATION_CONVEYOR",
+  "commit_required": true,
   "created_at": "2026-09-26T00:00:00Z",
-  "critical_stage": "P2",
-  "research_gate": "P2_OPEN",
+  "critical_stage": "P3",
+  "cursors": {
+    "critical": 1,
+    "shadow": 3
+  },
+  "last_progress_signature": "{\"executed\": [\"P2_PROVENANCE\", \"P2_REGRESSION\", \"P4\", \"P5\"], \"gate\": \"P2_CLOSED\", \"tasks\": {\"P10\": 1, \"P2_CONTROL_FUNCTION\": 3, \"P2_DERIVED\": 2, \"P2_PROVENANCE\": 3, \"P2_REGRESSION\": 4, \"P3\": 2, \"P4\": 3, \"P5\": 3, \"P6\": 2, \"P7\": 2, \"P8\": 3, \"P9\": 2}}",
+  "last_run": "2026-09-25T20:00:42Z",
+  "research_gate": "P2_CLOSED",
+  "schema_version": 1,
   "shadow_lane": true,
   "stages": {
+    "P10": {
+      "mode": "SHADOW",
+      "status": "PREPARE"
+    },
+    "P11": {
+      "mode": "SHADOW",
+      "status": "LOCKED"
+    },
     "P2": {
       "mode": "CRITICAL",
       "status": "OPEN"
@@ -37,18 +52,116 @@
     "P9": {
       "mode": "SHADOW",
       "status": "PREPARE"
-    },
-    "P10": {
-      "mode": "SHADOW",
-      "status": "PREPARE"
-    },
-    "P11": {
-      "mode": "SHADOW",
-      "status": "LOCKED"
     }
   },
-  "tasks": {},
-  "cursors": {},
-  "last_progress_signature": "",
-  "last_run": null
+  "tasks": {
+    "P10": {
+      "attempts": 1,
+      "code_epoch": "53540e973ed788b5277cb603d4de6e8f1a087f99c71bb755e2505a10d28e0540",
+      "cooldown_until": 0,
+      "last_error": "",
+      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 0.07, 'stdout': 'automation/evidence/P10_SATURATION_AUDIT.json\\n', 'stderr': ''}",
+      "last_run": "2026-09-25T19:58:06Z",
+      "ok": true
+    },
+    "P2_CONTROL_FUNCTION": {
+      "attempts": 3,
+      "code_epoch": "53540e973ed788b5277cb603d4de6e8f1a087f99c71bb755e2505a10d28e0540",
+      "cooldown_until": 0,
+      "last_error": "",
+      "last_result_summary": "    \"result\": null,\\n          \"retry_after_seconds\": null\\n        },\\n        \"tatum\": {\\n          \"error_code\": null,\\n          \"error_message\": \"HTTP Error 429: Too Many Requests\",\\n          \"http_status\": 429,\\n          \"latency_ms\": 67.71,\\n          \"ok\": false,\\n          \"rate_limited\": true,\\n          \"result\": null,\\n          \"retry_after_seconds\": 60.0\\n        }\\n      },\\n      \"rpc_endpoints\": [\\n        \"onfinality\",\\n        \"quicknode-public\"\\n      ],\\n      \"selector_calldata\": \"0xe30c3978\",\\n      \"semantic_candidate\": \"Ownable2Step.pendingOwner()\",\\n      \"successful_or_reproducible_rpc_count\": 2\\n    },\\n    \"0xf68a9a2417a10e7d907a28b9876db8ad3dbbab7d:proxy_admin\": {\\n      \"fingerprints\": {\\n        \"onfinality\": [\\n          \"error\",\\n          \"3\"\\n        ],\\n        \"quicknode-public\": [\\n          \"error\",\\n          \"3\"\\n        ]\\n      },\\n      \"matching\": true,\\n      \"parent\": \"0xf68a9a2417a10e7d907a28b9876db8ad3dbbab7d\",\\n      \"probe_id\": \"proxy_admin\",\\n      \"raw_outcomes\": {\\n        \"onfinality\": {\\n          \"error_code\": 3,\\n          \"error_message\": \"execution reverted\",\\n          \"http_status\": 200,\\n          \"latency_ms\": 60.97,\\n          \"ok\": false,\\n          \"rate_limited\": false,\\n          \"result\": null,\\n          \"retry_after_seconds\": null\\n        },\\n        \"quicknode-public\": {\\n          \"error_code\": 3,\\n          \"error_message\": \"execution reverted\",\\n          \"http_status\": 200,\\n          \"latency_ms\": 62.28,\\n          \"ok\": false,\\n          \"rate_limited\": false,\\n          \"result\": null,\\n          \"retry_after_seconds\": null\\n        }\\n      },\\n      \"rpc_endpoints\": [\\n        \"onfinality\",\\n        \"quicknode-public\"\\n      ],\\n      \"selector_calldata\": \"0xf3b7dead000000000000000000000000d1cd49a08aef3af93457aec17c786c2b7f48ecd7\",\\n      \"semantic_candidate\": \"ProxyAdmin.getProxyAdmin(parent)\",\\n      \"successful_or_reproducible_rpc_count\": 2\\n    },\\n    \"0xf68a9a2417a10e7d907a28b9876db8ad3dbbab7d:proxy_implementation\": {\\n      \"fingerprints\": {\\n        \"onfinality\": [\\n          \"error\",\\n          \"3\"\\n        ],\\n        \"quicknode-public\": [\\n          \"error\",\\n          \"3\"\\n        ]\\n      },\\n      \"matching\": true,\\n      \"parent\": \"0xf68a9a2417a10e7d907a28b9876db8ad3dbbab7d\",\\n      \"probe_id\": \"proxy_implementation\",\\n      \"raw_outcomes\": {\\n        \"onfinality\": {\\n          \"error_code\": 3,\\n          \"error_message\": \"execution reverted\",\\n          \"http_status\": 200,\\n          \"latency_ms\": 58.96,\\n          \"ok\": false,\\n          \"rate_limited\": false,\\n          \"result\": null,\\n          \"retry_after_seconds\": null\\n        },\\n        \"quicknode-public\": {\\n          \"error_code\": 3,\\n          \"error_message\": \"execution reverted\",\\n          \"http_status\": 200,\\n          \"latency_ms\": 68.56,\\n          \"ok\": false,\\n          \"rate_limited\": false,\\n          \"result\": null,\\n          \"retry_after_seconds\": null\\n        },\\n        \"tatum\": {\\n          \"error_code\": -16401,\\n          \"error_message\": \"Method \\'eth_call\\' is available for paid plans only. To access this feature, please upgrade your subscription at https://co.tatum.io/upgrade.\",\\n          \"http_status\": 200,\\n          \"latency_ms\": 134.15,\\n          \"ok\": false,\\n          \"rate_limited\": false,\\n          \"result\": null,\\n          \"retry_after_seconds\": null\\n        }\\n      },\\n      \"rpc_endpoints\": [\\n        \"onfinality\",\\n        \"quicknode-public\"\\n      ],\\n      \"selector_calldata\": \"0x204e1c7a000000000000000000000000d1cd49a08aef3af93457aec17c786c2b7f48ecd7\",\\n      \"semantic_candidate\": \"ProxyAdmin.getProxyImplementation(parent)\",\\n      \"successful_or_reproducible_rpc_count\": 2\\n    }\\n  },\\n  \"rpc_blocks\": {\\n    \"onfinality\": 94440639,\\n    \"quicknode-public\": 94440637,\\n    \"tatum\": 94440636\\n  },\\n  \"semantic_interpretation_status\": \"NOT_INFERRED_FROM_SELECTOR_ALONE\"\\n}\\n', 'stderr': ''}, 'reconciliation_state': 'VERIFIED'}",
+      "last_run": "2026-09-25T19:58:06Z",
+      "ok": true
+    },
+    "P2_DERIVED": {
+      "attempts": 2,
+      "code_epoch": "4633f59fa032ca81a4b7e083b11e19538864c1d53c58f95cc571e4708bd6cc3b",
+      "cooldown_until": 0,
+      "last_error": "",
+      "last_result_summary": "{'ok': True, 'verifier': {'ok': True, 'returncode': 0, 'elapsed_sec': 42.71, 'stdout': 'Wrote polygon_rpc_observations.jsonl\\nCheckpoint: polygon_verifier_checkpoint.json\\nRPC pool size: 14\\nIdentity endpoints: 3\\nHead endpoints: 3\\nCode quorum: 2 independent endpoints per target\\nFreshest block observed: 94439745\\n', 'stderr': ''}, 'reconciliation': {'ok': True, 'returncode': 0, 'elapsed_sec': 0.03, 'stdout': '{\\n  \"chain_ids_observed\": {\\n    \"onfinality\": 137,\\n    \"quicknode-public\": 137,\\n    \"tatum\": 137\\n  },\\n  \"conflicts\": [],\\n  \"evidence_state\": \"VERIFIED\",\\n  \"incomplete\": [],\\n  \"observation_block\": 94439745,\\n  \"rpc_blocks\": {\\n    \"onfinality\": 94439745,\\n    \"quicknode-public\": 94439744,\\n    \"tatum\": 94439744\\n  },\\n  \"target_count\": 4,\\n  \"targets\": {\\n    \"0x3c05a871e867fde9a8364fc8d38d97a7d42541c8\": {\\n      \"hashes\": {\\n        \"onfinality\": \"211fb57c8df3bd36788186a0e64840044dc1f6ad58367af4544e1edbef970de4\",\\n        \"quicknode-public\": \"211fb57c8df3bd36788186a0e64840044dc1f6ad58367af4544e1edbef970de4\"\\n      },\\n      \"matching\": true,\\n      \"rpc_endpoints\": [\\n        \"onfinality\",\\n        \"quicknode-public\"\\n      ],\\n      \"successful_rpc_count\": 2\\n    },\\n    \"0x409834270b6f2591dd6c1e9f351e4194b112da44\": {\\n      \"hashes\": {\\n        \"onfinality\": \"f47c3e3430393ec3ab29fa7ba9b8993a3c1dd4637e3e08aa704dcba14e0a824e\",\\n        \"quicknode-public\": \"f47c3e3430393ec3ab29fa7ba9b8993a3c1dd4637e3e08aa704dcba14e0a824e\"\\n      },\\n      \"matching\": true,\\n      \"rpc_endpoints\": [\\n        \"onfinality\",\\n        \"quicknode-public\"\\n      ],\\n      \"successful_rpc_count\": 2\\n    },\\n    \"0xae88570eb386a9c902488a6535f0957a46a68765\": {\\n      \"hashes\": {\\n        \"onfinality\": \"8af03072ee81785f1f9fe9349559b05dfd71019ca0e90a6fadb6ce3b5cb01aef\",\\n        \"quicknode-public\": \"8af03072ee81785f1f9fe9349559b05dfd71019ca0e90a6fadb6ce3b5cb01aef\"\\n      },\\n      \"matching\": true,\\n      \"rpc_endpoints\": [\\n        \"onfinality\",\\n        \"quicknode-public\"\\n      ],\\n      \"successful_rpc_count\": 2\\n    },\\n    \"0xf68a9a2417a10e7d907a28b9876db8ad3dbbab7d\": {\\n      \"hashes\": {\\n        \"onfinality\": \"b7c973ba1e0eb0085357da3ae0d9f5bbbe3af4c0ccdbd5520bf4b7c66dc09aff\",\\n        \"quicknode-public\": \"b7c973ba1e0eb0085357da3ae0d9f5bbbe3af4c0ccdbd5520bf4b7c66dc09aff\"\\n      },\\n      \"matching\": true,\\n      \"rpc_endpoints\": [\\n        \"onfinality\",\\n        \"quicknode-public\"\\n      ],\\n      \"successful_rpc_count\": 2\\n    }\\n  }\\n}\\n', 'stderr': ''}, 'reconciliation_state': 'VERIFIED'}",
+      "last_run": "2026-09-25T19:33:17Z",
+      "ok": true
+    },
+    "P2_PROVENANCE": {
+      "attempts": 3,
+      "code_epoch": "03227f2eb6315bb1c2c46776ab0a1692c96897220feeba786154b3f4496315b6",
+      "cooldown_until": 0,
+      "last_error": "",
+      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 15.93, 'stdout': 'automation/evidence/P2_PROVENANCE_REPLAY.json\\n', 'stderr': ''}",
+      "last_run": "2026-09-25T20:00:39Z",
+      "ok": true
+    },
+    "P2_REGRESSION": {
+      "attempts": 4,
+      "code_epoch": "03227f2eb6315bb1c2c46776ab0a1692c96897220feeba786154b3f4496315b6",
+      "cooldown_until": 0,
+      "last_error": "",
+      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 0.1, 'stdout': '', 'stderr': '.............\\n----------------------------------------------------------------------\\nRan 13 tests in 0.007s\\n\\nOK\\n'}",
+      "last_run": "2026-09-25T20:00:39Z",
+      "ok": true
+    },
+    "P3": {
+      "attempts": 2,
+      "code_epoch": "53540e973ed788b5277cb603d4de6e8f1a087f99c71bb755e2505a10d28e0540",
+      "cooldown_until": 0,
+      "last_error": "",
+      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 0.6, 'stdout': 'automation/evidence/P3_PROTOCOL_SNAPSHOT.json\\n', 'stderr': ''}",
+      "last_run": "2026-09-25T19:58:07Z",
+      "ok": true
+    },
+    "P4": {
+      "attempts": 3,
+      "code_epoch": "03227f2eb6315bb1c2c46776ab0a1692c96897220feeba786154b3f4496315b6",
+      "cooldown_until": 0,
+      "last_error": "",
+      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 0.08, 'stdout': 'automation/evidence/P4_TOKEN_SNAPSHOT.json\\n', 'stderr': ''}",
+      "last_run": "2026-09-25T20:00:39Z",
+      "ok": true
+    },
+    "P5": {
+      "attempts": 3,
+      "code_epoch": "03227f2eb6315bb1c2c46776ab0a1692c96897220feeba786154b3f4496315b6",
+      "cooldown_until": 0,
+      "last_error": "",
+      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 2.91, 'stdout': 'automation/evidence/P5_PAIR_SNAPSHOT.json\\n', 'stderr': ''}",
+      "last_run": "2026-09-25T20:00:42Z",
+      "ok": true
+    },
+    "P6": {
+      "attempts": 2,
+      "code_epoch": "d7186da2bc2789f3adf4d85d161669af157867cd00d3df8131052ee1b5bbdf6f",
+      "cooldown_until": 0,
+      "last_error": "",
+      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 0.49, 'stdout': 'automation/evidence/P6_ROUTE_SNAPSHOT.json\\n', 'stderr': ''}",
+      "last_run": "2026-09-25T19:23:42Z",
+      "ok": true
+    },
+    "P7": {
+      "attempts": 2,
+      "code_epoch": "4633f59fa032ca81a4b7e083b11e19538864c1d53c58f95cc571e4708bd6cc3b",
+      "cooldown_until": 0,
+      "last_error": "",
+      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 0.07, 'stdout': 'automation/evidence/P7_STRATEGY_MATRIX.json\\n', 'stderr': ''}",
+      "last_run": "2026-09-25T19:33:17Z",
+      "ok": true
+    },
+    "P8": {
+      "attempts": 3,
+      "code_epoch": "68a5a29f0f1410837d057be348249a7765dd3ef1c476d30b25e8e750b98344d5",
+      "cooldown_until": 0,
+      "last_error": "",
+      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 0.07, 'stdout': 'automation/evidence/P8_FEATURE_SNAPSHOT.json\\n', 'stderr': ''}",
+      "last_run": "2026-09-25T19:38:29Z",
+      "ok": true
+    },
+    "P9": {
+      "attempts": 2,
+      "code_epoch": "68a5a29f0f1410837d057be348249a7765dd3ef1c476d30b25e8e750b98344d5",
+      "cooldown_until": 0,
+      "last_error": "",
+      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 0.07, 'stdout': 'automation/evidence/P9_ECONOMIC_SCREEN.json\\n', 'stderr': ''}",
+      "last_run": "2026-09-25T19:38:29Z",
+      "ok": true
+    }
+  }
 }

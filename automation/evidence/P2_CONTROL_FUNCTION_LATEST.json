@@ -1,0 +1,900 @@
+{
+  "chain_id": 137,
+  "conflicts": [],
+  "evidence_state": "VERIFIED",
+  "head_quorum_block_span": 1,
+  "head_quorum_endpoints": [
+    "quicknode-public",
+    "tatum"
+  ],
+  "insufficient_independent_observations": [],
+  "network": "polygon-pos-mainnet",
+  "observed_record_count": 58,
+  "probe_count": 17,
+  "results": {
+    "0x409834270b6f2591dd6c1e9f351e4194b112da44:owner": {
+      "fingerprints": {
+        "onfinality": [
+          "success",
+          "0x0000000000000000000000003a635c48836e7c0b9aeb378640b0bfd516985cf5"
+        ],
+        "quicknode-public": [
+          "success",
+          "0x0000000000000000000000003a635c48836e7c0b9aeb378640b0bfd516985cf5"
+        ]
+      },
+      "matching": true,
+      "parent": "0x409834270b6f2591dd6c1e9f351e4194b112da44",
+      "probe_id": "owner",
+      "raw_outcomes": {
+        "onfinality": {
+          "error_code": null,
+          "error_message": null,
+          "http_status": 200,
+          "latency_ms": 195.09,
+          "ok": true,
+          "rate_limited": false,
+          "result": "0x0000000000000000000000003a635c48836e7c0b9aeb378640b0bfd516985cf5",
+          "retry_after_seconds": null
+        },
+        "quicknode-public": {
+          "error_code": null,
+          "error_message": null,
+          "http_status": 200,
+          "latency_ms": 64.79,
+          "ok": true,
+          "rate_limited": false,
+          "result": "0x0000000000000000000000003a635c48836e7c0b9aeb378640b0bfd516985cf5",
+          "retry_after_seconds": null
+        }
+      },
+      "rpc_endpoints": [
+        "onfinality",
+        "quicknode-public"
+      ],
+      "selector_calldata": "0x8da5cb5b",
+      "semantic_candidate": "ProxyAdmin.owner()",
+      "successful_or_reproducible_rpc_count": 2
+    },
+    "0x409834270b6f2591dd6c1e9f351e4194b112da44:pending_owner": {
+      "fingerprints": {
+        "onfinality": [
+          "error",
+          "3"
+        ],
+        "quicknode-public": [
+          "error",
+          "3"
+        ]
+      },
+      "matching": true,
+      "parent": "0x409834270b6f2591dd6c1e9f351e4194b112da44",
+      "probe_id": "pending_owner",
+      "raw_outcomes": {
+        "onfinality": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 130.9,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        },
+        "quicknode-public": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 88.65,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        }
+      },
+      "rpc_endpoints": [
+        "onfinality",
+        "quicknode-public"
+      ],
+      "selector_calldata": "0xe30c3978",
+      "semantic_candidate": "Ownable2Step.pendingOwner()",
+      "successful_or_reproducible_rpc_count": 2
+    },
+    "0x409834270b6f2591dd6c1e9f351e4194b112da44:proxy_admin": {
+      "fingerprints": {
+        "onfinality": [
+          "success",
+          "0x000000000000000000000000409834270b6f2591dd6c1e9f351e4194b112da44"
+        ],
+        "quicknode-public": [
+          "success",
+          "0x000000000000000000000000409834270b6f2591dd6c1e9f351e4194b112da44"
+        ]
+      },
+      "matching": true,
+      "parent": "0x409834270b6f2591dd6c1e9f351e4194b112da44",
+      "probe_id": "proxy_admin",
+      "raw_outcomes": {
+        "onfinality": {
+          "error_code": null,
+          "error_message": null,
+          "http_status": 200,
+          "latency_ms": 61.87,
+          "ok": true,
+          "rate_limited": false,
+          "result": "0x000000000000000000000000409834270b6f2591dd6c1e9f351e4194b112da44",
+          "retry_after_seconds": null
+        },
+        "quicknode-public": {
+          "error_code": null,
+          "error_message": null,
+          "http_status": 200,
+          "latency_ms": 62.43,
+          "ok": true,
+          "rate_limited": false,
+          "result": "0x000000000000000000000000409834270b6f2591dd6c1e9f351e4194b112da44",
+          "retry_after_seconds": null
+        }
+      },
+      "rpc_endpoints": [
+        "onfinality",
+        "quicknode-public"
+      ],
+      "selector_calldata": "0xf3b7dead0000000000000000000000007a8ed27f4c30512326878652d20fc85727401854",
+      "semantic_candidate": "ProxyAdmin.getProxyAdmin(parent)",
+      "successful_or_reproducible_rpc_count": 2
+    },
+    "0x409834270b6f2591dd6c1e9f351e4194b112da44:proxy_implementation": {
+      "fingerprints": {
+        "onfinality": [
+          "success",
+          "0x000000000000000000000000ae88570eb386a9c902488a6535f0957a46a68765"
+        ],
+        "quicknode-public": [
+          "success",
+          "0x000000000000000000000000ae88570eb386a9c902488a6535f0957a46a68765"
+        ]
+      },
+      "matching": true,
+      "parent": "0x409834270b6f2591dd6c1e9f351e4194b112da44",
+      "probe_id": "proxy_implementation",
+      "raw_outcomes": {
+        "onfinality": {
+          "error_code": null,
+          "error_message": null,
+          "http_status": 200,
+          "latency_ms": 84.47,
+          "ok": true,
+          "rate_limited": false,
+          "result": "0x000000000000000000000000ae88570eb386a9c902488a6535f0957a46a68765",
+          "retry_after_seconds": null
+        },
+        "quicknode-public": {
+          "error_code": null,
+          "error_message": null,
+          "http_status": 200,
+          "latency_ms": 99.12,
+          "ok": true,
+          "rate_limited": false,
+          "result": "0x000000000000000000000000ae88570eb386a9c902488a6535f0957a46a68765",
+          "retry_after_seconds": null
+        },
+        "tatum": {
+          "error_code": -16401,
+          "error_message": "Method 'eth_call' is available for paid plans only. To access this feature, please upgrade your subscription at https://co.tatum.io/upgrade.",
+          "http_status": 200,
+          "latency_ms": 416.09,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        }
+      },
+      "rpc_endpoints": [
+        "onfinality",
+        "quicknode-public"
+      ],
+      "selector_calldata": "0x204e1c7a0000000000000000000000007a8ed27f4c30512326878652d20fc85727401854",
+      "semantic_candidate": "ProxyAdmin.getProxyImplementation(parent)",
+      "successful_or_reproducible_rpc_count": 2
+    },
+    "0x7A8ed27F4C30512326878652d20fC85727401854:admin": {
+      "fingerprints": {
+        "onfinality": [
+          "error",
+          "3"
+        ],
+        "quicknode-public": [
+          "error",
+          "3"
+        ]
+      },
+      "matching": true,
+      "parent": "0x7A8ed27F4C30512326878652d20fC85727401854",
+      "probe_id": "admin",
+      "raw_outcomes": {
+        "onfinality": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 122.84,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        },
+        "quicknode-public": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 114.84,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        },
+        "tatum": {
+          "error_code": -16401,
+          "error_message": "Method 'eth_call' is available for paid plans only. To access this feature, please upgrade your subscription at https://co.tatum.io/upgrade.",
+          "http_status": 200,
+          "latency_ms": 222.91,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        }
+      },
+      "rpc_endpoints": [
+        "onfinality",
+        "quicknode-public"
+      ],
+      "selector_calldata": "0xf851a440",
+      "semantic_candidate": "TransparentProxy.admin()",
+      "successful_or_reproducible_rpc_count": 2
+    },
+    "0x7A8ed27F4C30512326878652d20fC85727401854:implementation": {
+      "fingerprints": {
+        "onfinality": [
+          "error",
+          "3"
+        ],
+        "quicknode-public": [
+          "error",
+          "3"
+        ]
+      },
+      "matching": true,
+      "parent": "0x7A8ed27F4C30512326878652d20fC85727401854",
+      "probe_id": "implementation",
+      "raw_outcomes": {
+        "onfinality": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 66.96,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        },
+        "quicknode-public": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 104.51,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        },
+        "tatum": {
+          "error_code": -16401,
+          "error_message": "Method 'eth_call' is available for paid plans only. To access this feature, please upgrade your subscription at https://co.tatum.io/upgrade.",
+          "http_status": 200,
+          "latency_ms": 65.95,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        }
+      },
+      "rpc_endpoints": [
+        "onfinality",
+        "quicknode-public"
+      ],
+      "selector_calldata": "0x5c60da1b",
+      "semantic_candidate": "Transparent/UUPS implementation()",
+      "successful_or_reproducible_rpc_count": 2
+    },
+    "0x7A8ed27F4C30512326878652d20fC85727401854:owner": {
+      "fingerprints": {
+        "onfinality": [
+          "error",
+          "3"
+        ],
+        "quicknode-public": [
+          "error",
+          "3"
+        ]
+      },
+      "matching": true,
+      "parent": "0x7A8ed27F4C30512326878652d20fC85727401854",
+      "probe_id": "owner",
+      "raw_outcomes": {
+        "onfinality": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 99.28,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        },
+        "quicknode-public": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 274.7,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        },
+        "tatum": {
+          "error_code": -16401,
+          "error_message": "Method 'eth_call' is available for paid plans only. To access this feature, please upgrade your subscription at https://co.tatum.io/upgrade.",
+          "http_status": 200,
+          "latency_ms": 332.56,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        }
+      },
+      "rpc_endpoints": [
+        "onfinality",
+        "quicknode-public"
+      ],
+      "selector_calldata": "0x8da5cb5b",
+      "semantic_candidate": "Ownable.owner()",
+      "successful_or_reproducible_rpc_count": 2
+    },
+    "0x7A8ed27F4C30512326878652d20fC85727401854:proxiable_uuid": {
+      "fingerprints": {
+        "onfinality": [
+          "error",
+          "3"
+        ],
+        "quicknode-public": [
+          "error",
+          "3"
+        ]
+      },
+      "matching": true,
+      "parent": "0x7A8ed27F4C30512326878652d20fC85727401854",
+      "probe_id": "proxiable_uuid",
+      "raw_outcomes": {
+        "onfinality": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 82.1,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        },
+        "quicknode-public": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 96.39,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        },
+        "tatum": {
+          "error_code": -16401,
+          "error_message": "Method 'eth_call' is available for paid plans only. To access this feature, please upgrade your subscription at https://co.tatum.io/upgrade.",
+          "http_status": 200,
+          "latency_ms": 94.66,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        }
+      },
+      "rpc_endpoints": [
+        "onfinality",
+        "quicknode-public"
+      ],
+      "selector_calldata": "0x52d1902d",
+      "semantic_candidate": "ERC1822.proxiableUUID()",
+      "successful_or_reproducible_rpc_count": 2
+    },
+    "0xd1CD49A08AeF3Af93457aEc17C786C2b7F48eCd7:admin": {
+      "fingerprints": {
+        "onfinality": [
+          "error",
+          "3"
+        ],
+        "quicknode-public": [
+          "error",
+          "3"
+        ]
+      },
+      "matching": true,
+      "parent": "0xd1CD49A08AeF3Af93457aEc17C786C2b7F48eCd7",
+      "probe_id": "admin",
+      "raw_outcomes": {
+        "onfinality": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 98.54,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        },
+        "quicknode-public": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 63.44,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        },
+        "tatum": {
+          "error_code": null,
+          "error_message": "HTTP Error 429: Too Many Requests",
+          "http_status": 429,
+          "latency_ms": 66.24,
+          "ok": false,
+          "rate_limited": true,
+          "result": null,
+          "retry_after_seconds": 60.0
+        }
+      },
+      "rpc_endpoints": [
+        "onfinality",
+        "quicknode-public"
+      ],
+      "selector_calldata": "0xf851a440",
+      "semantic_candidate": "TransparentProxy.admin()",
+      "successful_or_reproducible_rpc_count": 2
+    },
+    "0xd1CD49A08AeF3Af93457aEc17C786C2b7F48eCd7:authority": {
+      "fingerprints": {
+        "onfinality": [
+          "success",
+          "0x0000000000000000000000002c91c02793a50f6d55168a88183da687f572d350"
+        ],
+        "quicknode-public": [
+          "success",
+          "0x0000000000000000000000002c91c02793a50f6d55168a88183da687f572d350"
+        ]
+      },
+      "matching": true,
+      "parent": "0xd1CD49A08AeF3Af93457aEc17C786C2b7F48eCd7",
+      "probe_id": "authority",
+      "raw_outcomes": {
+        "onfinality": {
+          "error_code": null,
+          "error_message": null,
+          "http_status": 200,
+          "latency_ms": 106.79,
+          "ok": true,
+          "rate_limited": false,
+          "result": "0x0000000000000000000000002c91c02793a50f6d55168a88183da687f572d350",
+          "retry_after_seconds": null
+        },
+        "quicknode-public": {
+          "error_code": null,
+          "error_message": null,
+          "http_status": 200,
+          "latency_ms": 77.63,
+          "ok": true,
+          "rate_limited": false,
+          "result": "0x0000000000000000000000002c91c02793a50f6d55168a88183da687f572d350",
+          "retry_after_seconds": null
+        },
+        "tatum": {
+          "error_code": null,
+          "error_message": "HTTP Error 429: Too Many Requests",
+          "http_status": 429,
+          "latency_ms": 64.01,
+          "ok": false,
+          "rate_limited": true,
+          "result": null,
+          "retry_after_seconds": 60.0
+        }
+      },
+      "rpc_endpoints": [
+        "onfinality",
+        "quicknode-public"
+      ],
+      "selector_calldata": "0xbf7e214f",
+      "semantic_candidate": "AccessManaged.authority()",
+      "successful_or_reproducible_rpc_count": 2
+    },
+    "0xd1CD49A08AeF3Af93457aEc17C786C2b7F48eCd7:implementation": {
+      "fingerprints": {
+        "onfinality": [
+          "error",
+          "3"
+        ],
+        "quicknode-public": [
+          "error",
+          "3"
+        ]
+      },
+      "matching": true,
+      "parent": "0xd1CD49A08AeF3Af93457aEc17C786C2b7F48eCd7",
+      "probe_id": "implementation",
+      "raw_outcomes": {
+        "onfinality": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 62.13,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        },
+        "quicknode-public": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 122.13,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        },
+        "tatum": {
+          "error_code": null,
+          "error_message": "HTTP Error 429: Too Many Requests",
+          "http_status": 429,
+          "latency_ms": 75.1,
+          "ok": false,
+          "rate_limited": true,
+          "result": null,
+          "retry_after_seconds": 60.0
+        }
+      },
+      "rpc_endpoints": [
+        "onfinality",
+        "quicknode-public"
+      ],
+      "selector_calldata": "0x5c60da1b",
+      "semantic_candidate": "Transparent/UUPS implementation()",
+      "successful_or_reproducible_rpc_count": 2
+    },
+    "0xd1CD49A08AeF3Af93457aEc17C786C2b7F48eCd7:owner": {
+      "fingerprints": {
+        "onfinality": [
+          "error",
+          "3"
+        ],
+        "quicknode-public": [
+          "error",
+          "3"
+        ]
+      },
+      "matching": true,
+      "parent": "0xd1CD49A08AeF3Af93457aEc17C786C2b7F48eCd7",
+      "probe_id": "owner",
+      "raw_outcomes": {
+        "onfinality": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 83.11,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        },
+        "quicknode-public": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 61.56,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        },
+        "tatum": {
+          "error_code": -16401,
+          "error_message": "Method 'eth_call' is available for paid plans only. To access this feature, please upgrade your subscription at https://co.tatum.io/upgrade.",
+          "http_status": 200,
+          "latency_ms": 115.51,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        }
+      },
+      "rpc_endpoints": [
+        "onfinality",
+        "quicknode-public"
+      ],
+      "selector_calldata": "0x8da5cb5b",
+      "semantic_candidate": "Ownable.owner()",
+      "successful_or_reproducible_rpc_count": 2
+    },
+    "0xd1CD49A08AeF3Af93457aEc17C786C2b7F48eCd7:proxiable_uuid": {
+      "fingerprints": {
+        "onfinality": [
+          "error",
+          "3"
+        ],
+        "quicknode-public": [
+          "error",
+          "3"
+        ]
+      },
+      "matching": true,
+      "parent": "0xd1CD49A08AeF3Af93457aEc17C786C2b7F48eCd7",
+      "probe_id": "proxiable_uuid",
+      "raw_outcomes": {
+        "onfinality": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 59.18,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        },
+        "quicknode-public": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 61.24,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        },
+        "tatum": {
+          "error_code": null,
+          "error_message": "HTTP Error 429: Too Many Requests",
+          "http_status": 429,
+          "latency_ms": 73.34,
+          "ok": false,
+          "rate_limited": true,
+          "result": null,
+          "retry_after_seconds": 60.0
+        }
+      },
+      "rpc_endpoints": [
+        "onfinality",
+        "quicknode-public"
+      ],
+      "selector_calldata": "0x52d1902d",
+      "semantic_candidate": "ERC1822.proxiableUUID()",
+      "successful_or_reproducible_rpc_count": 2
+    },
+    "0xf68a9a2417a10e7d907a28b9876db8ad3dbbab7d:owner": {
+      "fingerprints": {
+        "onfinality": [
+          "success",
+          "0x0000000000000000000000002c91c02793a50f6d55168a88183da687f572d350"
+        ],
+        "quicknode-public": [
+          "success",
+          "0x0000000000000000000000002c91c02793a50f6d55168a88183da687f572d350"
+        ]
+      },
+      "matching": true,
+      "parent": "0xf68a9a2417a10e7d907a28b9876db8ad3dbbab7d",
+      "probe_id": "owner",
+      "raw_outcomes": {
+        "onfinality": {
+          "error_code": null,
+          "error_message": null,
+          "http_status": 200,
+          "latency_ms": 79.37,
+          "ok": true,
+          "rate_limited": false,
+          "result": "0x0000000000000000000000002c91c02793a50f6d55168a88183da687f572d350",
+          "retry_after_seconds": null
+        },
+        "quicknode-public": {
+          "error_code": null,
+          "error_message": null,
+          "http_status": 200,
+          "latency_ms": 65.75,
+          "ok": true,
+          "rate_limited": false,
+          "result": "0x0000000000000000000000002c91c02793a50f6d55168a88183da687f572d350",
+          "retry_after_seconds": null
+        },
+        "tatum": {
+          "error_code": -16401,
+          "error_message": "Method 'eth_call' is available for paid plans only. To access this feature, please upgrade your subscription at https://co.tatum.io/upgrade.",
+          "http_status": 200,
+          "latency_ms": 130.75,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        }
+      },
+      "rpc_endpoints": [
+        "onfinality",
+        "quicknode-public"
+      ],
+      "selector_calldata": "0x8da5cb5b",
+      "semantic_candidate": "ProxyAdmin.owner()",
+      "successful_or_reproducible_rpc_count": 2
+    },
+    "0xf68a9a2417a10e7d907a28b9876db8ad3dbbab7d:pending_owner": {
+      "fingerprints": {
+        "onfinality": [
+          "error",
+          "3"
+        ],
+        "quicknode-public": [
+          "error",
+          "3"
+        ]
+      },
+      "matching": true,
+      "parent": "0xf68a9a2417a10e7d907a28b9876db8ad3dbbab7d",
+      "probe_id": "pending_owner",
+      "raw_outcomes": {
+        "onfinality": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 54.28,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        },
+        "quicknode-public": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 59.27,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        },
+        "tatum": {
+          "error_code": null,
+          "error_message": "HTTP Error 429: Too Many Requests",
+          "http_status": 429,
+          "latency_ms": 67.71,
+          "ok": false,
+          "rate_limited": true,
+          "result": null,
+          "retry_after_seconds": 60.0
+        }
+      },
+      "rpc_endpoints": [
+        "onfinality",
+        "quicknode-public"
+      ],
+      "selector_calldata": "0xe30c3978",
+      "semantic_candidate": "Ownable2Step.pendingOwner()",
+      "successful_or_reproducible_rpc_count": 2
+    },
+    "0xf68a9a2417a10e7d907a28b9876db8ad3dbbab7d:proxy_admin": {
+      "fingerprints": {
+        "onfinality": [
+          "error",
+          "3"
+        ],
+        "quicknode-public": [
+          "error",
+          "3"
+        ]
+      },
+      "matching": true,
+      "parent": "0xf68a9a2417a10e7d907a28b9876db8ad3dbbab7d",
+      "probe_id": "proxy_admin",
+      "raw_outcomes": {
+        "onfinality": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 60.97,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        },
+        "quicknode-public": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 62.28,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        }
+      },
+      "rpc_endpoints": [
+        "onfinality",
+        "quicknode-public"
+      ],
+      "selector_calldata": "0xf3b7dead000000000000000000000000d1cd49a08aef3af93457aec17c786c2b7f48ecd7",
+      "semantic_candidate": "ProxyAdmin.getProxyAdmin(parent)",
+      "successful_or_reproducible_rpc_count": 2
+    },
+    "0xf68a9a2417a10e7d907a28b9876db8ad3dbbab7d:proxy_implementation": {
+      "fingerprints": {
+        "onfinality": [
+          "error",
+          "3"
+        ],
+        "quicknode-public": [
+          "error",
+          "3"
+        ]
+      },
+      "matching": true,
+      "parent": "0xf68a9a2417a10e7d907a28b9876db8ad3dbbab7d",
+      "probe_id": "proxy_implementation",
+      "raw_outcomes": {
+        "onfinality": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 58.96,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        },
+        "quicknode-public": {
+          "error_code": 3,
+          "error_message": "execution reverted",
+          "http_status": 200,
+          "latency_ms": 68.56,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        },
+        "tatum": {
+          "error_code": -16401,
+          "error_message": "Method 'eth_call' is available for paid plans only. To access this feature, please upgrade your subscription at https://co.tatum.io/upgrade.",
+          "http_status": 200,
+          "latency_ms": 134.15,
+          "ok": false,
+          "rate_limited": false,
+          "result": null,
+          "retry_after_seconds": null
+        }
+      },
+      "rpc_endpoints": [
+        "onfinality",
+        "quicknode-public"
+      ],
+      "selector_calldata": "0x204e1c7a000000000000000000000000d1cd49a08aef3af93457aec17c786c2b7f48ecd7",
+      "semantic_candidate": "ProxyAdmin.getProxyImplementation(parent)",
+      "successful_or_reproducible_rpc_count": 2
+    }
+  },
+  "rpc_blocks": {
+    "onfinality": 94440639,
+    "quicknode-public": 94440637,
+    "tatum": 94440636
+  },
+  "semantic_interpretation_status": "NOT_INFERRED_FROM_SELECTOR_ALONE"
+}
