@@ -1,0 +1,73 @@
+name: Polygon P2 Control Function Verification
+
+on:
+  push:
+    paths:
+      - "chains/polygon-pos/p2_control_function_targets.txt"
+      - "chains/polygon-pos/polygon_p2_control_function_verifier.py"
+      - "chains/polygon-pos/polygon_p2_control_function_reconciliation.py"
+      - "chains/polygon-pos/polygon_readonly_verifier.py"
+      - "chains/polygon-pos/rpc_pool.txt"
+      - ".github/workflows/polygon-p2-control-function-verification.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: polygon-p2-control-function-main
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  polygon-p2-control-function:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TATUM_API_KEY: ${{ secrets.TATUM_API_KEY }}
+    steps:
+      - name: Checkout canonical repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate P2 control-function sources
+        run: |
+          set -euo pipefail
+          python -m py_compile chains/polygon-pos/polygon_readonly_verifier.py
+          python -m py_compile chains/polygon-pos/polygon_p2_control_function_verifier.py
+          python -m py_compile chains/polygon-pos/polygon_p2_control_function_reconciliation.py
+
+      - name: Run read-only P2 control-function probes
+        run: |
+          set -euo pipefail
+          python chains/polygon-pos/polygon_p2_control_function_verifier.py \
+            --rpc-pool-file chains/polygon-pos/rpc_pool.txt \
+            --min-request-interval 1.0 \
+            --min-head-endpoints 2 \
+            --min-probe-endpoints 2 \
+            --recovery-rounds 2 \
+            --stale-block-tolerance 2 \
+            --target-file chains/polygon-pos/p2_control_function_targets.txt || verifier_status=$?
+          verifier_status="${verifier_status:-0}"
+
+          python chains/polygon-pos/polygon_p2_control_function_reconciliation.py || reconciliation_status=$?
+          reconciliation_status="${reconciliation_status:-0}"
+
+          if [ "$verifier_status" -ne 0 ]; then
+            exit "$verifier_status"
+          fi
+          exit "$reconciliation_status"
+
+      - name: Upload P2 control-function evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: polygon-p2-control-function-verification
+          path: |
+            polygon_p2_control_function_observations.jsonl
+            polygon_p2_control_function_head_summary.json
+            polygon_p2_control_function_reconciliation.json
+          if-no-files-found: warn
