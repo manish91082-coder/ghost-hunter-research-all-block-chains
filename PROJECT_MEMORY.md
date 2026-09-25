@@ -274,3 +274,12 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - Verified project execution model remains: live GitHub state is authoritative; CI/artifact evidence is required for promotion; no green-by-file-existence.
 - Current blocker split: P2 control-function live quorum and P2 provenance semantic replay. P2 derived runtime-code is already VERIFIED.
 - Provenance comparison now excludes provider identity from the semantic fingerprint while retaining provider identity in evidence metadata.
+
+## 2026-09-26 — P2 control-function recovery checkpoint
+- Current main HEAD: `b2fe8738b28ee77670edb7a72994fcd039c793bb`.
+- Two independent P2 blocker repairs are now committed:
+  1. provenance semantic fingerprint excludes provider transport identity;
+  2. control-function head recovery continues until the selected quorum satisfies the existing stale-block tolerance.
+- Both repairs have executable regression coverage.
+- Corrected dedicated control-function CI run is `36180198453`, currently pending.
+- A fresh conveyor run must be triggered from the corrected HEAD before P2 can be evaluated again.
