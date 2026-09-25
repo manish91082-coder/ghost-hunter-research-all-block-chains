@@ -262,28 +262,46 @@ def main():
                 checkpoint["completed"][key] = "ok" if obs.get("ok") else "failed"
                 cp.write_text(json.dumps(checkpoint, indent=2) + "\n")
 
-    if block_numbers or chain_ids:
-        freshest = max(block_numbers.values()) if block_numbers else None
-        chain_id_values = sorted(set(chain_ids.values()))
-        summary = {
-            "chain_id_expected": 137,
-            "chain_ids_observed": chain_ids,
-            "chain_id_agreement": chain_id_values == [137],
-            "chain_id_values": chain_id_values,
-            "freshest_observed_block": freshest,
-            "stale_block_tolerance": args.stale_block_tolerance,
-            "rpc_blocks": block_numbers,
-            "stale_endpoints": [
-                endpoint_id
-                for endpoint_id, block in block_numbers.items()
-                if freshest - block > args.stale_block_tolerance
-            ],
-        }
-        Path("polygon_rpc_head_summary.json").write_text(
-            json.dumps(summary, indent=2) + "\n"
+    freshest = max(block_numbers.values()) if block_numbers else None
+    chain_id_values = sorted(set(chain_ids.values()))
+    stale_endpoints = [
+        endpoint_id
+        for endpoint_id, block in block_numbers.items()
+        if freshest is not None and freshest - block > args.stale_block_tolerance
+    ]
+    summary = {
+        "chain_id_expected": 137,
+        "chain_ids_observed": chain_ids,
+        "chain_id_agreement": len(chain_ids) >= 2 and chain_id_values == [137],
+        "chain_id_values": chain_id_values,
+        "freshest_observed_block": freshest,
+        "stale_block_tolerance": args.stale_block_tolerance,
+        "rpc_blocks": block_numbers,
+        "stale_endpoints": stale_endpoints,
+        "successful_chain_id_endpoint_count": len(chain_ids),
+        "successful_block_endpoint_count": len(block_numbers),
+        "head_agreement": len(block_numbers) >= 2 and len(set(block_numbers.values())) == 1,
+    }
+    Path("polygon_rpc_head_summary.json").write_text(
+        json.dumps(summary, indent=2) + "\n"
+    )
+
+    if len(chain_ids) < 2:
+        raise SystemExit(
+            f"P1 identity failure: fewer than 2 independent RPC endpoints returned a valid chain ID (observed={len(chain_ids)})"
         )
-        if chain_ids and chain_id_values != [137]:
-            raise SystemExit("P1 identity failure: RPC chain IDs do not unanimously equal 137")
+    if chain_id_values != [137]:
+        raise SystemExit(
+            f"P1 identity failure: observed RPC chain IDs are {chain_id_values}, expected unanimous 137"
+        )
+    if len(block_numbers) < 2:
+        raise SystemExit(
+            f"P1 head failure: fewer than 2 independent RPC endpoints returned a valid block number (observed={len(block_numbers)})"
+        )
+    if len(set(block_numbers.values())) != 1:
+        raise SystemExit(
+            f"P1 head failure: independent RPC latest blocks disagree ({block_numbers})"
+        )
 
     print(f"Wrote {args.out}")
     print(f"Checkpoint: {args.checkpoint}")
