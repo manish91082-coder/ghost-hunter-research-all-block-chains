@@ -224,6 +224,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
             "verified_token_count": 8,
             "chain_137_verified_count": 8,
             "identity_conflict_count": 0,
+            "verification_cycle_complete": True,
             "universe_fingerprint": "abc",
             "checks": {
                 "geckoterminal_top_pools_ok": True,
