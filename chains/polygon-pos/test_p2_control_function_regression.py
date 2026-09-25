@@ -64,12 +64,12 @@ class ControlFunctionRegressionTests(unittest.TestCase):
         )
 
     def test_matching_success_fingerprint(self):
-        a = {"outcome": {"ok": True, "result": "0x1234"}}
+        a = {"outcome": {"ok": True, "result": "0x1234", "http_status": 200}}
         b = {"outcome": {"ok": True, "result": "0x1234"}}
         self.assertEqual(RECONCILER.fingerprint(a), RECONCILER.fingerprint(b))
 
     def test_matching_error_fingerprint(self):
-        a = {"outcome": {"ok": False, "error_code": -32000}}
+        a = {"outcome": {"ok": False, "error_code": -32000, "http_status": 200}}
         b = {"outcome": {"ok": False, "error_code": -32000}}
         self.assertEqual(RECONCILER.fingerprint(a), RECONCILER.fingerprint(b))
 
