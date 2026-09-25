@@ -37,7 +37,7 @@ class ControlFunctionRegressionTests(unittest.TestCase):
         targets = VERIFIER.load_targets(
             str(POLYGON_DIR / "p2_control_function_targets.txt")
         )
-        self.assertEqual(len(targets), 8)
+        self.assertEqual(len(targets), 17)
         self.assertTrue(all(target["calldata"].startswith("0x") for target in targets))
         self.assertTrue(all(len(target["parent"]) == 42 for target in targets))
 
