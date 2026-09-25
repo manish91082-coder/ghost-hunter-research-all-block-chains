@@ -178,3 +178,7 @@ Run #4 is the canonical P2 ERC-1967 storage checkpoint.
 Four non-zero implementation/admin addresses were observed and now form the immediate derived-address verification queue.
 
 Important: non-zero ERC-1967 storage does not by itself prove the complete proxy model; runtime code, proxy callable semantics, admin/owner/roles and deployment provenance remain separate P2 checks.
+## 2026-09-25 — P2 derived-address verification lock
+- Four non-zero ERC-1967-derived addresses form the immediate runtime-code verification queue.
+- Each derived address requires two independent matching `eth_getCode` observations.
+- Passing derived-code verification does not itself establish ownership/role semantics or creation provenance.
