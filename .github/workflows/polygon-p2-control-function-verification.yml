@@ -19,6 +19,8 @@ concurrency:
 permissions:
   contents: read
 
+# Evidence-trigger marker: force a fresh control-function CI execution from main.
+
 jobs:
   polygon-p2-control-function:
     runs-on: ubuntu-latest
