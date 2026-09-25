@@ -143,3 +143,20 @@ P1 continuation: execute the read-only Polygon live-verification batch against i
 - Head quorum was corrected to use the existing explicit stale-block tolerance rather than requiring identical latest block numbers. Two fresh endpoints within the configured tolerance now satisfy the head agreement condition; exact code-hash agreement remains mandatory for every critical target.
 - Tatum's current public documentation states a free plan with 3 RPS and free API keys. The workflow now supports an optional GitHub Actions secret named `TATUM_API_KEY`; the secret is never written to the repository.
 - P1 remains **NOT PASSED** until two independent RPC endpoints provide matching critical-address code evidence for all 11 targets and reconciliation classifies the evidence as VERIFIED.
+
+## 2026-09-25 — Adaptive RPC rotation implemented
+- The previous fixed two-endpoint CI invocation has been replaced by a canonical multi-endpoint Polygon RPC candidate pool at `chains/polygon-pos/rpc_pool.txt`.
+- The verifier now performs a cheap identity/head pass across the pool, builds a chain-137 eligible set, and then rotates critical-address `eth_getCode` requests across eligible endpoints.
+- HTTP 429 responses honor `Retry-After` when present and place the endpoint into cooldown. HTTP 403/401/404 and transient failures also receive cooldowns instead of being hammered repeatedly.
+- Each critical target still requires two distinct successful RPC endpoint observations. No majority-selection or quorum weakening was introduced.
+- Head agreement now uses the configured stale-block tolerance consistently, rather than requiring exact same-block equality.
+- Optional `TATUM_API_KEY` authentication remains secret-only through GitHub Actions.
+- This changes the access strategy, not the evidence standard. P1 remains NOT PASSED until reconciliation reports VERIFIED.
+
+### Gate state
+- P1 live verification: **NOT PASSED** pending the new adaptive-pool CI artifact.
+- Polygon saturation gate: **OPEN**.
+- DEX/protocol discovery remains blocked until P1 is genuinely verified.
+
+### Next atomic step
+Inspect the first CI run using the full adaptive RPC pool. If fewer than two independent code-capable endpoints are reachable, preserve that evidence and move the same verifier to the permitted outbound-RPC environment rather than weakening the gate.
