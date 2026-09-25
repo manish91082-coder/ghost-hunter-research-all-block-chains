@@ -175,6 +175,27 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn('if not checks[2][1]:', source)
         self.assertIn('if int(load_json(p6,{}).get("pair_nodes",0)) <= 0:', source)
 
+    def test_stage_metadata_tracks_closed_and_current_stages(self):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("saturation_conveyor_stage_sync", CONVEYOR)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        state = {
+            "critical_stage": "P4",
+            "research_gate": "P2_CLOSED",
+            "stages": {},
+        }
+        module.sync_stage_metadata(state)
+
+        self.assertEqual(state["stages"]["P2"]["status"], "CLOSED")
+        self.assertEqual(state["stages"]["P3"]["status"], "CLOSED")
+        self.assertEqual(state["stages"]["P4"]["status"], "OPEN")
+        self.assertEqual(state["stages"]["P4"]["mode"], "CRITICAL")
+        self.assertEqual(state["stages"]["P5"]["status"], "PREPARE")
+        self.assertEqual(state["stages"]["P11"]["status"], "LOCKED")
+
+
     def test_p3_revision_resets_stale_cooldown(self):
         source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
         self.assertIn('TASK_REVISIONS={"P3":"p3-multisource-closure-v1"}', source)
