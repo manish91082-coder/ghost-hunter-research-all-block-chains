@@ -85,15 +85,13 @@ def stage_ready(stage):
         data=json.loads(p.read_text(encoding='utf-8'))
     except Exception:
         return False
-    if stage=='P3': return bool(data.get('protocol_candidates') or data.get('dex_profile_candidates'))
-    if stage=='P4': return int(data.get('total_candidates',0))>0
-    if stage=='P5': return int(data.get('total_pair_records',0))>0
-    if stage=='P6': return int(data.get('pair_nodes',0))>0
-    if stage=='P7': return int(data.get('count',0))>=18
-    if stage=='P8': return int(data.get('pair_groups',0))>0
-    if stage=='P9': return p.exists()
-    if stage=='P10': return data.get('stage_gate')=='CLOSED'
-    if stage=='P11': return data.get('status')=='READY'
+    # A first-pass snapshot is preparation evidence, not saturation completion.
+    # Promotion requires an explicit stage_gate=CLOSED marker produced by a
+    # stage-specific closure worker. P11 additionally requires READY.
+    if stage in {'P3','P4','P5','P6','P7','P8','P9','P10'}:
+        return data.get('stage_gate') == 'CLOSED'
+    if stage=='P11':
+        return data.get('status')=='READY'
     return False
 
 def p2_gate(state):
