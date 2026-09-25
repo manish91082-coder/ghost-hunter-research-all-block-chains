@@ -160,6 +160,7 @@ def make_record(endpoint_id, method, params, obs, address=None):
         "observation_time_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "observation_block": observation_block,
         "rpc_endpoint_id": endpoint_id,
+        "method": method,
         "request": {
             "jsonrpc": "2.0",
             "id": f"{endpoint_id}:{method}:{address or 'network'}",
