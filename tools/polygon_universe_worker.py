@@ -155,18 +155,163 @@ def task_p2_provenance_replay():
     result["status"]="REPLAYED" if txs and all(x["independent_observations"]>=2 and x["matching"] for x in result["transactions"]) else "PARTIAL"
     return write_json("P2_PROVENANCE_REPLAY.json",result)
 
+def normalize_market_name(value):
+    import re
+    text = str(value or "").strip().lower()
+    text = re.sub(r"[^a-z0-9]+", " ", text)
+    return " ".join(text.split())
+
+
+def p3_dex_sets(protocols, gecko_rows):
+    llama = set()
+    for row in protocols:
+        category = normalize_market_name(row.get("category"))
+        if category in {"dexs", "dex", "dexes"}:
+            key = normalize_market_name(row.get("name") or row.get("slug"))
+            if key:
+                llama.add(key)
+    gecko = set()
+    for row in gecko_rows:
+        attrs = row.get("attributes") if isinstance(row, dict) else {}
+        raw = attrs.get("name") if isinstance(attrs, dict) else None
+        key = normalize_market_name(raw or (row.get("id") if isinstance(row, dict) else None))
+        if key:
+            gecko.add(key)
+    return llama, gecko
+
+
+def p3_closure_ready(snapshot, previous_state):
+    checks = snapshot.get("checks", {})
+    current_fp = snapshot.get("universe_fingerprint")
+    previous_fp = previous_state.get("fingerprint")
+    stable_count = int(previous_state.get("stable_runs", 0) or 0)
+    return (
+        checks.get("defillama_protocols_ok") is True
+        and checks.get("geckoterminal_dexes_ok") is True
+        and int(snapshot.get("polygon_protocol_count", 0)) > 0
+        and int(snapshot.get("polygon_dex_protocol_count", 0)) > 0
+        and int(snapshot.get("geckoterminal_dex_count", 0)) > 0
+        and int(snapshot.get("dex_name_overlap_count", 0)) >= 3
+        and int(snapshot.get("llama_duplicate_dex_names", 0)) == 0
+        and int(snapshot.get("gecko_duplicate_dex_names", 0)) == 0
+        and current_fp
+        and current_fp == previous_fp
+        and stable_count >= 1
+    )
+
+
 def task_p3_protocols():
-    st, llama, err=http_json(DefiLlamaProtocolsURL)
-    st2, dex, err2=http_json(DexProfilesURL)
-    protocols=[]
-    if isinstance(llama,list):
+    st, llama, err = http_json(DefiLlamaProtocolsURL)
+    st2, dex, err2 = http_json(DexProfilesURL)
+    gt_url = "https://api.geckoterminal.com/api/v2/networks/polygon/dexes"
+    st3, gecko, err3 = http_json(gt_url)
+
+    protocols = []
+    if isinstance(llama, list):
         for p in llama:
-            chains=[str(x).lower() for x in (p.get("chains") or [])]
-            if "polygon" in chains: protocols.append(p)
-    profiles=[]
-    if isinstance(dex,list): profiles=[x for x in dex if str(x.get("chainId","")).lower()=="polygon"]
-    payload={"task":"p3_protocol_discovery","time":now(),"sources":[DefiLlamaProtocolsURL,DexProfilesURL],"http":[st,st2],"protocol_candidates":protocols,"dex_profile_candidates":profiles,"evidence_class":"DISCOVERY"}
-    return write_json("P3_PROTOCOL_SNAPSHOT.json",payload)
+            chains = [str(x).lower() for x in (p.get("chains") or [])]
+            if "polygon" in chains:
+                protocols.append(p)
+
+    profiles = []
+    if isinstance(dex, list):
+        profiles = [x for x in dex if str(x.get("chainId", "")).lower() == "polygon"]
+
+    gecko_rows = []
+    if isinstance(gecko, dict):
+        data = gecko.get("data")
+        if isinstance(data, list):
+            gecko_rows = data
+
+    llama_dex, gecko_dex = p3_dex_sets(protocols, gecko_rows)
+    overlap = sorted(llama_dex & gecko_dex)
+    llama_dupes = max(0, sum(1 for x in llama_dex if x) - len(llama_dex))
+    gecko_names = [
+        normalize_market_name(
+            (x.get("attributes") or {}).get("name") if isinstance(x, dict) else ""
+        )
+        for x in gecko_rows
+    ]
+    gecko_names = [x for x in gecko_names if x]
+    gecko_duplicate_count = max(0, len(gecko_names) - len(set(gecko_names)))
+
+    normalized_universe = {
+        "llama_protocols": sorted(
+            normalize_market_name(x.get("name") or x.get("slug"))
+            for x in protocols
+            if normalize_market_name(x.get("name") or x.get("slug"))
+        ),
+        "llama_dexes": sorted(llama_dex),
+        "gecko_dexes": sorted(gecko_dex),
+        "dexscreener_polygon_profiles": sorted(
+            str(x.get("tokenAddress", "")).lower()
+            for x in profiles
+            if x.get("tokenAddress")
+        ),
+    }
+    universe_fingerprint = sha(normalized_universe)
+
+    closure_path = EVID / "P3_CLOSURE_STATE.json"
+    previous = load_json(closure_path, {})
+    previous_fp = previous.get("fingerprint")
+    stable_runs = int(previous.get("stable_runs", 0) or 0)
+    if universe_fingerprint and universe_fingerprint == previous_fp:
+        stable_runs += 1
+    else:
+        stable_runs = 0
+
+    snapshot = {
+        "task": "p3_protocol_discovery",
+        "time": now(),
+        "network": "polygon",
+        "chain_id": 137,
+        "sources": [
+            DefiLlamaProtocolsURL,
+            DexProfilesURL,
+            gt_url,
+        ],
+        "http": {
+            "defillama_protocols": st,
+            "dexscreener_token_profiles": st2,
+            "geckoterminal_dexes": st3,
+        },
+        "errors": {
+            "defillama_protocols": err,
+            "dexscreener_token_profiles": err2,
+            "geckoterminal_dexes": err3,
+        },
+        "polygon_protocol_count": len(protocols),
+        "polygon_dex_protocol_count": len(llama_dex),
+        "dexscreener_polygon_profile_count": len(profiles),
+        "geckoterminal_dex_count": len(gecko_dex),
+        "dex_name_overlap_count": len(overlap),
+        "dex_name_overlap": overlap,
+        "llama_duplicate_dex_names": llama_dupes,
+        "gecko_duplicate_dex_names": gecko_duplicate_count,
+        "universe_fingerprint": universe_fingerprint,
+        "stable_runs": stable_runs,
+        "checks": {
+            "defillama_protocols_ok": st == 200 and isinstance(llama, list),
+            "geckoterminal_dexes_ok": st3 == 200 and isinstance(gecko, dict),
+            "dexscreener_profiles_ok": st2 == 200 and isinstance(dex, list),
+        },
+        "evidence_class": "DISCOVERY",
+    }
+    snapshot["stage_gate"] = "CLOSED" if p3_closure_ready(snapshot, {
+        "fingerprint": previous_fp,
+        "stable_runs": stable_runs - 1 if universe_fingerprint == previous_fp else 0,
+    }) else "OPEN"
+
+    write_json(
+        "P3_CLOSURE_STATE.json",
+        {
+            "fingerprint": universe_fingerprint,
+            "stable_runs": stable_runs,
+            "updated_at": snapshot["time"],
+            "stage_gate": snapshot["stage_gate"],
+        },
+    )
+    return write_json("P3_PROTOCOL_SNAPSHOT.json", snapshot)
 
 def load_seed_tokens():
     path=ROOT/"chains/polygon-pos/p4_seed_tokens.txt"
