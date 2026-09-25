@@ -12,24 +12,46 @@
 - GitHub governance state record.
 - Chain research registry and reusable chain template.
 
+## 2026-09-25 — Polygon Saturation Track Locked
+
+### Scope
+- Polygon PoS Mainnet only.
+- Chain ID 137.
+- No other blockchain research until Polygon saturation gate closes.
+- Research repository remains manish91082-coder/ghost-hunter-research-all-block-chains.
+
+### Completed
+- Polygon evidence track folder.
+- Polygon base profile.
+- Static-data saturation checklist.
+- Polygon saturation research plan.
+- Explicit pre-transaction data requirements.
+- Evidence-state discipline: VERIFIED / PARTIAL / HISTORICAL / UNVERIFIED / CONFLICTED / STALE / DEPRECATED.
+- No guaranteed-profit claim policy. Economic certification must use exact state, costs and simulation.
+
+### Research evidence used for first gate
+- Polygon Developer Docs mainnet configuration identifies Polygon Mainnet as chain ID 137, native currency POL and PolygonScan as block explorer.
+- Polygon Developer Docs identify Bor and Heimdall in the Polygon PoS node stack.
+- PolygonScan's Polygon POS API documentation exposes indexed blocks, transactions, tokens, contracts and logs for chain ID 137.
+
+### Current verification state
+The above are research-level documented facts. No current pair count, pool count, DEX count, liquidity figure or strategy profitability number has been declared because those require a reproducible live/on-chain census.
+
+### Next gate
+P1: Build live Polygon ground-truth evidence capture:
+1. latest block/header
+2. RPC health and agreement
+3. block timing observations
+4. gas fields
+5. reorg/finality observations
+6. system/bridge address discovery
+7. on-chain bytecode and creation verification
+
 ### Git Verification
 - Repository: manish91082-coder/ghost-hunter-research-all-block-chains
 - Branch: main
-- Latest verified HEAD will be recorded after the current update.
-
-### Next execution sequence
-1. Build canonical chain universe registry.
-2. Verify each chain's flash-liquidity sources, DEX universe, RPC options, block/finality characteristics and execution constraints.
-3. Build protocol/DEX registry.
-4. Build token/pair/pool indexing model.
-5. Implement event-driven ingestion.
-6. Implement scanner kernel and first scanner families.
-7. Implement Opportunity Bus and deduplication.
-8. Implement exact simulator and profit calculator.
-9. Implement executor gates and contract profit guard.
-10. Build shadow-mode validation.
-11. Build fork replay tests.
-12. Run controlled canary only after safety criteria pass.
+- Last verified HEAD before this ledger update: 3c9c46ec74731d4a1bf3f379a06ec71ae29619cd
+- Current status update commit follows this progress update.
 
 ### Rule
-Each future milestone must update this file, PROJECT_STATUS.md and the relevant architecture/research files in the same project progression.
+Each future milestone must update this file, PROJECT_STATUS.md and the relevant Polygon research/evidence files in the same project progression.
