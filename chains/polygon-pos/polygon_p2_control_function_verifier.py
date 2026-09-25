@@ -192,7 +192,7 @@ def main():
         local = []
         for item in pool.ordered(eligible):
             endpoint_id = item["id"]
-            if endpoint_id in successful[index]:
+            if endpoint_id in observed[index]:
                 continue
             obs = pool.request(
                 endpoint_id,
@@ -277,7 +277,7 @@ def main():
     Path(args.summary).write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
     incomplete = {
-        f"{targets[index]['parent']}:{targets[index]['probe_id']}": sorted(successful[index])
+        f"{targets[index]['parent']}:{targets[index]['probe_id']}": sorted(observed[index])
         for index in range(len(targets))
         if len(observed[index]) < args.min_probe_endpoints
     }
