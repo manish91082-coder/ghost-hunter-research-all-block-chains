@@ -32,6 +32,12 @@ This file is the machine-readable-oriented human registry for execution-relevant
 | sPOLChild | `0xd1CD49A08AeF3Af93457aEc17C786C2b7F48eCd7` | Polygon | DOCUMENTED | 0xPolygon sPOL security scope |
 | RootSetter | `0xEb1CD9e44aB6BfE5a55EE96c468086e51B1B873a` | Polygon | DOCUMENTED | Polygon PIP-54 |
 | GovernanceProxy | `0x6e7a5820baD6cebA8Ef5ea69c0C92EbbDAc9CE48` | Ethereum | DOCUMENTED | 0xPolygon security scope |
+| Plasma Registry | `0x33a02E6cC863D393d6Bf231B697b82F6e499cA71` | Ethereum | DOCUMENTED | 0xPolygon security scope |
+| ValidatorShare | `0x7e94d6cAbb20114b22a088d828772645f68CC67B` | Ethereum | DOCUMENTED | 0xPolygon security scope |
+| Plasma ERC20Predicate | `0x626fb210bf50e201ED62cA2705c16DE2a53DC966` | Ethereum | DOCUMENTED | 0xPolygon security scope |
+| Plasma ERC721Predicate | `0x36C2503d53C6948331144b85D1e74a3B96731d1b` | Ethereum | DOCUMENTED | 0xPolygon security scope |
+| Plasma EIP1559Burn | `0x70bca57f4579f58670ab2d18ef16e02c17553c38` | Ethereum | DOCUMENTED | 0xPolygon security scope |
+| Plasma MaticToken | `0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0` | Ethereum | DOCUMENTED | 0xPolygon security scope |
 
 ## Ethereum-side control/bridge objects
 
