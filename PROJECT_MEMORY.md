@@ -1,17 +1,60 @@
 # Project Memory
 
 ## Durable Project Context
+
 Ghost Hunter Universal Profit Mesh is a separate research/architecture track from the existing Ghost Hunter AI Smart implementation repository.
+
+### Canonical Research Repository
+manish91082-coder/ghost-hunter-research-all-block-chains
+
+### Repository Safety Lock
+- This research track works only in the canonical repository above.
+- Legacy implementation repositories must not be modified by research steps.
+- Before any GitHub write, verify repository identity, branch, PROJECT_STATUS.md and latest HEAD.
+- Next means one atomic, evidence-backed, verified progression step.
+
+### Current Scope Lock
+Polygon PoS Mainnet only, chain ID 137.
+
+No other blockchain research begins until Polygon reaches its explicit saturation gate.
 
 ### Objective
 Create a continuously operating, multi-chain opportunity intelligence and execution system that can observe economically relevant DeFi/MEV/orderflow surfaces and safely convert validated opportunities into realized net PnL.
 
-### Scope
-- ~28–30+ economically relevant chains initially, with universe expansion based on evidence.
-- All economically relevant pairs/pools/routes, not blind brute-force polling.
-- DEX/DEX, intra-DEX, triangular, multi-hop, cross-chain, CEX/DEX, backrun, liquidation, intent/RFQ/filler, solver/relayer, liquidity/state-transition and meta-opportunity surfaces.
-- Initial scanner target: ~150 logical scanners using a shared kernel/fabric.
-- Scalable detector fabric: 300+ and eventually 1000+ configurable detectors without 1000 independent processes.
+### Polygon Saturation Objective
+Build an evidence-backed Polygon knowledge base containing:
+
+- chain/runtime ground truth
+- RPC/node fabric
+- system and bridge contracts
+- protocol/DEX universe
+- token universe
+- pool/pair universe
+- route/combination universe
+- flash-liquidity/lending/liquidation surfaces
+- MEV/orderflow/intent/solver surfaces
+- strategy universe
+- technical-analysis features
+- AI/ML prediction surfaces
+- exact economic/cost model
+- unknown and negative-space registry
+
+### Evidence Doctrine
+No address, pair, pool, protocol, liquidity figure or profitability claim is accepted as VERIFIED without reproducible evidence.
+
+Evidence must distinguish:
+- VERIFIED
+- PARTIAL
+- HISTORICAL
+- UNVERIFIED
+- CONFLICTED
+- STALE
+- DEPRECATED
+
+### Profit Doctrine
+The project does not promise mathematical certainty of profit in the external market.
+
+The engineering target is stricter: never knowingly authorize a transaction unless fresh state, exact simulation, all costs, risk, competition and minimum-profit gates pass. Realized on-chain PnL is the final truth.
 
 ### Core Doctrine
 Scanner -> Opportunity Signal -> Fresh-State Recheck -> Exact Simulation -> Risk/Competition Gate -> Execution Governor -> Profit Guard -> Chain Execution -> Receipt Verification -> Realized PnL -> Learning.
