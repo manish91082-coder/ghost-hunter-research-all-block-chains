@@ -1,78 +1,88 @@
 #!/usr/bin/env python3
-"""Restore the latest persistent saturation-conveyor working-set artifact."""
+"""Restore the latest persistent saturation-conveyor artifact via GitHub CLI."""
 import argparse
-import io
-import json
 import os
-import sys
-import urllib.error
-import urllib.request
-import zipfile
+import shutil
+import subprocess
+import tempfile
 from pathlib import Path
 
-def api(path):
-    token=os.environ.get("GITHUB_TOKEN")
-    repo=os.environ.get("GITHUB_REPOSITORY","manish91082-coder/ghost-hunter-research-all-block-chains")
-    req=urllib.request.Request(
-        "https://api.github.com"+path,
-        headers={
-            "Accept":"application/vnd.github+json",
-            "User-Agent":"ghost-hunter-state-store/1.1",
-        },
-        method="GET",
-    )
-    if token:
-        req.add_header("Authorization",f"Bearer {token}")
-    with urllib.request.urlopen(req,timeout=30) as r:
-        return r.status,r.read(),r.headers
+DEFAULT_REPO = "manish91082-coder/ghost-hunter-research-all-block-chains"
+ARTIFACT = "saturation-conveyor-state"
 
-def safe_member(name):
-    p=Path(name)
-    return not p.is_absolute() and ".." not in p.parts and name.startswith("automation/")
+def run(cmd):
+    return subprocess.run(cmd, capture_output=True, text=True, timeout=90)
 
-def restore(target):
-    repo=os.environ.get("GITHUB_REPOSITORY","manish91082-coder/ghost-hunter-research-all-block-chains")
-    try:
-        _,raw,_=api(f"/repos/{repo}/actions/artifacts?name=saturation-conveyor-state&per_page=20")
-        data=json.loads(raw)
-        artifacts=[
-            a for a in data.get("artifacts",[])
-            if not a.get("expired") and a.get("name")=="saturation-conveyor-state"
-        ]
-        artifacts.sort(key=lambda a:a.get("created_at",""),reverse=True)
-        if not artifacts:
-            print("NO_STATE_ARTIFACT")
+def safe_member(path: Path) -> bool:
+    return not path.is_absolute() and ".." not in path.parts
+
+def latest_completed_run(repo: str):
+    cmd = [
+        "gh", "run", "list",
+        "--repo", repo,
+        "--workflow", "saturation-conveyor.yml",
+        "--limit", "30",
+        "--json", "databaseId,status,conclusion,createdAt",
+    ]
+    p = run(cmd)
+    if p.returncode != 0:
+        raise RuntimeError(f"gh run list failed: {p.stderr.strip()}")
+    import json
+    rows = json.loads(p.stdout or "[]")
+    completed = [r for r in rows if r.get("status") == "completed"]
+    completed.sort(key=lambda r: r.get("createdAt", ""), reverse=True)
+    return completed[0] if completed else None
+
+def restore(target: str):
+    repo = os.environ.get("GITHUB_REPOSITORY", DEFAULT_REPO)
+    target_path = Path(target)
+    with tempfile.TemporaryDirectory(prefix="conveyor-artifact-") as tmp:
+        tmp_path = Path(tmp)
+        latest = latest_completed_run(repo)
+        if latest is None:
+            print("NO_COMPLETED_RUN")
             return 0
 
-        artifact=artifacts[0]
-        _,zipraw,_=api(f"/repos/{repo}/actions/artifacts/{artifact['id']}/zip")
-        with zipfile.ZipFile(io.BytesIO(zipraw)) as z:
-            members=[n for n in z.namelist() if not n.endswith("/") and safe_member(n)]
-            if not any(n.endswith("automation/saturation_state.json") or n=="automation/saturation_state.json" for n in members):
-                raise RuntimeError("persistent artifact missing automation/saturation_state.json")
+        cmd = [
+            "gh", "run", "download", str(latest["databaseId"]),
+            "--repo", repo,
+            "--name", ARTIFACT,
+            "--dir", str(tmp_path),
+        ]
+        p = run(cmd)
+        if p.returncode != 0:
+            raise RuntimeError(f"gh run download failed: {p.stderr.strip()}")
 
-            for name in members:
-                destination=Path(name)
-                destination.parent.mkdir(parents=True,exist_ok=True)
-                destination.write_bytes(z.read(name))
+        files = [p for p in tmp_path.rglob("*") if p.is_file()]
+        if not files:
+            raise RuntimeError("downloaded artifact is empty")
 
-        # Make the explicit target check part of the contract.
-        if not Path(target).exists():
-            raise RuntimeError(f"restored checkpoint missing: {target}")
-        print(f"RESTORED_ARTIFACT_ID={artifact['id']}")
-        print(f"RESTORED_FILES={len(members)}")
-        return 0
+        # The artifact is created from automation/* and therefore restores only
+        # the automation working set. Reject any unexpected archive traversal.
+        for src in files:
+            rel = src.relative_to(tmp_path)
+            if not safe_member(rel):
+                raise RuntimeError(f"unsafe artifact member: {rel}")
 
-    except urllib.error.HTTPError as e:
-        print(f"ARTIFACT_API_HTTP_ERROR={e.code}",file=sys.stderr)
-        return 2
-    except Exception as e:
-        print(f"ARTIFACT_RESTORE_ERROR={type(e).__name__}: {e}",file=sys.stderr)
-        return 2
+        target_root = target_path.parent
+        target_root.mkdir(parents=True, exist_ok=True)
 
-if __name__=="__main__":
-    ap=argparse.ArgumentParser()
-    ap.add_argument("command",choices=["restore"])
-    ap.add_argument("--target",default="automation/saturation_state.json")
-    args=ap.parse_args()
+        for src in files:
+            rel = src.relative_to(tmp_path)
+            dest = target_root / rel
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src, dest)
+
+    if not target_path.exists():
+        raise RuntimeError(f"restored checkpoint missing: {target_path}")
+
+    print(f"RESTORED_RUN_ID={latest['databaseId']}")
+    print("RESTORED_FILES=working-set")
+    return 0
+
+if __name__ == "__main__":
+    ap = argparse.ArgumentParser()
+    ap.add_argument("command", choices=["restore"])
+    ap.add_argument("--target", default="automation/saturation_state.json")
+    args = ap.parse_args()
     raise SystemExit(restore(args.target))
