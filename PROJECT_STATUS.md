@@ -398,3 +398,21 @@ Evidence:
 - Critical-lane scheduling now avoids repeating already-closed P2 tasks and permits two independent critical tasks per bounded round.
 - This is an execution-efficiency improvement only; evidence standards and P2 gate predicates remain unchanged.
 - The next fresh conveyor run must validate both the scheduler and repaired P2 evidence paths on GitHub Actions.
+
+
+## 2026-09-26 — P2 control-function evidence classification repair
+- Run `36180198453` provided the decisive failure evidence: head quorum passed, but ten probe results were marked conflicts.
+- Artifact inspection showed Tatum `-16401` responses were provider plan restrictions rather than contract outcomes. Tatum's current gateway documentation identifies `-16401` as a method-plan restriction. citeturn402236search0turn402236search6
+- Artifact inspection also identified a malformed calldata encoding for the second parent ProxyAdmin probes, yielding `-32602`.
+- Commits `e9c1d90c68bbf78a39daf2ed4b4fd6e28b0be140`, `93ed26ec64fa8b79d2d63e4ad08e1815f08b9a30`, and `f418b3a58e9fb5b6f75b09f48eb80ebbe9e2d429` repair the evidence classifier, add regression tests, and correct the calldata.
+- Latest main HEAD: `f418b3a58e9fb5b6f75b09f48eb80ebbe9e2d429`.
+- Fresh corrected control-function workflow run: `36181173124`, currently queued. Earlier intermediate runs `36181163798` and `36181167860` are on the immediately preceding repair commits and are not authoritative for the final HEAD.
+
+### Gate state
+- P1: PASSED.
+- P2 ERC-1967 storage: PASSED.
+- P2 derived runtime-code: VERIFIED.
+- P2 provenance: OPEN/PARTIAL pending another independent observation for one candidate transaction.
+- P2 control-function: OPEN pending corrected artifact.
+- Polygon saturation gate: OPEN.
+- No P2 promotion is made from queued/pending state.
