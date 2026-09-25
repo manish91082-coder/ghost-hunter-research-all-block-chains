@@ -282,3 +282,17 @@ The prior verifier could return exit code 0 when every RPC probe failed because 
 
 ### Next atomic step
 Inspect the post-hardening GitHub Actions run. If the public endpoints still return 403, classify them as inaccessible from GitHub-hosted runner context and switch the same unchanged verifier to another permitted outbound-JSON-RPC environment or replace the endpoint set with independently reachable public endpoints. Do not weaken the evidence gate.
+
+
+## 2026-09-25 — CI RPC pool rotation
+
+### Evidence
+- Fail-closed Run 10 (`36157003942`) completed with failure because all three prior RPC endpoints returned HTTP 403 from the GitHub-hosted runner and produced no usable chain/head/code evidence.
+- The failure is now correctly classified as infrastructure access failure rather than verification success.
+
+### Action
+- Rotated the GitHub Actions probe pool to Tenderly public, Nodies public, and OnFinality public Polygon endpoints, all listed by Polygon's current RPC documentation as public options. citeturn2view0
+- No evidence threshold was weakened and no target was promoted to VERIFIED.
+
+### Next atomic step
+Observe the new push-triggered run and inspect its artifact. If the new pool is also inaccessible from GitHub-hosted runners, stop rotating blindly and move the unchanged verifier to another permitted outbound-RPC execution environment, while retaining every failure as evidence.
