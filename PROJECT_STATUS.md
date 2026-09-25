@@ -110,3 +110,15 @@ P1 continuation: execute the read-only Polygon live-verification batch against i
 - P1 live verification: **NOT PASSED**.
 - Polygon saturation gate: **OPEN**.
 - DEX/protocol discovery remains blocked until P1 infrastructure evidence is genuinely verified.
+
+
+## 2026-09-25 — RPC pool rotation after GitHub-runner access evidence
+- Run `36157003942` failed as intended after the fail-closed verifier detected zero successful RPC identity/head observations.
+- Artifact evidence showed HTTP 403 from all three prior CI endpoints: dRPC, PublicNode and 1RPC. This is evidence of access failure from the GitHub-hosted runner context, not proof that the providers are globally offline.
+- The CI RPC probe pool has therefore been rotated to three other Polygon-documented public endpoints: Tenderly public RPC, Nodies public RPC, and OnFinality public RPC. Polygon's current documentation lists these among public RPC options and notes that public RPCs may have rate limits or traffic restrictions. citeturn2view0
+- This is an infrastructure-access experiment, not a relaxation of the P1 evidence gate.
+
+## Gate state
+- P1 live verification: **NOT PASSED**.
+- Polygon saturation gate: **OPEN**.
+- DEX/protocol discovery remains blocked.
