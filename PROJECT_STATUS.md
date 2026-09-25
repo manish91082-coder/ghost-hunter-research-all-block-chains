@@ -44,6 +44,7 @@ Real-money deployment: OFF
 - Proxy implementation/control verification.
 - Full bridge/state-sync surface census.
 - Remaining bridge/predicate/exit/withdrawal/control surface reconciliation.
+- Additional predicate/control and Plasma-era bridge candidates added to the discovery registry for current-vs-historical classification.
 - DEX/protocol address census.
 - Token universe census.
 - Pool/pair census.
