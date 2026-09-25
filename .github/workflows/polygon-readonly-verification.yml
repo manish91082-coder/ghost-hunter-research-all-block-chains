@@ -1,0 +1,50 @@
+name: Polygon Read-Only Verification
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  polygon-rpc-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout canonical repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run read-only Polygon capability probe
+        env:
+          POLYGON_RPC_1: ${{ secrets.POLYGON_RPC_1 }}
+          POLYGON_RPC_2: ${{ secrets.POLYGON_RPC_2 }}
+          POLYGON_RPC_3: ${{ secrets.POLYGON_RPC_3 }}
+        run: |
+          set -euo pipefail
+          RPC_ARGS=()
+          for endpoint in "$POLYGON_RPC_1" "$POLYGON_RPC_2" "$POLYGON_RPC_3"; do
+            if [ -n "$endpoint" ]; then
+              RPC_ARGS+=(--rpc "$endpoint")
+            fi
+          done
+          if [ "${#RPC_ARGS[@]}" -lt 2 ]; then
+            echo "Need at least two independent Polygon RPC endpoints."
+            exit 1
+          fi
+          python chains/polygon-pos/polygon_readonly_verifier.py "${RPC_ARGS[@]}"
+
+      - name: Upload verification artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: polygon-readonly-verification
+          path: |
+            polygon_rpc_observations.jsonl
+            polygon_verifier_checkpoint.json
+            polygon_rpc_head_summary.json
+          if-no-files-found: warn
