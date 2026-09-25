@@ -97,22 +97,33 @@ def main():
     ap=argparse.ArgumentParser(); ap.add_argument('--max-critical',type=int,default=1); ap.add_argument('--max-shadow',type=int,default=2); ap.add_argument('--time-budget',type=int,default=780); args=ap.parse_args()
     state=load_json(STATE,{'schema_version':1,'critical_stage':'P2','research_gate':'P2_OPEN','shadow_lane':True,'stages':{},'tasks':{},'last_progress_signature':'','last_run':None})
     old_gate=state.get('research_gate','P2_OPEN'); old_stage=state.get('critical_stage','P2'); started=time.time(); executed=[]
-    critical_list = CRITICAL_P2 if state.get('research_gate') != 'P2_CLOSED' else PROMOTION
-    critical_cursor = int(state.get('cursors',{}).get('critical',0))
-    attempts=0
-    while attempts < len(critical_list) and len([x for x in executed if x in critical_list]) < args.max_critical:
-        task=critical_list[critical_cursor % len(critical_list)]
-        critical_cursor=(critical_cursor+1) % len(critical_list)
-        attempts += 1
-        ts=task_state(state,task)
-        if ts.get('cooldown_until',0)>time.time(): continue
-        result=execute(task); ts['attempts']=ts.get('attempts',0)+1; ts['last_run']=now(); ts['ok']=bool(result.get('ok'))
-        ts['last_result_summary']=str(result)[-4000:]
-        if ts['ok']: ts['last_error']=''; ts['cooldown_until']=0
-        else: ts['last_error']=str(result)[-1500:]; ts['cooldown_until']=time.time()+min(3600,300*(2**min(ts['attempts'],4)))
-        executed.append(task)
-        if time.time()-started>args.time_budget: break
-    state.setdefault('cursors',{})['critical']=critical_cursor
+    if state.get('research_gate') != 'P2_CLOSED':
+        critical_list=CRITICAL_P2
+        critical_cursor=int(state.get('cursors',{}).get('critical',0))
+        attempts=0
+        while attempts < len(critical_list) and len([x for x in executed if x in critical_list]) < args.max_critical:
+            task=critical_list[critical_cursor % len(critical_list)]
+            critical_cursor=(critical_cursor+1) % len(critical_list)
+            attempts += 1
+            ts=task_state(state,task)
+            if ts.get('cooldown_until',0)>time.time(): continue
+            result=execute(task); ts['attempts']=ts.get('attempts',0)+1; ts['last_run']=now(); ts['ok']=bool(result.get('ok'))
+            ts['last_result_summary']=str(result)[-4000:]
+            if ts['ok']: ts['last_error']=''; ts['cooldown_until']=0
+            else: ts['last_error']=str(result)[-1500:]; ts['cooldown_until']=time.time()+min(3600,300*(2**min(ts['attempts'],4)))
+            executed.append(task)
+            if time.time()-started>args.time_budget: break
+        state.setdefault('cursors',{})['critical']=critical_cursor
+    else:
+        current=state.get('critical_stage','P3')
+        if current in PROMOTION and current not in ('P11',):
+            ts=task_state(state,current)
+            if ts.get('cooldown_until',0)<=time.time():
+                result=execute(current); ts['attempts']=ts.get('attempts',0)+1; ts['last_run']=now(); ts['ok']=bool(result.get('ok')); ts['last_result_summary']=str(result)[-4000:]
+                if ts['ok']: ts['last_error']=''; ts['cooldown_until']=0
+                else: ts['last_error']=str(result)[-1500:]; ts['cooldown_until']=time.time()+min(3600,300*(2**min(ts['attempts'],4)))
+                executed.append(current)
+    
 
     shadow_run=0
     shadow_cursor=int(state.get('cursors',{}).get('shadow',0))
