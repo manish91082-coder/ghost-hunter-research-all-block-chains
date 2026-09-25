@@ -1,0 +1,62 @@
+name: Polygon P2 Control Storage Verification
+
+on:
+  push:
+    paths:
+      - "chains/polygon-pos/polygon_p2_control_verifier.py"
+      - "chains/polygon-pos/polygon_p2_control_reconciliation.py"
+      - "chains/polygon-pos/p2_control_targets.txt"
+      - "chains/polygon-pos/rpc_pool.txt"
+      - "chains/polygon-pos/polygon_readonly_verifier.py"
+      - ".github/workflows/polygon-p2-control-verification.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: polygon-p2-control-verification-main
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  polygon-p2-control:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TATUM_API_KEY: ${{ secrets.TATUM_API_KEY }}
+    steps:
+      - name: Checkout canonical repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate P2 sources
+        run: |
+          set -euo pipefail
+          python -m py_compile             chains/polygon-pos/polygon_readonly_verifier.py             chains/polygon-pos/polygon_p2_control_verifier.py             chains/polygon-pos/polygon_p2_control_reconciliation.py
+
+      - name: Run read-only P2 ERC-1967 storage verification
+        run: |
+          set -euo pipefail
+          verifier_status=0
+          reconciliation_status=0
+          python chains/polygon-pos/polygon_p2_control_verifier.py             --rpc-pool-file chains/polygon-pos/rpc_pool.txt             --min-request-interval 1.0             --address "@chains/polygon-pos/p2_control_targets.txt" || verifier_status=$?
+          python chains/polygon-pos/polygon_p2_control_reconciliation.py || reconciliation_status=$?
+          if [ "$verifier_status" -ne 0 ]; then
+            exit "$verifier_status"
+          fi
+          exit "$reconciliation_status"
+
+      - name: Upload P2 evidence artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: polygon-p2-control-verification
+          path: |
+            polygon_p2_control_observations.jsonl
+            polygon_p2_control_head_summary.json
+            polygon_p2_control_reconciliation.json
+          if-no-files-found: warn
