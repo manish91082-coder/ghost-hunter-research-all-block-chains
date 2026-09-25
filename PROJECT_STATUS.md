@@ -33,6 +33,8 @@ Real-money deployment: OFF
 - Recent protocol-generation evidence recorded.
 - Polygon system/bridge contract discovery census created with address-level evidence and explicit live-verification state.
 - Proxy/control/upgradeability requirements recorded.
+- Polygon machine-readable-oriented address registry created.
+- Polygon bridge/state-sync surface map created, including PoS Portal, Fx Portal and downstream state-sync consumer separation.
 
 ## Polygon Work Not Yet Complete
 - Live RPC ground-truth capture.
@@ -41,6 +43,7 @@ Real-money deployment: OFF
 - Live bytecode verification of system/bridge addresses.
 - Proxy implementation/control verification.
 - Full bridge/state-sync surface census.
+- Remaining bridge/predicate/exit/withdrawal/control surface reconciliation.
 - DEX/protocol address census.
 - Token universe census.
 - Pool/pair census.
@@ -59,4 +62,4 @@ This repository plus the latest committed research/evidence files.
 No live execution should be enabled from this repository until all required validation gates are explicitly satisfied.
 
 ## Next gate
-P1 continuation: live-verify the Polygon system/bridge address candidates, then enumerate the remaining bridge/state-sync contracts before beginning the DEX universe.
+P1 continuation: live-verify the Polygon system/bridge address registry and reconcile the remaining bridge/predicate/exit/withdrawal/state-sync surfaces. DEX discovery remains blocked until the infrastructure gate is sufficiently verified.
