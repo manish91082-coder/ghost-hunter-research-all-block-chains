@@ -311,3 +311,10 @@ Evidence:
   - control function: bfe36c431d56de65e1b0164429d48d387ca30f7f
 - These commits are evidence-acquisition triggers only. They do not relax thresholds or promote any gate.
 - P2 derived runtime-code and P2 control-function remain pending until their actual CI job conclusions and artifacts are inspected.
+
+## 2026-09-25 — Control-function transport-evidence false-positive closed
+- Reconciliation was hardened so only HTTP 200 JSON-RPC responses can become semantic call fingerprints.
+- HTTP 403/429/timeouts and other transport failures are explicitly excluded from evidence matching.
+- Added a regression test proving an HTTP 403 response is not evidence.
+- Commit fc126f0f2e06db43de6d9082f8d07e2e7d0b773e adds the regression guard; the reconciliation correction is commit b6539dcf941a718018f915e274e3a03763e167ca.
+- The control-function workflow is automatically re-triggered by these path changes. Its gate remains pending until the resulting artifact is inspected.
