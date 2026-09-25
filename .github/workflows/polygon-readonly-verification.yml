@@ -5,6 +5,7 @@ on:
     paths:
       - "chains/polygon-pos/polygon_readonly_verifier.py"
       - "chains/polygon-pos/verification_targets.txt"
+      - "chains/polygon-pos/polygon_verification_reconciliation.py"
       - ".github/workflows/polygon-readonly-verification.yml"
   workflow_dispatch:
 
@@ -27,8 +28,11 @@ jobs:
       - name: Run read-only Polygon capability probe
         run: |
           set -euo pipefail
-          python -m py_compile chains/polygon-pos/polygon_readonly_verifier.py
-          python chains/polygon-pos/polygon_readonly_verifier.py             --rpc "https://polygon.drpc.org"             --rpc "https://polygon.publicnode.com"             --rpc "https://1rpc.io/matic"             --address "@chains/polygon-pos/verification_targets.txt"
+          python -m py_compile chains/polygon-pos/polygon_readonly_verifier.py chains/polygon-pos/polygon_verification_reconciliation.py
+          verifier_status=0
+          python chains/polygon-pos/polygon_readonly_verifier.py             --rpc "https://polygon.drpc.org"             --rpc "https://polygon.publicnode.com"             --rpc "https://1rpc.io/matic"             --address "@chains/polygon-pos/verification_targets.txt" || verifier_status=$?
+          python chains/polygon-pos/polygon_verification_reconciliation.py || true
+          exit "$verifier_status"
 
       - name: Upload verification artifacts
         if: always()
@@ -39,4 +43,5 @@ jobs:
             polygon_rpc_observations.jsonl
             polygon_verifier_checkpoint.json
             polygon_rpc_head_summary.json
+            polygon_verification_reconciliation.json
           if-no-files-found: warn
