@@ -118,7 +118,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
 
     def test_p3_sources_and_closure_markers_are_present(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
-        self.assertIn("https://api.geckoterminal.com/api/v2/networks/polygon/dexes", worker)
+        self.assertIn("https://api.geckoterminal.com/api/v2/networks/polygon_pos/dexes", worker)
         self.assertIn('snapshot["stage_gate"]', worker)
         self.assertIn('"CLOSED"', worker)
         self.assertIn("P3_CLOSURE_STATE.json", worker)
