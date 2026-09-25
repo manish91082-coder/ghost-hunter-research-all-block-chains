@@ -144,3 +144,10 @@ Locked facts:
 - no unresolved code conflicts.
 
 Boundary: runtime-code identity is verified, but proxy implementation/admin, owner/roles, creation evidence, ABI/source, function/event behavior and historical/current classification remain P2 work.
+
+## 2026-09-25 — P2 control-plane execution lock
+- P1 evidence is frozen in Run #30.
+- P2 starts from the same 11-target chain-137 set and the same adaptive RPC pool.
+- First P2 slice is deliberately narrow: ERC-1967 implementation/admin/beacon storage slots only.
+- Two independent matching results per target/slot are mandatory; no majority selection.
+- P2 read-only storage verification does not by itself prove proxy semantics for non-standard proxies. Further function/control probes remain required even after this slice passes.
