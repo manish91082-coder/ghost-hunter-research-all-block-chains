@@ -7,6 +7,7 @@ on:
       - "chains/polygon-pos/p2_derived_control_provenance.txt"
       - "chains/polygon-pos/polygon_readonly_verifier.py"
       - "chains/polygon-pos/rpc_pool.txt"
+      - "chains/polygon-pos/polygon_p2_derived_reconciliation.py"
       - ".github/workflows/polygon-p2-derived-control-verification.yml"
   workflow_dispatch:
 
@@ -40,7 +41,12 @@ jobs:
       - name: Verify derived control runtime code
         run: |
           set -euo pipefail
-          python chains/polygon-pos/polygon_readonly_verifier.py             --rpc-pool-file chains/polygon-pos/rpc_pool.txt             --min-request-interval 1.0             --min-code-endpoints 2             --code-recovery-rounds 2             --stale-block-tolerance 2             --address "@chains/polygon-pos/p2_derived_control_targets.txt"
+          python chains/polygon-pos/polygon_readonly_verifier.py             --rpc-pool-file chains/polygon-pos/rpc_pool.txt             --min-request-interval 1.0             --min-code-endpoints 2             --code-recovery-rounds 2             --stale-block-tolerance 2             --address "@chains/polygon-pos/p2_derived_control_targets.txt" || verifier_status=$?
+          python chains/polygon-pos/polygon_p2_derived_reconciliation.py || reconciliation_status=$?
+          if [ "$verifier_status" -ne 0 ]; then
+            exit "$verifier_status"
+          fi
+          exit "$reconciliation_status"
 
       - name: Upload derived evidence
         if: always()
@@ -51,4 +57,5 @@ jobs:
             polygon_rpc_observations.jsonl
             polygon_verifier_checkpoint.json
             polygon_rpc_head_summary.json
+            polygon_p2_derived_reconciliation.json
           if-no-files-found: warn
