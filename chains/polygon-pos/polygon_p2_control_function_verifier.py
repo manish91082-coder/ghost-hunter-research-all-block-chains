@@ -44,6 +44,16 @@ def load_targets(path):
     return targets
 
 
+def head_quorum_ready(quorum_endpoints, best_span, min_endpoints, tolerance):
+    """Return True only when the selected independent-head quorum is fresh enough."""
+    return (
+        bool(quorum_endpoints)
+        and len(quorum_endpoints) >= min_endpoints
+        and best_span is not None
+        and best_span <= tolerance
+    )
+
+
 def make_record(endpoint_id, target, obs, observation_block):
     body = obs.get("body")
     result = body.get("result") if isinstance(body, dict) else None
@@ -187,7 +197,12 @@ def main():
     # Public RPC heads can be staggered by a few blocks while requests are
     # being rate-limited. Re-read heads before declaring the stage blocked.
     for recovery_round in range(1, max(1, args.head_recovery_rounds)):
-        if quorum_endpoints and len(quorum_endpoints) >= args.min_head_endpoints:
+        if head_quorum_ready(
+            quorum_endpoints,
+            best_span,
+            args.min_head_endpoints,
+            args.stale_block_tolerance,
+        ):
             break
         cooldown_waits = [
             pool.state[eid]["cooldown_until"] - time.monotonic()
