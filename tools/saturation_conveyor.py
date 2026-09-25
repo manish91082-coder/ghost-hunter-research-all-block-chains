@@ -17,6 +17,7 @@ WORKER=Path('tools/polygon_universe_worker.py')
 
 def now(): return time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())
 def load_json(p,default):
+    p=Path(p)
     return json.loads(p.read_text(encoding='utf-8')) if p.exists() else default
 def save_json(p,v):
     p.parent.mkdir(parents=True,exist_ok=True); p.write_text(json.dumps(v,indent=2,sort_keys=True)+'\n',encoding='utf-8')
@@ -34,19 +35,16 @@ def run_p2_derived():
     cmd=['python','chains/polygon-pos/polygon_readonly_verifier.py','--rpc-pool-file','chains/polygon-pos/rpc_pool.txt','--min-request-interval','1.0','--min-head-endpoints','2','--min-code-endpoints','2','--code-recovery-rounds','2','--stale-block-tolerance','2','--address','@chains/polygon-pos/p2_derived_control_targets.txt']
     a=run(cmd,timeout=700)
     b=run(['python','chains/polygon-pos/polygon_p2_derived_reconciliation.py'],timeout=60)
-    recon=load_json(PathLike('polygon_p2_derived_reconciliation.json'),{})
+    recon=load_json(Path('polygon_p2_derived_reconciliation.json'),{})
     return {'ok':a['ok'] and b['ok'],'verifier':a,'reconciliation':b,'reconciliation_state':recon.get('evidence_state')}
 
 def run_p2_control():
     cmd=['python','chains/polygon-pos/polygon_p2_control_function_verifier.py','--rpc-pool-file','chains/polygon-pos/rpc_pool.txt','--min-request-interval','1.0','--min-head-endpoints','2','--min-probe-endpoints','2','--recovery-rounds','2','--stale-block-tolerance','2','--target-file','chains/polygon-pos/p2_control_function_targets.txt']
     a=run(cmd,timeout=800)
     b=run(['python','chains/polygon-pos/polygon_p2_control_function_reconciliation.py'],timeout=60)
-    recon=load_json(PathLike('polygon_p2_control_function_reconciliation.json'),{})
+    recon=load_json(Path('polygon_p2_control_function_reconciliation.json'),{})
     return {'ok':a['ok'] and b['ok'],'verifier':a,'reconciliation':b,'reconciliation_state':recon.get('evidence_state')}
 
-class PathLike:
-    def __init__(self,p): self.p=p
-    def __fspath__(self): return str(self.p)
 def copy_summary(src,name):
     p=Path(src)
     if p.exists():
