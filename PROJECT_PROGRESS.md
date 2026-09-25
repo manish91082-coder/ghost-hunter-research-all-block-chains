@@ -595,3 +595,8 @@ Control-function reconciliation began requiring HTTP 200 for semantic evidence, 
 
 ### Current state
 The automation design is now materially more robust. A fresh scheduled/manual run is required to validate the repaired conveyor on a GitHub-hosted runner.
+
+## 2026-09-26 — Next integrity pass
+- Found a second-order provenance-gate weakness: independent observations were counted but matching was not required for `REPLAYED`.
+- Found a P5 universe accounting weakness: the same DEX pair can appear in token-pair discovery for both tokens, so raw append-only rows could inflate pair counts.
+- Both issues were repaired and regression-locked before live promotion.
