@@ -137,9 +137,20 @@ For every upgradeable/control-sensitive contract record:
 - emergency path;
 - current observation block.
 
-PIP-54 documents the Protocol Council governance model and legacy control surfaces, but published proposal state is not a substitute for current on-chain role state.
+PIP-54 documents the Protocol Council governance model and legacy control surfaces, but published proposal state is not a substitute for current on-chain role state. The official Polygon security scope also publishes the deployed contract census used as the discovery baseline. [Polygon security scope](https://github.com/0xPolygon/security/blob/main/scope-pos-contracts.md).
 
-## Batch H — Cross-RPC consistency
+## Batch H — Governance freshness and historical classification
+
+For each control-plane object, record two separate dimensions:
+
+- **published governance state**: what authoritative PIP/security documentation says;
+- **observed chain state**: what current on-chain storage/roles/proxy slots say.
+
+If they differ, classify the object as CONFLICTED until the difference is explained. A proposal, even a final one, does not prove current runtime ownership.
+
+Also retain historical deployments and legacy contracts because they are needed to explain migration paths, but exclude them from the active execution registry until current relevance is proven.
+
+## Batch I — Cross-RPC consistency
 
 Each critical result should be compared across independent endpoints.
 
@@ -162,7 +173,7 @@ Minimum critical consistency set:
 - implementation address;
 - critical role/control values.
 
-## Batch I — Evidence record
+## Batch J — Evidence record
 
 Each verified object should produce a structured record equivalent to:
 
