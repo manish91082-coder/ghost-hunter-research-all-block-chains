@@ -1,5 +1,9 @@
 name: Polygon Read-Only Verification
 
+concurrency:
+  group: polygon-readonly-verification-main
+  cancel-in-progress: true
+
 on:
   push:
     paths:
@@ -18,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      TATUM_API_KEY: \${{ secrets.TATUM_API_KEY }}
+      TATUM_API_KEY: ${{ secrets.TATUM_API_KEY }}
     steps:
       - name: Checkout canonical repo
         uses: actions/checkout@v4
