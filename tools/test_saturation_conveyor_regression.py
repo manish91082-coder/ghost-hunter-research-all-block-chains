@@ -21,6 +21,12 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("return data.get('stage_gate') == 'CLOSED'", self.source)
         self.assertNotIn("if stage=='P9': return p.exists()", self.source)
 
+    def test_critical_lane_skips_already_closed_tasks_and_runs_two(self):
+        source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
+        self.assertIn("def critical_task_complete(task, state):", source)
+        self.assertIn("if critical_task_complete(task, state):", source)
+        self.assertIn("--max-critical 2", self.workflow)
+
     def test_p2_is_still_hard_gate(self):
         self.assertIn("state['critical_stage']='P2'", self.source)
         self.assertIn("P2_OPEN", self.source)
