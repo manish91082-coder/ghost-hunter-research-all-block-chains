@@ -80,3 +80,22 @@ Each future milestone must update this file, PROJECT_STATUS.md and the relevant 
 - Pre-write HEAD: `2c318960675c8bc29ff0434a2e5b1d2b5631d1ef`.
 - Canonical repository: `manish91082-coder/ghost-hunter-research-all-block-chains`.
 - Canonical branch: `main`.
+
+
+## 2026-09-25 — Polygon Bridge Predicate Census Expansion
+
+### Added
+- Expanded the Polygon address registry with Mintable ERC20/ERC721/ERC1155 predicate proxies, EtherPredicateProxy and ChainExitERC1155Predicate.
+- Added Plasma-era DepositManagerProxy, WithdrawManagerProxy, EventsHubProxy, RootChain and StakeManager candidates for current-vs-historical classification.
+- Updated bridge/state-sync documentation to explicitly separate discovery evidence from live verification.
+
+### Evidence result
+Polygon's current published security scope lists the core deployed PoS/Plasma contract addresses, while PIP-54 documents additional predicate proxies and control/upgrade surfaces. These sources expand discovery coverage but do not replace live chain verification. 
+
+### Gate state
+- Polygon saturation gate remains OPEN.
+- No newly discovered address is VERIFIED.
+- DEX discovery remains blocked while bridge/state-sync and infrastructure classification is incomplete.
+
+### Next atomic step
+Build the live-verification batch specification for the expanded registry: exact RPC calls, proxy-slot checks, bytecode hashing, ABI/function probes, creation evidence, and reproducible evidence records. Do not fabricate live results.
