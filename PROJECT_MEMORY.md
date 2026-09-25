@@ -187,3 +187,11 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - For narrow derived-control verification, a deterministic two-endpoint fresh-head quorum is sufficient when the selected pair is within the configured block-span tolerance and both independently identify chain 137.
 - This is not majority voting and does not authorize conflicting state. The excluded endpoint remains recorded as stale/outlier evidence.
 - P1's existing all-successful-endpoint head behavior remains the default for the primary verifier path.
+
+## 2026-09-25 — Derived-control workflow wiring lock
+- The shared verifier supports deterministic fresh-head quorum through --min-head-endpoints.
+- Run 36172904065 exposed a workflow wiring gap: the derived-control workflow omitted that argument, so the verifier used its default all-successful-endpoint head requirement.
+- The same run still produced matching runtime-code hashes for all four derived addresses from two independent endpoints, confirming the code evidence path itself was healthy.
+- Commit 5b0212d5ca8ce094f4438f60e424189bc0259e6a is the canonical correction and explicitly passes --min-head-endpoints 2.
+- Never infer enabled verifier behavior from source support alone. The live workflow invocation is part of the evidence chain and must be verified.
+- Derived-code gate remains pending until a corrected CI artifact proves both fresh-head quorum and two-endpoint code agreement.
