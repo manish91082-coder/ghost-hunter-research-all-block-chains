@@ -36,6 +36,8 @@ def current_code_epoch():
     return h.hexdigest()
 
 
+TASK_REVISIONS={"P3":"p3-multisource-closure-v1"}
+
 def now(): return time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())
 def load_json(p,default):
     p=Path(p)
@@ -207,8 +209,11 @@ def main():
                 continue
             ts=task_state(state,task)
             epoch=current_code_epoch()
-            if ts.get('code_epoch') != epoch:
+            revision=TASK_REVISIONS.get(task)
+            if ts.get('code_epoch') != epoch or (revision and ts.get('revision') != revision):
                 ts['code_epoch']=epoch
+                if revision:
+                    ts['revision']=revision
                 ts['cooldown_until']=0
             if ts.get('cooldown_until',0)>time.time(): continue
             result=execute(task); ts['attempts']=ts.get('attempts',0)+1; ts['last_run']=now(); ts['ok']=bool(result.get('ok'))
@@ -222,6 +227,13 @@ def main():
         current=state.get('critical_stage','P3')
         if current in PROMOTION and current not in ('P11',):
             ts=task_state(state,current)
+            epoch=current_code_epoch()
+            revision=TASK_REVISIONS.get(current)
+            if ts.get('code_epoch') != epoch or (revision and ts.get('revision') != revision):
+                ts['code_epoch']=epoch
+                if revision:
+                    ts['revision']=revision
+                ts['cooldown_until']=0
             if ts.get('cooldown_until',0)<=time.time():
                 result=execute(current); ts['attempts']=ts.get('attempts',0)+1; ts['last_run']=now(); ts['ok']=bool(result.get('ok')); ts['last_result_summary']=str(result)[-4000:]
                 if ts['ok']: ts['last_error']=''; ts['cooldown_until']=0
