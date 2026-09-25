@@ -85,3 +85,10 @@ P1 continuation: execute the read-only Polygon live-verification batch against i
 - Automated deterministic reconciliation is now part of the GitHub verification workflow.
 - It produces `polygon_verification_reconciliation.json` and preserves conflicts instead of majority-selecting an RPC.
 - P1 remains NOT PASSED until actual runner output is observed.
+
+
+## Latest CI Integrity Check
+- Workflow command blocks were normalized into explicit multiline shell commands.
+- Python validation and live verification are separate steps.
+- Reconciliation runs after verifier execution and artifacts upload remains unconditional.
+- P1 remains NOT PASSED until actual live evidence is observed.
