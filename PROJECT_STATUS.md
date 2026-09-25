@@ -28,7 +28,10 @@ Real-money deployment: OFF
 - Polygon PoS base profile created from official documentation and indexed-data references.
 - Pre-transaction static-data saturation checklist created.
 - Polygon saturation research plan created.
-- Saturation gate defined: address, protocol, token, pool/pair, route, strategy, economic and evidence reconciliation.
+- Polygon RPC evidence file created with documented public RPC candidates and a live verification checklist.
+- Polygon block/timing/finality evidence file created.
+- Recent protocol-generation evidence recorded: August 2026 Austin/Kyoto security hardfork announcement.
+- Current live block/RPC telemetry deliberately NOT fabricated because direct JSON-RPC POST execution is unavailable in this research environment.
 
 ## Polygon Work Not Yet Complete
 - Live RPC ground-truth capture.
@@ -52,8 +55,5 @@ This repository plus the latest committed research/evidence files.
 ## Safety state
 No live execution should be enabled from this repository until all required validation gates are explicitly satisfied.
 
-## Latest verified HEAD
-3c9c46ec74731d4a1bf3f379a06ec71ae29619cd
-
 ## Next gate
-P1: Polygon live chain ground truth and RPC evidence capture.
+P1 continuation: obtain reproducible live Polygon RPC ground truth, then build system/bridge contract evidence.
