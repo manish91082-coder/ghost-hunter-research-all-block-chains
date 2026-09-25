@@ -309,3 +309,27 @@ Observe the new push-triggered run and inspect its artifact. If the new pool is 
 - Run #23 confirms head quorum is now correctly tolerant to a one-block tip difference while both endpoints are fresh and within the configured tolerance. Chain ID agreement is true and head agreement is true, but reconciliation remains PARTIAL because Tatum code coverage is incomplete.
 - Current engineering path: use the same free public Tatum endpoint with an optional free Tatum API key supplied only through GitHub Actions secret `TATUM_API_KEY`. QuickNode remains the second independent endpoint. No key is stored in source, artifacts or chat.
 - P1 remains NOT PASSED until 11/11 target code observations are independently matched across both endpoints.
+
+## 2026-09-25 — Adaptive Polygon RPC rotation
+### Added
+- Added `chains/polygon-pos/rpc_pool.txt` with the known Polygon public RPC candidate pool gathered during runner reconnaissance.
+- Reworked `polygon_readonly_verifier.py` into a request-level adaptive rotation model:
+  - full-pool identity/head discovery first;
+  - chain-137 eligibility before code probing;
+  - per-endpoint pacing;
+  - failure counters and cooldowns;
+  - HTTP 429 `Retry-After` handling;
+  - address-level rotation across eligible RPCs;
+  - minimum two distinct successful code endpoints per critical target.
+- Updated GitHub Actions to consume the canonical RPC pool and preserve the existing fail-closed reconciliation gate.
+- Corrected head gating so the verifier and reconciliation use the configured stale-block tolerance consistently.
+
+### Evidence discipline
+- RPC pool membership is candidate status only.
+- A failed/limited endpoint is recorded as evidence and skipped temporarily, not silently treated as trustworthy.
+- Conflicting code hashes remain conflicts. No majority vote is used.
+- P1 does not pass merely because rotation found one working endpoint.
+
+### Current gate
+- P1 live verification: **NOT PASSED** until the adaptive-pool run produces two independent matching code observations for every critical target.
+- No DEX/protocol expansion before P1 passes.
