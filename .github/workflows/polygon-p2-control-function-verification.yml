@@ -39,6 +39,7 @@ jobs:
           python -m py_compile chains/polygon-pos/polygon_readonly_verifier.py
           python -m py_compile chains/polygon-pos/polygon_p2_control_function_verifier.py
           python -m py_compile chains/polygon-pos/polygon_p2_control_function_reconciliation.py
+          python chains/polygon-pos/test_p2_control_function_regression.py
 
       - name: Run read-only P2 control-function probes
         run: |
