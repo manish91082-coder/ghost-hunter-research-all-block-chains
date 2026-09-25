@@ -165,3 +165,16 @@ Boundary: runtime-code identity is verified, but proxy implementation/admin, own
 - Endpoint cooldown and bounded recovery prevent both starvation and infinite retry loops.
 - Head quorum remains a separate freshness requirement and still needs at least two fresh chain-137 endpoints.
 - No P2 control field is promoted to VERIFIED until reconciliation closes the complete target×slot matrix.
+
+## 2026-09-25 — P2 storage gate memory lock
+
+Run #4 is the canonical P2 ERC-1967 storage checkpoint.
+- 33/33 target×slot combinations passed;
+- 66 independent observations;
+- 0 conflicts;
+- observation block 94,436,387;
+- reconciliation VERIFIED.
+
+Four non-zero implementation/admin addresses were observed and now form the immediate derived-address verification queue.
+
+Important: non-zero ERC-1967 storage does not by itself prove the complete proxy model; runtime code, proxy callable semantics, admin/owner/roles and deployment provenance remain separate P2 checks.
