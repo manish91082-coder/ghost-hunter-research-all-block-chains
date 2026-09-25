@@ -112,7 +112,7 @@ Build the live-verification batch specification for the expanded registry: exact
 ### Research update
 - Polygon control-plane discovery was expanded with RootSetter and GovernanceProxy references.
 - PIP-54 governance/control evidence is now explicitly separated from current on-chain role state.
-- PIP-86 confirms Polygon's 2026 block-time reduction program, reinforcing that current timing must be measured rather than inherited from old documentation. citeturn0search3
+- PIP-86 confirms Polygon's 2026 block-time reduction program, reinforcing that current timing must be measured rather than inherited from old documentation. [Polygon PIP-86](https://github.com/0xPolygon/Polygon-Improvement-Proposals/blob/main/PIPs/PIP-86.md).
 
 ### Gate state
 - Polygon saturation gate remains OPEN.
