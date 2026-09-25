@@ -9,3 +9,4 @@ purpose=one-shot live validation of optimized critical lane and repaired P2 evid
 2026-09-26T00:19:00Z P3-revision-reset-bootstrap
 2026-09-26T00:22:00Z P3-gecko-polygon-pos-bootstrap
 2026-09-26T00:24:00Z P3-stability-second-sample-bootstrap
+2026-09-26T00:27:00Z stage-ledger-sync-bootstrap
