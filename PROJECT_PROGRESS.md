@@ -99,3 +99,25 @@ Polygon's current published security scope lists the core deployed PoS/Plasma co
 
 ### Next atomic step
 Build the live-verification batch specification for the expanded registry: exact RPC calls, proxy-slot checks, bytecode hashing, ABI/function probes, creation evidence, and reproducible evidence records. Do not fabricate live results.
+
+
+## 2026-09-25 — Polygon Live Verification Batch Specification
+
+### Added
+- `chains/polygon-pos/LIVE_VERIFICATION_BATCH.md`
+- Read-only verification protocol covering chain identity, code hash, proxy slots, implementation, roles, creation evidence, event probes and cross-RPC consistency.
+- Explicit state-transition rules for VERIFIED / PARTIAL / CONFLICTED / HISTORICAL / DEPRECATED / UNVERIFIED.
+- Zero-cost-first, resumable, evidence-hash based batch design.
+
+### Research update
+- Polygon control-plane discovery was expanded with RootSetter and GovernanceProxy references.
+- PIP-54 governance/control evidence is now explicitly separated from current on-chain role state.
+- PIP-86 confirms Polygon's 2026 block-time reduction program, reinforcing that current timing must be measured rather than inherited from old documentation. citeturn0search3
+
+### Gate state
+- Polygon saturation gate remains OPEN.
+- The next execution-capable step is to run the read-only verification batch in an environment with direct JSON-RPC POST access.
+- No address has been promoted to VERIFIED in this repository.
+
+### Next atomic step
+Prepare the verifier implementation contract/schema and endpoint capability matrix, then execute it only in a permitted live-RPC environment. DEX discovery remains blocked until critical infrastructure verification is complete.
