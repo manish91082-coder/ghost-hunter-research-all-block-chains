@@ -26,7 +26,8 @@ jobs:
       - name: Run read-only Polygon capability probe
         run: |
           set -euo pipefail
-          python chains/polygon-pos/polygon_readonly_verifier.py             --rpc "https://polygon.drpc.org"             --rpc "https://polygon.publicnode.com"             --rpc "https://1rpc.io/matic"
+          python -m py_compile chains/polygon-pos/polygon_readonly_verifier.py
+          python chains/polygon-pos/polygon_readonly_verifier.py             --rpc "https://polygon.drpc.org"             --rpc "https://polygon.publicnode.com"             --rpc "https://1rpc.io/matic"             --address "@chains/polygon-pos/verification_targets.txt"
 
       - name: Upload verification artifacts
         if: always()
