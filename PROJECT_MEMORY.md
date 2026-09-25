@@ -123,3 +123,9 @@ Never force a trade simply to make a profit appear every minute. Continuous scan
 - The verifier must preserve the evidence schema exactly. In Run #26 a serializer regression omitted the top-level method field, causing reconciliation to see zero method records even though the raw JSONL contained successful probes.
 - Canonical evidence record fields are now treated as regression-sensitive. Future verifier changes must preserve both top-level and nested request metadata required by the reconciler/schema.
 - No evidence threshold was relaxed to accommodate the serializer defect.
+## 2026-09-25 — Rotation recovery lock
+- RPC rotation is now health-aware and recoverable, not a single-pass failover list.
+- 429 causes local backoff/cooldown and a later recovery pass may retry the provider.
+- Per-endpoint pacing adapts independently, so one provider's rate limit does not globally throttle the pool.
+- Recovery is bounded to prevent CI hangs or endless retries.
+- The P1 independence rule remains unchanged: two distinct successful endpoint observations per critical target are mandatory.
