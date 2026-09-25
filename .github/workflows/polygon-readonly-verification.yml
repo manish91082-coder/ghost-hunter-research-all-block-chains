@@ -34,7 +34,7 @@ jobs:
         run: |
           set -euo pipefail
           verifier_status=0
-          python chains/polygon-pos/polygon_readonly_verifier.py --rpc "https://polygon.drpc.org" --rpc "https://polygon.publicnode.com" --rpc "https://1rpc.io/matic" --address "@chains/polygon-pos/verification_targets.txt" || verifier_status=$?
+          python chains/polygon-pos/polygon_readonly_verifier.py --rpc "https://tenderly.rpc.polygon.community" --rpc "https://polygon-public.nodies.app/" --rpc "https://polygon.api.onfinality.io/public" --address "@chains/polygon-pos/verification_targets.txt" || verifier_status=$?
           python chains/polygon-pos/polygon_verification_reconciliation.py || true
           exit "$verifier_status"
 
