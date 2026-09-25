@@ -91,3 +91,31 @@ The execution layer must compare state from independent sources and quarantine c
 - Main verification runs showed QuickNode public can return all 11 target code observations, while anonymous Tatum became HTTP 429-limited during the code phase. Tatum's current documentation states that its Free Plan provides 3 requests/second and that an API key is used for authenticated access. Source: https://docs.tatum.io/docs/plans-limits and https://docs.tatum.io/reference/rpc-polygon
 - The verifier now supports an optional `TATUM_API_KEY` environment variable. The GitHub workflow maps the repository secret `TATUM_API_KEY` to that environment variable without storing the key in source or artifacts.
 - This evidence does not mark any endpoint EXECUTION-TRUSTED. It only establishes runner-specific reachability and the next evidence-collection path.
+
+## 2026-09-25 — Adaptive RPC pool and rotation model
+
+The fixed two-endpoint P1 test has been superseded by a candidate RPC pool:
+- `chains/polygon-pos/rpc_pool.txt`
+
+The verifier now operates in three phases:
+
+1. **Identity/head discovery:** probe the full candidate pool for `eth_chainId` and `eth_blockNumber`.
+2. **Eligibility/enrichment:** only endpoints that prove Polygon chain ID 137 are eligible for critical code evidence; optional enrichment probes run against that eligible set.
+3. **Adaptive code rotation:** each critical target is probed against distinct eligible endpoints until the required independent-code count is reached. Rate-limited or unavailable endpoints enter cooldown and the next candidate is selected.
+
+Rotation behavior:
+- HTTP 429: honor `Retry-After` when supplied, otherwise apply bounded cooldown.
+- HTTP 401/403/404: quarantine for the current run window instead of repeatedly hammering the endpoint.
+- Other transient failures: short bounded cooldown.
+- Request pacing is per endpoint, not global.
+- Successful endpoints are reused while healthy.
+- The rotation layer records every failure and success as evidence.
+
+Evidence boundary:
+- Pool membership is **CANDIDATE**, never **EXECUTION-TRUSTED** by itself.
+- Two distinct successful endpoint observations remain mandatory for every P1 critical target.
+- Matching code hashes are required; conflicting hashes are preserved as conflicts.
+- No majority vote is used to declare truth.
+- P1 remains closed until reconciliation is **VERIFIED**.
+
+This rotation mechanism is intended to solve provider-specific availability/rate-limit failures without weakening the independence or freshness requirements of Polygon ground truth.
