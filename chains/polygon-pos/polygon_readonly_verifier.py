@@ -156,6 +156,15 @@ def make_record(endpoint_id, method, params, obs, address=None):
         ),
     }
 
+def validate_address(value):
+    if len(value) != 42 or not value.startswith("0x"):
+        raise ValueError(f"Invalid EVM address: {value}")
+    try:
+        int(value[2:], 16)
+    except ValueError as exc:
+        raise ValueError(f"Invalid EVM address: {value}") from exc
+
+
 def load_addresses(values):
     addresses = []
     for value in values or []:
@@ -166,7 +175,10 @@ def load_addresses(values):
                     addresses.append(line)
         else:
             addresses.append(value.strip())
-    return list(dict.fromkeys(a for a in addresses if a))
+    addresses = list(dict.fromkeys(a for a in addresses if a))
+    for address in addresses:
+        validate_address(address)
+    return addresses
 
 def main():
     parser = argparse.ArgumentParser()
