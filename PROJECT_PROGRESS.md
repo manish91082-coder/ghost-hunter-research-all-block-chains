@@ -180,3 +180,16 @@ The verifier implementation is now ready for external live execution. The Polygo
 
 ### Next atomic step
 Run the hardened verifier from an outbound JSON-RPC environment against independent Polygon endpoints, then ingest the resulting head/code evidence into the canonical registry. Do not start DEX discovery until the P1 gate passes.
+
+## 2026-09-25 — P1 identity quorum hardening
+
+The live verifier now records every observed RPC chain ID and enforces the Polygon P1 identity rule: independent endpoints must unanimously report chain ID 137 before the run can proceed as a successful P1 identity probe. It also preserves the freshest-block/stale-endpoint summary and address code probes.
+
+A static integrity check of the committed verifier confirmed the chain quorum, stale-head tracking, read-only denylist, checkpoint, and address-probe paths are present.
+
+Live RPC execution is still pending. The GitHub workflow exists and is configured for push/manual execution, but the available GitHub connector does not expose push-triggered workflow runs, so no run result is being inferred or claimed.
+
+Official Polygon JSON-RPC tooling documents the same core probe family: net_version, eth_blockNumber, eth_getBlockByNumber and eth_getCode. citeturn0search3turn0search0
+
+### Next atomic step
+Use the GitHub-hosted runner as the primary live execution path. If its run output becomes accessible, capture and verify artifacts. If runner/network policy prevents live RPC, fall back to a user-run Colab/laptop execution without changing the verifier or evidence schema.
