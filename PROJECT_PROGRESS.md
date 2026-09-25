@@ -639,3 +639,16 @@ Run the corrected conveyor through its narrow bootstrap trigger, inspect the raw
 - P2 provenance: repaired, pending corrected conveyor replay.
 - P2 control-function: repaired, pending fresh CI artifact and reconciliation.
 - Overall P2: IN PROGRESS.
+
+## 2026-09-26 — P2 conveyor throughput optimization
+- The live checkpoint showed the critical lane was round-robinning already-verified tasks, delaying unresolved P2 provenance/control work.
+- Added content-aware `critical_task_complete()` checks so VERIFIED derived/runtime evidence and REPLAYED provenance are skipped, while regression work is rerun only after a code-epoch change.
+- Increased the bounded conveyor critical lane from 1 to 2 tasks per round. No evidence threshold, stage gate, or safety condition changed.
+- Added regression coverage for the scheduler behavior.
+
+### Gate state
+- P2 ERC-1967 storage: PASSED.
+- P2 derived runtime-code: VERIFIED.
+- P2 provenance: repaired, pending replay.
+- P2 control-function: repaired, pending live CI artifact.
+- Overall P2: IN PROGRESS.
