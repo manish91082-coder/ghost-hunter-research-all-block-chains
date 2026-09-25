@@ -141,3 +141,11 @@ The official Polygon security scope publishes the deployed contract census, whil
 
 ### Next atomic step
 Implement the read-only verifier schema/output contract and endpoint capability matrix so the same batch can run from Colab or another permitted JSON-RPC environment without changing the evidence model.
+
+
+## 2026-09-25 — Polygon RPC Capability Matrix
+
+Added `chains/polygon-pos/RPC_CAPABILITY_MATRIX.md` defining the deterministic, read-only capability probe order, endpoint classification, cross-RPC quorum, historical-state handling, zero-cost/resumable profile, safety boundary, and P1 acceptance gate. Official Polygon Bor documents optional trace support with archive-node requirements, while Polygon tooling documents standard JSON-RPC probes. Live endpoint results remain intentionally unclaimed until the verifier runs in a permitted JSON-RPC environment.
+
+### Next atomic step
+Build the machine-readable verifier output schema and Colab runner contract, then execute only read-only probes against independent Polygon RPC endpoints. DEX discovery remains blocked until P1 passes.
