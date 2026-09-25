@@ -556,3 +556,17 @@ Matching transport failures could previously be fingerprinted like contract outc
 - P2 derived runtime-code: pending actual corrected CI artifact.
 - P2 control-function: expanded and hardened, pending actual CI artifact.
 - Overall P2: IN PROGRESS.
+
+## 2026-09-26 — Conveyor acceleration architecture
+### Problem solved
+Manual Next-driven execution was serializing independent evidence work and wasting the time between P2 checks.
+
+### New execution model
+- Critical lane: P2 evidence tasks, fail-closed and ordered.
+- Shadow lane: P3-P10 preparatory discovery continues while P2 is open.
+- Persistent checkpoint: GitHub Actions artifact instead of per-tick Git commits.
+- Gate-transition commits only: repository history remains clean.
+- Stage promotion: P2 -> P3 -> P4 -> ... -> P10 -> P11 in deterministic order.
+
+### Current state
+The conveyor is wired; actual runner evidence is still the authority for live gate promotion.
