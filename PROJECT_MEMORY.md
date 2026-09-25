@@ -220,3 +220,9 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - It listens to the four Polygon verification workflows and stores a state snapshot artifact.
 - `tools/github_ci_state.py` records both current main HEAD and triggering workflow-run context when available.
 - The observer never triggers or reruns workflows. Evidence promotion still requires inspection of the actual verifier/reconciliation artifacts.
+
+## 2026-09-25 — Evidence reacquisition lock
+- When a verification workflow has been materially corrected, a deterministic workflow-marker commit may be used to force a fresh run without changing verification semantics.
+- Derived-control trigger commit: b97b8fb44583b25f7eda96f8d7da8fdb434d3e39.
+- Control-function trigger commit: bfe36c431d56de65e1b0164429d48d387ca30f7f.
+- These commits are not evidence themselves. Only subsequent GitHub Actions job/artifact output can advance the gates.
