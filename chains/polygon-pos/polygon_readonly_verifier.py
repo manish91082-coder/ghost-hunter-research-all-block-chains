@@ -417,6 +417,12 @@ def main():
     )
     parser.add_argument("--stale-block-tolerance", type=int, default=2)
     parser.add_argument(
+        "--min-head-endpoints",
+        type=int,
+        default=0,
+        help="Minimum independent fresh head endpoints for quorum; 0 preserves all-endpoint agreement",
+    )
+    parser.add_argument(
         "--min-code-endpoints",
         type=int,
         default=2,
@@ -732,6 +738,32 @@ def main():
         and head_span <= args.stale_block_tolerance
     )
 
+    # Deterministic fresh-head quorum for callers that do not require every
+    # successful endpoint to agree. No majority vote is used. We select the
+    # smallest-span combination of the required number of fresh endpoints.
+    required_head_endpoints = (
+        len(block_numbers)
+        if args.min_head_endpoints <= 0
+        else args.min_head_endpoints
+    )
+    head_quorum_endpoints = []
+    head_quorum_block_span = None
+    if required_head_endpoints >= 2 and len(block_numbers) >= required_head_endpoints:
+        from itertools import combinations
+        candidates = []
+        endpoint_items = sorted(block_numbers.items())
+        for combo in combinations(endpoint_items, required_head_endpoints):
+            blocks = [block for _, block in combo]
+            span = max(blocks) - min(blocks)
+            candidates.append((span, tuple(endpoint for endpoint, _ in combo)))
+        candidates.sort()
+        best_span, best_endpoints = candidates[0]
+        if best_span <= args.stale_block_tolerance:
+            head_quorum_block_span = best_span
+            head_quorum_endpoints = list(best_endpoints)
+
+    head_quorum_agreement = len(head_quorum_endpoints) >= required_head_endpoints
+
     summary = {
         "chain_id_expected": 137,
         "chain_ids_observed": chain_ids,
@@ -745,6 +777,10 @@ def main():
         "successful_block_endpoint_count": len(block_numbers),
         "head_block_span": head_span,
         "head_agreement": head_agreement,
+        "min_head_endpoints_required": required_head_endpoints,
+        "head_quorum_endpoints": head_quorum_endpoints,
+        "head_quorum_block_span": head_quorum_block_span,
+        "head_quorum_agreement": head_quorum_agreement,
         "eligible_code_endpoint_count": len(eligible_for_code),
         "eligible_code_endpoints": sorted(eligible_for_code),
         "min_code_endpoints_required": args.min_code_endpoints,
@@ -774,10 +810,11 @@ def main():
             "P1 head failure: fewer than 2 independent RPC endpoints returned a valid block number "
             f"(observed={len(block_numbers)})"
         )
-    if not head_agreement:
+    if not head_quorum_agreement:
         raise SystemExit(
-            "P1 head failure: fresh independent RPC latest blocks exceed the allowed span "
-            f"(blocks={block_numbers}, tolerance={args.stale_block_tolerance})"
+            "P1 head failure: no deterministic fresh-head quorum met the allowed span "
+            f"(blocks={block_numbers}, required={required_head_endpoints}, "
+            f"tolerance={args.stale_block_tolerance})"
         )
 
     incomplete = {
