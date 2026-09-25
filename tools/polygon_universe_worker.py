@@ -344,32 +344,305 @@ def load_seed_tokens():
                     seeds.append({"address":address,"label":label,"source":"polygon_seed_manifest","first_seen":now()})
     return seeds
 
+def _extract_address(value):
+    if not isinstance(value, str):
+        return None
+    value = value.strip()
+    lower = value.lower()
+    if len(value) == 42 and lower.startswith("0x"):
+        try:
+            int(value[2:], 16)
+        except ValueError:
+            return None
+        return "0x" + value[2:].lower()
+    if lower.startswith("token_polygon_pos_0x") and len(value.split("_", 3)[-1]) == 42:
+        return _extract_address(value.split("_", 3)[-1])
+    return None
+
+
+def extract_gecko_token_addresses(payload):
+    found = set()
+    resources = []
+    if isinstance(payload, dict):
+        for key in ("data", "included"):
+            rows = payload.get(key)
+            if isinstance(rows, list):
+                resources.extend(rows)
+    elif isinstance(payload, list):
+        resources = payload
+
+    for resource in resources:
+        if not isinstance(resource, dict):
+            continue
+        address = _extract_address(resource.get("id"))
+        attrs = resource.get("attributes")
+        if isinstance(attrs, dict):
+            address = address or _extract_address(attrs.get("address"))
+        if address:
+            found.add(address)
+
+        relationships = resource.get("relationships")
+        if isinstance(relationships, dict):
+            for rel in relationships.values():
+                if not isinstance(rel, dict):
+                    continue
+                rel_data = rel.get("data")
+                if isinstance(rel_data, dict):
+                    rel_data = [rel_data]
+                if isinstance(rel_data, list):
+                    for item in rel_data:
+                        if isinstance(item, dict):
+                            address = _extract_address(item.get("id"))
+                            if address:
+                                found.add(address)
+    return sorted(found)
+
+
+def extract_dex_token_addresses(rows):
+    found = set()
+    if isinstance(rows, dict):
+        rows = rows.get("pairs") or rows.get("data") or []
+    if not isinstance(rows, list):
+        return []
+
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        if str(row.get("chainId", "")).lower() != "polygon":
+            continue
+        for side in ("baseToken", "quoteToken"):
+            token = row.get(side)
+            if isinstance(token, dict):
+                address = _extract_address(token.get("address"))
+                if address:
+                    found.add(address)
+    return sorted(found)
+
+
+def p4_closure_ready(snapshot, previous_state):
+    current_fp = snapshot.get("universe_fingerprint")
+    previous_fp = previous_state.get("fingerprint")
+    stable_count = int(previous_state.get("stable_runs", 0) or 0)
+    checks = snapshot.get("checks", {})
+    return (
+        checks.get("geckoterminal_top_pools_ok") is True
+        and checks.get("dexscreener_profiles_ok") is True
+        and checks.get("dexscreener_tokens_ok") is True
+        and int(snapshot.get("candidate_count", 0)) >= 8
+        and int(snapshot.get("provider_overlap_count", 0)) >= 3
+        and int(snapshot.get("duplicate_address_count", 0)) == 0
+        and int(snapshot.get("verified_token_count", 0)) == int(snapshot.get("candidate_count", 0))
+        and int(snapshot.get("chain_137_verified_count", 0)) == int(snapshot.get("candidate_count", 0))
+        and int(snapshot.get("identity_conflict_count", 0)) == 0
+        and current_fp
+        and current_fp == previous_fp
+        and stable_count >= 1
+    )
+
+
+def _p4_rpc_token_verification(candidates):
+    try:
+        import sys
+        sys.path.insert(0, str((ROOT / "chains" / "polygon-pos").resolve()))
+        from polygon_readonly_verifier import RpcPool, load_rpc_endpoints
+    except Exception as exc:
+        return {"verified": {}, "verified_count": 0, "chain_137_verified_count": 0, "identity_conflict_count": 0, "error": f"{type(exc).__name__}: {exc}"}
+
+    if not RPC_POOL.exists():
+        return {"verified": {}, "verified_count": 0, "chain_137_verified_count": 0, "identity_conflict_count": 0, "error": "RPC pool file missing"}
+
+    endpoints = load_rpc_endpoints(None, str(RPC_POOL))
+    pool = RpcPool(endpoints, 0.35)
+    chain_ok = []
+    for item in pool.ordered():
+        eid = item["id"]
+        obs = pool.request(eid, "eth_chainId", [], f"p4:{eid}:chain", 12, 1)
+        if obs.get("ok"):
+            pool.mark_success(eid)
+        else:
+            pool.mark_failure(eid, obs)
+        result = ((obs.get("body") or {}).get("result") if isinstance(obs.get("body"), dict) else None)
+        if str(result).lower() == "0x89":
+            chain_ok.append(eid)
+        if len(chain_ok) >= 4:
+            break
+
+    verified = {}
+    conflicts = 0
+    for address in candidates:
+        observations = []
+        for eid in chain_ok:
+            code_obs = pool.request(eid, "eth_getCode", [address, "latest"], f"p4:{eid}:{address}:code", 12, 1)
+            dec_obs = pool.request(eid, "eth_call", [{"to": address, "data": "0x313ce567"}, "latest"], f"p4:{eid}:{address}:decimals", 12, 1)
+            supply_obs = pool.request(eid, "eth_call", [{"to": address, "data": "0x18160ddd"}, "latest"], f"p4:{eid}:{address}:supply", 12, 1)
+            for obs in (code_obs, dec_obs, supply_obs):
+                if obs.get("ok"):
+                    pool.mark_success(eid)
+                else:
+                    pool.mark_failure(eid, obs)
+
+            def result_of(obs):
+                body = obs.get("body")
+                return body.get("result") if isinstance(body, dict) else None
+
+            code = result_of(code_obs)
+            decimals = result_of(dec_obs)
+            total_supply = result_of(supply_obs)
+            valid_code = isinstance(code, str) and code not in {"", "0x", "0X"}
+            valid_decimals = isinstance(decimals, str) and decimals.startswith("0x")
+            valid_supply = isinstance(total_supply, str) and total_supply.startswith("0x")
+            if valid_decimals:
+                try:
+                    valid_decimals = int(decimals, 16) <= 255
+                except ValueError:
+                    valid_decimals = False
+            if valid_code and valid_decimals and valid_supply:
+                observations.append({
+                    "rpc": eid,
+                    "code_hash": hashlib.sha256(code.lower().encode()).hexdigest(),
+                    "decimals": decimals.lower(),
+                    "total_supply": total_supply.lower(),
+                })
+            if len(observations) >= 2:
+                break
+
+        if len(observations) >= 2:
+            fingerprints = {(x["code_hash"], x["decimals"], x["total_supply"]) for x in observations[:2]}
+            matching = len(fingerprints) == 1
+            if not matching:
+                conflicts += 1
+            verified[address] = {
+                "chain_id": 137,
+                "rpc_endpoints": [x["rpc"] for x in observations[:2]],
+                "observations": observations[:2],
+                "matching": matching,
+            }
+
+    return {
+        "verified": verified,
+        "verified_count": sum(1 for x in verified.values() if x.get("matching")),
+        "chain_137_verified_count": len(verified),
+        "identity_conflict_count": conflicts,
+        "error": "",
+    }
+
+
 def task_p4_tokens():
-    p=EVID/"P3_PROTOCOL_SNAPSHOT.json"
-    data=json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
-    tokens={}
+    gt_url = "https://api.geckoterminal.com/api/v2/networks/polygon_pos/pools?page=1&include=base_token,quote_token"
+    st_gt, gecko, err_gt = http_json(gt_url, timeout=20)
+    st_profiles, profiles, err_profiles = http_json(DexProfilesURL, timeout=20)
+    profiles = profiles if isinstance(profiles, list) else []
+
+    provider_sources = defaultdict(set)
+    candidates = {}
+
     for row in load_seed_tokens():
-        tokens[row["address"].lower()]=row
-    for x in data.get("dex_profile_candidates",[]):
-        a=x.get("tokenAddress")
-        if a and len(a)==42 and a.lower().startswith("0x"):
-            tokens[a.lower()]={"address":a,"source":"dexscreener_profile","first_seen":now()}
-    existing={x.get("address","").lower():x for x in load_jsonl(UNIV/"tokens.jsonl")}
-    before=len(existing)
-    for row in tokens.values(): existing[row["address"].lower()]=row
-    rows=list(existing.values())
-    token_path=UNIV/"tokens.jsonl"
-    token_path.write_text("".join(json.dumps(x,sort_keys=True)+"\n" for x in rows),encoding="utf-8")
-    return write_json("P4_TOKEN_SNAPSHOT.json",{
-        "task":"p4_token_discovery",
-        "time":now(),
-        "seed_candidates":len(load_seed_tokens()),
-        "profile_candidates":sum(1 for x in data.get("dex_profile_candidates",[]) if x.get("tokenAddress")),
-        "new_unique_candidates":max(0,len(rows)-before),
-        "new_candidates":list(tokens.values()),
-        "total_candidates":len(rows),
-        "evidence_class":"DISCOVERY"
+        address = _extract_address(row.get("address"))
+        if address:
+            candidates[address] = {"address": address, "source": "polygon_seed_manifest", "first_seen": row.get("first_seen", now())}
+            provider_sources[address].add("seed")
+
+    gecko_addresses = extract_gecko_token_addresses(gecko)
+    for address in gecko_addresses:
+        candidates[address] = {"address": address, "source": "geckoterminal_top_pools", "first_seen": now()}
+        provider_sources[address].add("gecko")
+
+    profile_addresses = set()
+    for row in profiles:
+        if str(row.get("chainId", "")).lower() != "polygon":
+            continue
+        address = _extract_address(row.get("tokenAddress"))
+        if address:
+            profile_addresses.add(address)
+            candidates[address] = {"address": address, "source": "dexscreener_profile", "first_seen": now()}
+            provider_sources[address].add("dexscreener")
+
+    dex_addresses = set()
+    candidate_seed_batch = sorted(candidates)[:90]
+    for offset in range(0, len(candidate_seed_batch), 30):
+        batch = candidate_seed_batch[offset:offset + 30]
+        if not batch:
+            continue
+        url = "https://api.dexscreener.com/tokens/v1/polygon/" + ",".join(batch)
+        st_dex, dex_rows, _ = http_json(url, timeout=20)
+        if st_dex == 200:
+            for address in extract_dex_token_addresses(dex_rows):
+                dex_addresses.add(address)
+                candidates[address] = {"address": address, "source": "dexscreener_tokens", "first_seen": now()}
+                provider_sources[address].add("dexscreener")
+
+    source_sets = {
+        "gecko": {a for a, sources in provider_sources.items() if "gecko" in sources},
+        "dexscreener": {a for a, sources in provider_sources.items() if "dexscreener" in sources},
+    }
+    provider_overlap = source_sets["gecko"] & source_sets["dexscreener"]
+    duplicate_address_count = len(candidates) - len(set(candidates))
+    candidate_list = sorted(candidates)
+
+    verification = _p4_rpc_token_verification(candidate_list)
+    verified = verification.get("verified", {})
+    for address, details in verified.items():
+        candidates[address]["identity"] = details
+        candidates[address]["evidence_class"] = "ONCHAIN_SEMANTIC"
+
+    previous_path = EVID / "P4_CLOSURE_STATE.json"
+    previous = load_json(previous_path, {})
+    universe_fingerprint = sha({"candidates": candidate_list, "provider_overlap": sorted(provider_overlap)})
+    previous_fp = previous.get("fingerprint")
+    stable_runs = int(previous.get("stable_runs", 0) or 0)
+    if universe_fingerprint and universe_fingerprint == previous_fp:
+        stable_runs += 1
+    else:
+        stable_runs = 1
+
+    token_path = UNIV / "tokens.jsonl"
+    existing = {str(x.get("address", "")).lower(): x for x in load_jsonl(token_path)}
+    before = len(existing)
+    for address in candidate_list:
+        existing[address] = candidates[address]
+    token_path.write_text("".join(json.dumps(x, sort_keys=True) + "\n" for x in existing.values()), encoding="utf-8")
+
+    snapshot = {
+        "task": "p4_token_discovery",
+        "time": now(),
+        "network": "polygon",
+        "chain_id": 137,
+        "sources": [gt_url, DexProfilesURL, "https://api.dexscreener.com/tokens/v1/polygon/{token_addresses}"],
+        "http": {"geckoterminal_top_pools": st_gt, "dexscreener_profiles": st_profiles},
+        "errors": {"geckoterminal_top_pools": err_gt, "dexscreener_profiles": err_profiles},
+        "candidate_count": len(candidate_list),
+        "seed_candidates": len(load_seed_tokens()),
+        "gecko_candidates": len(gecko_addresses),
+        "dexscreener_profile_candidates": len(profile_addresses),
+        "dexscreener_token_confirmations": len(dex_addresses),
+        "provider_overlap_count": len(provider_overlap),
+        "duplicate_address_count": duplicate_address_count,
+        "verified_token_count": verification.get("verified_count", 0),
+        "chain_137_verified_count": verification.get("chain_137_verified_count", 0),
+        "identity_conflict_count": verification.get("identity_conflict_count", 0),
+        "rpc_verification_error": verification.get("error", ""),
+        "stable_runs": stable_runs,
+        "universe_fingerprint": universe_fingerprint,
+        "new_unique_candidates": max(0, len(existing) - before),
+        "universe_total_after_merge": len(existing),
+        "candidate_addresses": candidate_list,
+        "evidence_class": "DISCOVERY_PLUS_ONCHAIN_IDENTITY",
+        "checks": {
+            "geckoterminal_top_pools_ok": st_gt == 200 and isinstance(gecko, dict),
+            "dexscreener_profiles_ok": st_profiles == 200 and isinstance(profiles, list),
+            "dexscreener_tokens_ok": len(dex_addresses) > 0,
+        },
+    }
+    snapshot["stage_gate"] = "CLOSED" if p4_closure_ready(snapshot, {"fingerprint": previous_fp, "stable_runs": stable_runs}) else "OPEN"
+
+    write_json("P4_CLOSURE_STATE.json", {
+        "fingerprint": universe_fingerprint,
+        "stable_runs": stable_runs,
+        "updated_at": snapshot["time"],
+        "stage_gate": snapshot["stage_gate"],
     })
+    return write_json("P4_TOKEN_SNAPSHOT.json", snapshot)
+
 
 def task_p5_pairs():
     rows=[]; token_file=UNIV/"tokens.jsonl"
