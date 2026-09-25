@@ -600,3 +600,23 @@ The automation design is now materially more robust. A fresh scheduled/manual ru
 - Found a second-order provenance-gate weakness: independent observations were counted but matching was not required for `REPLAYED`.
 - Found a P5 universe accounting weakness: the same DEX pair can appear in token-pair discovery for both tokens, so raw append-only rows could inflate pair counts.
 - Both issues were repaired and regression-locked before live promotion.
+
+## 2026-09-26 — P2 provenance semantic-fingerprint repair
+### Defect identified
+- Conveyor Run 36179352109 captured two independent successful observations for both provenance candidate transactions, but both were classified `matching=false` because the comparison included the provider-specific `rpc` transport field.
+- This was a reconciliation logic defect, not a transaction/receipt conflict: the transaction and receipt payloads from the two RPCs matched while their provider labels necessarily differed.
+
+### Repair
+- Added `provenance_fingerprint()` that hashes only the semantic `tx` + `receipt` payload.
+- Preserved the `rpc` field as provenance metadata rather than semantic content.
+- Added regression coverage proving identical semantic payloads from different RPC labels match, while a changed transaction hash does not.
+
+### Gate state
+- P2 ERC-1967 storage: PASSED.
+- P2 derived runtime-code: VERIFIED.
+- P2 control-function: still OPEN pending a successful fresh-head quorum + live reconciliation artifact.
+- P2 provenance: REPLAYED candidate pending the corrected conveyor run.
+- Overall P2: IN PROGRESS.
+
+### Next atomic step
+Run the corrected conveyor through its narrow bootstrap trigger, inspect the raw artifact, then promote P2 only if control-function reconciliation and provenance replay both satisfy their existing gates.
