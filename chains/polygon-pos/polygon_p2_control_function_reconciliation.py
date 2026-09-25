@@ -32,17 +32,27 @@ def load_rows(path):
 
 def fingerprint(row):
     outcome = row.get("outcome", {})
-    # Only HTTP 200 JSON-RPC responses are semantic call evidence.
-    # Transport failures such as 403/429/timeouts must never reconcile as
-    # matching contract outcomes.
+    # Semantic evidence requires an HTTP 200 response that reached the JSON-RPC
+    # execution layer. Provider entitlement errors and malformed-request errors
+    # are not contract observations even when wrapped in HTTP 200.
     if outcome.get("http_status") != 200:
         return None
     if outcome.get("ok") is True:
         return ("success", str(outcome.get("result", "")).lower())
+
     error_code = outcome.get("error_code")
     if error_code is not None:
-        return ("error", str(error_code))
-    return ("error", str(outcome.get("error_message", "")).strip().lower())
+        try:
+            code = int(error_code)
+        except (TypeError, ValueError):
+            code = None
+        # EVM execution/revert responses are semantic; JSON-RPC protocol/request
+        # errors and known provider-policy errors are not.
+        if code == 3 or (code is not None and -32099 <= code <= -32000):
+            return ("error", str(code))
+        return None
+
+    return None
 
 
 def main():
