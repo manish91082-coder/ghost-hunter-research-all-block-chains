@@ -324,7 +324,10 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertEqual(state["stages"]["P11"]["status"], "LOCKED")
 
 
-    def test_p3_revision_resets_stale_cooldown(self):
+    def test_p4_revision_resets_stale_cooldown(self):
+        source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
+        self.assertIn('"P4":"p4-batched-verification-v2"', source)
+\n    def test_p3_revision_resets_stale_cooldown(self):
         source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
         self.assertIn('TASK_REVISIONS={"P3":"p3-multisource-closure-v1"}', source)
         self.assertIn("or (revision and ts.get('revision') != revision)", source)
