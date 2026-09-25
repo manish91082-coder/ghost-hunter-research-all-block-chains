@@ -288,3 +288,14 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - Main HEAD: `798525a31e9f3486844acfc83653bb8c78f18e0c`.
 - Critical P2 work is now content-aware and non-redundant across heartbeat rounds.
 - Two independent critical tasks may execute per bounded run, while stage promotion remains fail-closed.
+
+
+## 2026-09-26 — Current P2 execution checkpoint
+- Main HEAD: `f418b3a58e9fb5b6f75b09f48eb80ebbe9e2d429`.
+- P2 control-function artifact Run `36180198453` was independently inspected before repair.
+- Ten apparent conflicts were decomposed: Tatum `-16401` provider entitlement errors and one malformed second-parent calldata pattern. These are not chain-state conflicts.
+- Evidence classifier now excludes provider policy and malformed-request errors while retaining genuine EVM execution/revert evidence.
+- Second-parent ProxyAdmin calldata was corrected.
+- Corrected control-function CI run `36181173124` is queued on the latest HEAD.
+- Do not promote P2 until the corrected artifact reports complete independent semantic evidence with zero unresolved conflicts.
+- P2 provenance still needs a second independent observation for one candidate transaction.
