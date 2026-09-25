@@ -392,3 +392,9 @@ Evidence:
 - P2 provenance: pending corrected live replay.
 - P2 control-function: pending corrected live replay.
 - Polygon saturation gate: OPEN.
+
+## 2026-09-26 — Conveyor throughput optimization locked
+- Main HEAD: `798525a31e9f3486844acfc83653bb8c78f18e0c`.
+- Critical-lane scheduling now avoids repeating already-closed P2 tasks and permits two independent critical tasks per bounded round.
+- This is an execution-efficiency improvement only; evidence standards and P2 gate predicates remain unchanged.
+- The next fresh conveyor run must validate both the scheduler and repaired P2 evidence paths on GitHub Actions.
