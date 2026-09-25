@@ -184,7 +184,7 @@ def main():
             f"(blocks={blocks}, required={args.min_head_endpoints}, tolerance={args.stale_block_tolerance})"
         )
 
-    successful = {index: set() for index in range(len(targets))}
+    observed = {index: set() for index in range(len(targets))}
     observations = []
 
     def probe(index):
@@ -213,10 +213,13 @@ def main():
                     blocks.get(endpoint_id),
                 )
             )
-            if obs.get("ok"):
-                pool.mark_success(endpoint_id)
-                successful[index].add(endpoint_id)
-                if len(successful[index]) >= args.min_probe_endpoints:
+            if isinstance(obs.get("body"), dict) and obs.get("http_status") == 200:
+                observed[index].add(endpoint_id)
+                if obs.get("ok"):
+                    pool.mark_success(endpoint_id)
+                else:
+                    pool.mark_failure(endpoint_id, obs)
+                if len(observed[index]) >= args.min_probe_endpoints:
                     break
             else:
                 pool.mark_failure(endpoint_id, obs)
@@ -231,7 +234,7 @@ def main():
         incomplete = [
             index
             for index in range(len(targets))
-            if len(successful[index]) < args.min_probe_endpoints
+            if len(observed[index]) < args.min_probe_endpoints
         ]
         if not incomplete:
             break
@@ -248,7 +251,7 @@ def main():
                 observations.extend(future.result())
         print(
             f"P2 control-function recovery round {recovery_round}: "
-            f"remaining_probe_quorums={sum(1 for index in range(len(targets)) if len(successful[index]) < args.min_probe_endpoints)}"
+            f"remaining_probe_quorums={sum(1 for index in range(len(targets)) if len(observed[index]) < args.min_probe_endpoints)}"
         )
 
     observations.sort(key=lambda row: row["object_id"])
@@ -267,7 +270,7 @@ def main():
         "record_count": len(observations),
         "min_probe_endpoints_required": args.min_probe_endpoints,
         "probe_quorum_counts": {
-            f"{targets[index]['parent']}:{targets[index]['probe_id']}": len(successful[index])
+            f"{targets[index]['parent']}:{targets[index]['probe_id']}": len(observed[index])
             for index in range(len(targets))
         },
     }
@@ -276,7 +279,7 @@ def main():
     incomplete = {
         f"{targets[index]['parent']}:{targets[index]['probe_id']}": sorted(successful[index])
         for index in range(len(targets))
-        if len(successful[index]) < args.min_probe_endpoints
+        if len(observed[index]) < args.min_probe_endpoints
     }
     if incomplete:
         raise SystemExit(
