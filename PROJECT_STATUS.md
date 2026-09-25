@@ -228,3 +228,11 @@ P2: reconcile proxy implementations, admin/owner/roles, creation evidence, contr
 - No write/sign/send capability was added.
 - Corrected P2 run: `36170624761`, currently **IN_PROGRESS** at the latest checkpoint.
 - P1 rerun is also triggered by the shared verifier change. P1 remains semantically frozen and must still pass its existing gate.
+
+## 2026-09-25 — P2 storage coverage hardening
+- P2 Run #2 `36170624761` produced 66 storage observations from QuickNode + Tatum.
+- QuickNode returned all 33 probes successfully. Tatum returned 16 successful probes and 17 HTTP 429 responses.
+- P2 reconciliation therefore remained PARTIAL because 17 target/slot combinations had only one independent successful observation.
+- No slot-value conflicts were observed in the available dual observations.
+- The P2 verifier has now been hardened to perform request-level rotation per target/slot and bounded recovery rounds. Chain-137 endpoints with a valid identity can participate in storage rotation even when their head probe is temporarily unavailable; a separate two-endpoint fresh-head quorum remains mandatory.
+- This preserves the two-independent-endpoint rule while giving temporarily rate-limited RPCs a chance to recover.
