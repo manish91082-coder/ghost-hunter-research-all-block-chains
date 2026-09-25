@@ -195,3 +195,11 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - Commit 5b0212d5ca8ce094f4438f60e424189bc0259e6a is the canonical correction and explicitly passes --min-head-endpoints 2.
 - Never infer enabled verifier behavior from source support alone. The live workflow invocation is part of the evidence chain and must be verified.
 - Derived-code gate remains pending until a corrected CI artifact proves both fresh-head quorum and two-endpoint code agreement.
+
+## 2026-09-25 — P2 control-function evidence lock
+- Control-function probing is read-only `eth_call` only and is driven by a canonical target manifest.
+- The initial parent surface is the two contracts with observed non-zero ERC-1967 control relationships: EIP1559Burn and sPOLChild.
+- Candidate selectors are labeled semantic candidates, not asserted implementations.
+- Two independent chain-137 RPC outcomes are required per probe. A deterministic JSON-RPC error is evidence of the call outcome and may be reproducibly reconciled; transport failures and rate limits are not evidence.
+- Reconciliation deliberately stops short of semantic interpretation. Owner/admin/implementation/proxy-role conclusions require contract-specific analysis after raw call evidence is verified.
+- Commit b45635d76ca7503ffd849187b3fd3a0aa5030f51 is the canonical correction for counting reproducible JSON-RPC errors as observations.
