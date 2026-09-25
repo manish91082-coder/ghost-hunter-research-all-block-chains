@@ -1,11 +1,5 @@
 #!/usr/bin/env python3
-"""Polygon P2 read-only control-plane storage verifier.
-
-Reads ERC-1967 implementation/admin/beacon storage slots from the bounded
-chain-137 target set across all currently eligible Polygon RPC endpoints.
-
-No writes, signing or transaction submission are permitted.
-"""
+"""Polygon P2 read-only control-plane storage verifier with adaptive RPC rotation."""
 import argparse
 import hashlib
 import json
@@ -37,7 +31,7 @@ def storage_address(result):
     return candidate if int(raw, 16) else None
 
 
-def record(endpoint_id, address, slot_name, slot_value, obs):
+def make_record(endpoint_id, address, slot_name, obs, observation_block=None):
     body = obs.get("body")
     result = body.get("result") if isinstance(body, dict) else None
     error = body.get("error") if isinstance(body, dict) else None
@@ -52,13 +46,14 @@ def record(endpoint_id, address, slot_name, slot_value, obs):
         "slot_name": slot_name,
         "slot": ERC1967_SLOTS[slot_name],
         "method": "eth_getStorageAt",
+        "observation_time_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "observation_block": observation_block,
         "request": {
             "jsonrpc": "2.0",
             "id": f"{endpoint_id}:eth_getStorageAt:{address}:{slot_name}",
             "method": "eth_getStorageAt",
             "params": [address, ERC1967_SLOTS[slot_name], "latest"],
         },
-        "observation_time_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "outcome": {
             "ok": bool(obs.get("ok")),
             "result": result,
@@ -75,6 +70,36 @@ def record(endpoint_id, address, slot_name, slot_value, obs):
     }
 
 
+def parse_identity(pool, endpoint_id, timeout, retries):
+    chain = pool.request(endpoint_id, "eth_chainId", [], f"{endpoint_id}:eth_chainId", timeout, retries)
+    block = pool.request(endpoint_id, "eth_blockNumber", [], f"{endpoint_id}:eth_blockNumber", timeout, retries)
+
+    chain_id = None
+    block_number = None
+    if chain.get("ok"):
+        try:
+            chain_id = int(chain["body"]["result"], 16)
+        except (KeyError, TypeError, ValueError):
+            pass
+    if block.get("ok"):
+        try:
+            block_number = int(block["body"]["result"], 16)
+        except (KeyError, TypeError, ValueError):
+            pass
+
+    if chain.get("ok"):
+        pool.mark_success(endpoint_id)
+    else:
+        pool.mark_failure(endpoint_id, chain)
+
+    if block.get("ok"):
+        pool.mark_success(endpoint_id)
+    else:
+        pool.mark_failure(endpoint_id, block)
+
+    return endpoint_id, chain_id, block_number
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--rpc-pool-file", required=True)
@@ -84,102 +109,165 @@ def main():
     parser.add_argument("--timeout", type=float, default=12)
     parser.add_argument("--retries", type=int, default=1)
     parser.add_argument("--min-request-interval", type=float, default=1.0)
+    parser.add_argument(
+        "--min-slot-endpoints",
+        type=int,
+        default=2,
+        help="Minimum distinct chain-137 RPC endpoints required per target/slot",
+    )
+    parser.add_argument(
+        "--recovery-rounds",
+        type=int,
+        default=2,
+        help="Additional bounded slot-recovery passes after endpoint cooldown",
+    )
     args = parser.parse_args()
 
     addresses = load_addresses(args.address)
     endpoints = load_rpc_endpoints(None, args.rpc_pool_file)
     pool = RpcPool(endpoints, args.min_request_interval)
 
-    def probe_identity(item):
-        endpoint_id = item["id"]
-        chain = pool.request(endpoint_id, "eth_chainId", [], f"{endpoint_id}:eth_chainId", args.timeout, args.retries)
-        block = pool.request(endpoint_id, "eth_blockNumber", [], f"{endpoint_id}:eth_blockNumber", args.timeout, args.retries)
-        chain_id = None
-        block_number = None
-        if chain.get("ok"):
-            try:
-                chain_id = int(chain["body"]["result"], 16)
-            except (KeyError, TypeError, ValueError):
-                pass
-        if block.get("ok"):
-            try:
-                block_number = int(block["body"]["result"], 16)
-            except (KeyError, TypeError, ValueError):
-                pass
-        if chain.get("ok") and block.get("ok") and chain_id == 137:
-            pool.mark_success(endpoint_id)
-        else:
-            pool.mark_failure(endpoint_id, chain if not chain.get("ok") else block)
-        return endpoint_id, chain_id, block_number
-
-    identity = []
-    with ThreadPoolExecutor(max_workers=min(8, len(endpoints))) as executor:
-        futures = [executor.submit(probe_identity, item) for item in pool.endpoints]
-        for future in futures:
-            identity.append(future.result())
+    with ThreadPoolExecutor(max_workers=min(8, len(pool.endpoints))) as executor:
+        futures = [
+            executor.submit(parse_identity, pool, item["id"], args.timeout, args.retries)
+            for item in pool.endpoints
+        ]
+        identity = [future.result() for future in futures]
 
     identity.sort()
-    eligible = {
-        endpoint_id
-        for endpoint_id, chain_id, block_number in identity
-        if chain_id == 137 and block_number is not None
-    }
+    chain_ids = {endpoint_id: chain_id for endpoint_id, chain_id, _ in identity}
     blocks = {
         endpoint_id: block_number
         for endpoint_id, chain_id, block_number in identity
-        if endpoint_id in eligible
+        if chain_id == 137 and block_number is not None
+    }
+    storage_eligible = {
+        endpoint_id
+        for endpoint_id, chain_id, _ in identity
+        if chain_id == 137
     }
 
-    all_records = []
+    if len(blocks) < 2:
+        raise SystemExit(
+            f"P2 head failure: fewer than 2 fresh chain-137 RPC endpoints ({len(blocks)})"
+        )
 
-    def probe_endpoint(endpoint_id):
-        records = []
-        for address in addresses:
-            for slot_name in ERC1967_SLOTS:
-                request_id = f"{endpoint_id}:eth_getStorageAt:{address}:{slot_name}"
-                obs = pool.request(
-                    endpoint_id,
-                    "eth_getStorageAt",
-                    [address, ERC1967_SLOTS[slot_name], "latest"],
-                    request_id,
-                    args.timeout,
-                    args.retries,
-                )
-                records.append(record(endpoint_id, address, slot_name, ERC1967_SLOTS[slot_name], obs))
-                if obs.get("ok"):
-                    pool.mark_success(endpoint_id)
-                else:
-                    pool.mark_failure(endpoint_id, obs)
-        return records
+    head_span = max(blocks.values()) - min(blocks.values())
+    if head_span > 2:
+        raise SystemExit(
+            f"P2 head failure: chain-137 head span {head_span} exceeds tolerance 2 ({blocks})"
+        )
 
-    with ThreadPoolExecutor(max_workers=max(1, len(eligible))) as executor:
-        futures = [executor.submit(probe_endpoint, endpoint_id) for endpoint_id in sorted(eligible)]
+    observations = []
+    successful = {(address, slot): set() for address in addresses for slot in ERC1967_SLOTS}
+    values = {(address, slot): {} for address in addresses for slot in ERC1967_SLOTS}
+
+    def probe_one(address, slot_name):
+        local = []
+        for item in pool.ordered(storage_eligible):
+            endpoint_id = item["id"]
+            if endpoint_id in successful[(address, slot_name)]:
+                continue
+            obs = pool.request(
+                endpoint_id,
+                "eth_getStorageAt",
+                [address, ERC1967_SLOTS[slot_name], "latest"],
+                f"{endpoint_id}:eth_getStorageAt:{address}:{slot_name}",
+                args.timeout,
+                args.retries,
+            )
+            row = make_record(
+                endpoint_id,
+                address,
+                slot_name,
+                obs,
+                observation_block=blocks.get(endpoint_id),
+            )
+            local.append(row)
+            if obs.get("ok"):
+                pool.mark_success(endpoint_id)
+                successful[(address, slot_name)].add(endpoint_id)
+                values[(address, slot_name)][endpoint_id] = obs["body"].get("result")
+                if len(successful[(address, slot_name)]) >= args.min_slot_endpoints:
+                    break
+            else:
+                pool.mark_failure(endpoint_id, obs)
+        return local
+
+    # Initial target/slot rotation.
+    pairs = [(address, slot_name) for address in addresses for slot_name in ERC1967_SLOTS]
+    with ThreadPoolExecutor(max_workers=min(8, len(pairs))) as executor:
+        futures = [executor.submit(probe_one, address, slot_name) for address, slot_name in pairs]
         for future in futures:
-            all_records.extend(future.result())
+            observations.extend(future.result())
 
+    # Bounded recovery: rate-limited endpoints re-enter after cooldown.
+    for recovery_round in range(1, max(1, args.recovery_rounds)):
+        incomplete = [
+            pair for pair in pairs
+            if len(successful[pair]) < args.min_slot_endpoints
+        ]
+        if not incomplete:
+            break
+
+        cooldowns = [
+            pool.state[eid]["cooldown_until"] - time.monotonic()
+            for eid in storage_eligible
+            if pool.state[eid]["cooldown_until"] > time.monotonic()
+        ]
+        if cooldowns:
+            time.sleep(min(max(0.0, min(cooldowns)), 30.0))
+
+        with ThreadPoolExecutor(max_workers=min(8, len(incomplete))) as executor:
+            futures = [executor.submit(probe_one, address, slot_name) for address, slot_name in incomplete]
+            for future in futures:
+                observations.extend(future.result())
+
+        print(
+            f"P2 recovery round {recovery_round}: "
+            f"remaining_slot_quorums={sum(1 for pair in pairs if len(successful[pair]) < args.min_slot_endpoints)}"
+        )
+
+    observations.sort(key=lambda row: row["object_id"])
     with open(args.out, "w", encoding="utf-8") as handle:
-        for row in sorted(all_records, key=lambda x: x["object_id"]):
+        for row in observations:
             handle.write(json.dumps(row, sort_keys=True) + "\n")
 
     summary = {
         "chain_id_expected": 137,
-        "identity_endpoints": len(eligible),
-        "chain_ids": {endpoint_id: chain_id for endpoint_id, chain_id, _ in identity},
+        "identity_endpoints": len(blocks),
+        "storage_eligible_endpoint_count": len(storage_eligible),
+        "chain_ids": chain_ids,
         "rpc_blocks": blocks,
+        "head_span": head_span,
         "rpc_pool_size": len(endpoints),
         "target_count": len(addresses),
         "slot_count_per_target": len(ERC1967_SLOTS),
-        "record_count": len(all_records),
-        "observation_block": max(blocks.values()) if blocks else None,
+        "record_count": len(observations),
+        "observation_block": max(blocks.values()),
         "slots": ERC1967_SLOTS,
+        "min_slot_endpoints_required": args.min_slot_endpoints,
+        "slot_quorum_counts": {
+            f"{address}:{slot}": len(successful[(address, slot)])
+            for address, slot in pairs
+        },
     }
     Path(args.summary).write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
 
-    if len(eligible) < 2:
-        raise SystemExit(f"P2 identity failure: fewer than 2 chain-137 RPC endpoints ({len(eligible)})")
+    incomplete = {
+        f"{address}:{slot}": sorted(successful[(address, slot)])
+        for address, slot in pairs
+        if len(successful[(address, slot)]) < args.min_slot_endpoints
+    }
+    if incomplete:
+        raise SystemExit(
+            "P2 storage failure: adaptive RPC rotation could not obtain the required "
+            f"independent slot observations: {incomplete}"
+        )
 
-    print(f"P2 identity endpoints: {len(eligible)}")
-    print(f"P2 storage records: {len(all_records)}")
+    print(f"P2 identity/head endpoints: {len(blocks)}")
+    print(f"P2 storage-eligible endpoints: {len(storage_eligible)}")
+    print(f"P2 storage records: {len(observations)}")
     print(f"P2 observation block: {summary['observation_block']}")
 
 
