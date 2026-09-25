@@ -103,3 +103,15 @@ Run `36169503083` verified the bounded Polygon-side P1 target set at block `94,4
 Full per-address evidence: `chains/polygon-pos/P1_LIVE_VERIFICATION_RUN_30.md`.
 
 Boundary: runtime-code verification does not yet certify proxy implementation, admin/owner/roles, creation evidence, ABI/source identity, selector/event behavior or current-vs-historical classification.
+
+## 2026-09-25 — P2 ERC-1967 storage verification
+
+Run `36171378222` verified implementation/admin/beacon slot consistency for all 11 bounded Polygon-side targets.
+
+The only non-zero standard ERC-1967 values observed were:
+- EIP1559Burn implementation `0xae88570eb386a9c902488a6535f0957a46a68765`
+- EIP1559Burn admin `0x409834270b6f2591dd6c1e9f351e4194b112da44`
+- sPOLChild implementation `0x3c05a871e867fde9a8364fc8d38d97a7d42541c8`
+- sPOLChild admin `0xf68a9a2417a10e7d907a28b9876db8ad3dbbab7d`
+
+All four values matched across independent RPC observations. Zero values on other targets are retained as observations only and do not prove absence of non-standard upgradeability.
