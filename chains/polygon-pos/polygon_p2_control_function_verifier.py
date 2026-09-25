@@ -110,6 +110,7 @@ def main():
     parser.add_argument("--min-request-interval", type=float, default=1.0)
     parser.add_argument("--stale-block-tolerance", type=int, default=2)
     parser.add_argument("--min-head-endpoints", type=int, default=2)
+    parser.add_argument("--head-recovery-rounds", type=int, default=3)
     parser.add_argument("--min-probe-endpoints", type=int, default=2)
     parser.add_argument("--recovery-rounds", type=int, default=2)
     args = parser.parse_args()
@@ -163,24 +164,72 @@ def main():
         if chain_id == 137 and block_number is not None
     }
     eligible = set(blocks)
+
+    from itertools import combinations
+
+    def select_head_quorum():
+        if len(blocks) < args.min_head_endpoints:
+            return None, None
+        candidates = []
+        for combo in combinations(sorted(blocks.items()), args.min_head_endpoints):
+            span = max(block for _, block in combo) - min(block for _, block in combo)
+            candidates.append((span, tuple(endpoint for endpoint, _ in combo)))
+        if not candidates:
+            return None, None
+        candidates.sort()
+        span, endpoints = candidates[0]
+        if span <= args.stale_block_tolerance:
+            return span, endpoints
+        return span, endpoints
+
+    best_span, quorum_endpoints = select_head_quorum()
+
+    # Public RPC heads can be staggered by a few blocks while requests are
+    # being rate-limited. Re-read heads before declaring the stage blocked.
+    for recovery_round in range(1, max(1, args.head_recovery_rounds)):
+        if quorum_endpoints and len(quorum_endpoints) >= args.min_head_endpoints:
+            break
+        cooldown_waits = [
+            pool.state[eid]["cooldown_until"] - time.monotonic()
+            for eid in pool.state
+            if pool.state[eid]["cooldown_until"] > time.monotonic()
+        ]
+        if cooldown_waits:
+            time.sleep(min(max(0.0, min(cooldown_waits)), 10.0))
+        for item in pool.ordered():
+            endpoint_id = item["id"]
+            chain = pool.request(
+                endpoint_id, "eth_chainId", [],
+                f"{endpoint_id}:eth_chainId:recovery:{recovery_round}",
+                args.timeout, args.retries,
+            )
+            block = pool.request(
+                endpoint_id, "eth_blockNumber", [],
+                f"{endpoint_id}:eth_blockNumber:recovery:{recovery_round}",
+                args.timeout, args.retries,
+            )
+            if chain.get("ok") and block.get("ok"):
+                try:
+                    chain_id = int(chain["body"]["result"], 16)
+                    block_number = int(block["body"]["result"], 16)
+                except (KeyError, TypeError, ValueError):
+                    continue
+                if chain_id == 137:
+                    eligible.add(endpoint_id)
+                    blocks[endpoint_id] = block_number
+                    chain_ids[endpoint_id] = chain_id
+                pool.mark_success(endpoint_id)
+            else:
+                pool.mark_failure(endpoint_id, block if not block.get("ok") else chain)
+        best_span, quorum_endpoints = select_head_quorum()
+
     if len(blocks) < args.min_head_endpoints:
         raise SystemExit(
             f"P2 control-function head failure: only {len(blocks)} fresh chain-137 endpoints"
         )
-
-    from itertools import combinations
-
-    quorum_candidates = []
-    for combo in combinations(sorted(blocks.items()), args.min_head_endpoints):
-        span = max(block for _, block in combo) - min(block for _, block in combo)
-        quorum_candidates.append(
-            (span, tuple(endpoint for endpoint, _ in combo))
-        )
-    quorum_candidates.sort()
-    best_span, quorum_endpoints = quorum_candidates[0]
-    if best_span > args.stale_block_tolerance:
+    if not quorum_endpoints or best_span > args.stale_block_tolerance:
         raise SystemExit(
-            f"P2 control-function head failure: no quorum within tolerance "
+            f"P2 control-function head failure: no deterministic fresh-head quorum within tolerance "
             f"(blocks={blocks}, required={args.min_head_endpoints}, tolerance={args.stale_block_tolerance})"
         )
 
