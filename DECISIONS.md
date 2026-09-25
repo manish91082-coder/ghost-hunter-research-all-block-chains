@@ -22,3 +22,18 @@ Decision: Prove detection, simulation and controlled hunting with free/public in
 
 ## D-007 — AI Hot Path
 Decision: Keep LLM calls out of the critical execution path. Use deterministic code for hot execution, ML for prediction/ranking, and LLMs for research/strategy discovery.
+
+## D-008 — Polygon-First Saturation Lock
+Date: 2026-09-25
+Decision: Until the Polygon saturation gate is formally closed, all substantive research work in this track is restricted to Polygon PoS Mainnet, chain ID 137.
+Reason: Achieve a deep, evidence-backed chain-specific knowledge base before expanding to another blockchain.
+
+## D-009 — Address-Level Evidence Gate
+Date: 2026-09-25
+Decision: A protocol, DEX, pool, pair, token, router, factory, quoter, lending market, flash-liquidity source, MEV/orderflow surface or other execution-relevant object is not marked VERIFIED until its on-chain identity and relevant behavior are independently verified.
+Reason: Prevent stale, copied, guessed or fictitious data from entering the execution knowledge base.
+
+## D-010 — Profit Claim Discipline
+Date: 2026-09-25
+Decision: Research may rank positive-EV candidates only after exact state, all known costs, execution constraints and simulation gates are satisfied. No external-market outcome is represented as mathematically guaranteed profit.
+Reason: Avoid confusing deterministic calculation under assumptions with guaranteed realized profit.
