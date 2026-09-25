@@ -1,0 +1,18 @@
+# Polygon PoS read-only RPC candidate pool.
+# Format: stable-endpoint-id|https://endpoint
+# Candidates are rotated at request level when an endpoint is unhealthy or rate-limited.
+# Pool membership does not imply trust or execution eligibility.
+drpc|https://polygon.drpc.org
+tenderly|https://tenderly.rpc.polygon.community
+publicnode|https://polygon.publicnode.com
+tatum|https://polygon-mainnet.gateway.tatum.io/
+nodies|https://polygon-public.nodies.app/
+1rpc|https://1rpc.io/matic
+quicknode-public|https://rpc-mainnet.matic.quiknode.pro
+onfinality|https://polygon.api.onfinality.io/public
+spectrum|https://spectrumnodes.com/
+publicnode-bor|https://polygon-bor-rpc.publicnode.com
+llama|https://polygon.llamarpc.com
+ankr|https://rpc.ankr.com/polygon
+blastapi|https://polygon-mainnet.public.blastapi.io
+nodeflare|https://rpc.nodeflare.app/polygon/public
