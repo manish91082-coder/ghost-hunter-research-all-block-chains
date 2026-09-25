@@ -226,3 +226,9 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - Derived-control trigger commit: b97b8fb44583b25f7eda96f8d7da8fdb434d3e39.
 - Control-function trigger commit: bfe36c431d56de65e1b0164429d48d387ca30f7f.
 - These commits are not evidence themselves. Only subsequent GitHub Actions job/artifact output can advance the gates.
+
+## 2026-09-25 — Control-function transport-evidence lock
+- Semantic call evidence requires an actual HTTP 200 JSON-RPC response.
+- HTTP 403, 429, timeout, DNS and other transport failures are never evidence, even when two providers fail in the same way.
+- JSON-RPC errors returned inside an HTTP 200 response remain reproducible call outcomes and may be reconciled.
+- Regression test commit fc126f0f2e06db43de6d9082f8d07e2e7d0b773e is locked as the anti-false-green guard.
