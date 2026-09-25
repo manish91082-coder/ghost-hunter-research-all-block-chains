@@ -32,6 +32,14 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
     def test_checkpoint_and_actions_read_permission(self):
         self.assertIn("actions: read", self.workflow)
         self.assertIn("saturation-conveyor-state", self.workflow)
+        self.assertIn("automation/evidence/", self.workflow)
+        self.assertIn("automation/universe/", self.workflow)
+
+    def test_state_store_is_fail_closed(self):
+        source = (ROOT / "tools" / "automation_state_store.py").read_text(encoding="utf-8")
+        self.assertIn("return 2", source)
+        self.assertIn("safe_member", source)
+        self.assertIn("automation/saturation_state.json", source)
 
     def test_no_conveyor_subprocess_accepts_shell(self):
         for node in ast.walk(self.tree):
