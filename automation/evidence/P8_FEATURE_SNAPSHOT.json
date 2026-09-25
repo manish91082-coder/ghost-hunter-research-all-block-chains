@@ -283,8 +283,8 @@
     },
     {
       "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0xdf7837de1f2fa4631d716cf2502f8b230f1dcc32",
-      "price_spread": null,
-      "venue_count": 1,
+      "price_spread": 68.00549115314216,
+      "venue_count": 4,
       "venues": [
         {
           "dex": "balancer",
@@ -292,6 +292,27 @@
           "pair": "0x19127998126B6C7D32D596Ee15d32719B1789c8E",
           "price": 0.1131,
           "volume_24h": 230.91
+        },
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 4573.03,
+          "pair": "0x9b5c71936670e9f1F36e63F03384De7e06E60d2a",
+          "price": 0.001639,
+          "volume_24h": 352.6
+        },
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 274.1,
+          "pair": "0x25c9b9d4865E4f7c0ae83488bC7483D7AbCDF0A1",
+          "price": 0.001666,
+          "volume_24h": 39.81
+        },
+        {
+          "dex": "sushiswap",
+          "liquidity_usd": 0.33,
+          "pair": "0x87aCD3D73bc4d56e5A4Fb36071De929a4571CdA0",
+          "price": 0.001676,
+          "volume_24h": 0.01
         }
       ]
     },
@@ -1032,29 +1053,50 @@
     },
     {
       "pair_key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174:0x311434160d7537be358930def317afb606c0d737",
-      "price_spread": null,
-      "venue_count": 1,
+      "price_spread": 0.061375927556282406,
+      "venue_count": 2,
       "venues": [
         {
           "dex": "quickswap",
-          "liquidity_usd": 59671.12,
+          "liquidity_usd": 59723.21,
           "pair": "0x9EB792c780d3E3714f245c596C8c8993bF6fC605",
-          "price": 0.08424,
-          "volume_24h": 5146.76
+          "price": 0.08439,
+          "volume_24h": 5155.32
+        },
+        {
+          "dex": "0xC03C125359111D188b1C4Cd7E5cCd935EDbb5833",
+          "liquidity_usd": 4.34,
+          "pair": "0x600606C73d802A165883b57BB8dEA17cC4dC5Ac9",
+          "price": 0.07951,
+          "volume_24h": 0.09
         }
       ]
     },
     {
       "pair_key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174:0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39",
-      "price_spread": null,
-      "venue_count": 1,
+      "price_spread": 0.005813953488372103,
+      "venue_count": 3,
       "venues": [
         {
           "dex": "uniswap",
-          "liquidity_usd": 244439.72,
+          "liquidity_usd": 244538.68,
           "pair": "0x94Ab9E4553fFb839431E37CC79ba8905f45BfBeA",
-          "price": 13.83,
-          "volume_24h": 165459.13
+          "price": 13.84,
+          "volume_24h": 163026.15
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 17558.6,
+          "pair": "0x36128D5436d2d70cab39C9AF9CcE146C38554ff0-0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174-0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39",
+          "price": 13.76,
+          "volume_24h": 673.06
+        },
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 1953.9,
+          "pair": "0x22177148e681A6ca5242c9888Ace170EE7eC47BD",
+          "price": 13.82,
+          "volume_24h": 697.13
         }
       ]
     },
@@ -1065,10 +1107,10 @@
       "venues": [
         {
           "dex": "uniswap",
-          "liquidity_usd": 7192890.91,
+          "liquidity_usd": 7209646.65,
           "pair": "0x124fCfd1B923485C8cCf275AFbEe4bf557B232D6",
-          "price": 0.5455,
-          "volume_24h": 742533.14
+          "price": 0.548,
+          "volume_24h": 750965.75
         }
       ]
     },
@@ -1079,10 +1121,10 @@
       "venues": [
         {
           "dex": "uniswap",
-          "liquidity_usd": 1597229.34,
+          "liquidity_usd": 1597194.65,
           "pair": "0x35AFBB9d4dBe49F7579CCFD659eE6854a387FaA0",
           "price": 0.3382,
-          "volume_24h": 14478.51
+          "volume_24h": 14555.84
         }
       ]
     },
@@ -1093,10 +1135,10 @@
       "venues": [
         {
           "dex": "quickswap",
-          "liquidity_usd": 521665.41,
+          "liquidity_usd": 521350.4,
           "pair": "0x5b5158347c07E5B8E0343443A4C7Cc1739A3d663",
-          "price": 3.11,
-          "volume_24h": 114539.52
+          "price": 3.1,
+          "volume_24h": 114930.05
         }
       ]
     },
@@ -1107,10 +1149,10 @@
       "venues": [
         {
           "dex": "uniswap",
-          "liquidity_usd": 1573582.23,
+          "liquidity_usd": 1573793.96,
           "pair": "0xe0474CeBfA5290f96Ed7a7fa449DBaa666f14eE6",
-          "price": 6.026,
-          "volume_24h": 10508.79
+          "price": 6.028,
+          "volume_24h": 10941.41
         }
       ]
     },
@@ -1121,24 +1163,38 @@
       "venues": [
         {
           "dex": "uniswap",
-          "liquidity_usd": 106913.35,
+          "liquidity_usd": 106910.76,
           "pair": "0x0Ea7C26C2C5C3CEDBBD58780eCb44EA33283a55f",
           "price": 0.2091,
-          "volume_24h": 1776.79
+          "volume_24h": 1777.63
         }
       ]
     },
     {
       "pair_key": "0x1bdf71ede1a4777db1eebe7232bcda20d6fc1610:0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
-      "price_spread": null,
-      "venue_count": 1,
+      "price_spread": 0.003934191702432033,
+      "venue_count": 3,
       "venues": [
         {
           "dex": "uniswap",
-          "liquidity_usd": 34331.24,
+          "liquidity_usd": 34331.21,
           "pair": "0x296b95DD0E8B726c4e358b0683ff0B6d675C35E9",
           "price": 0.2807,
-          "volume_24h": 120678.44
+          "volume_24h": 120515.18
+        },
+        {
+          "dex": "sushiswap",
+          "liquidity_usd": 30.63,
+          "pair": "0x82CA29F73E05D60a7befF48790390B6E91181C86",
+          "price": 0.2805,
+          "volume_24h": 0.07
+        },
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 0.09,
+          "pair": "0xd0fE5eA63479c9565c223293173b5CE6e61BE5cc",
+          "price": 0.2796,
+          "volume_24h": 0
         }
       ]
     },
@@ -1158,43 +1214,64 @@
     },
     {
       "pair_key": "0xc2132d05d31c914a87c6611c10748aeb04b58e8f:0xee997788f625809332baabb3110bcf1ba7400824",
-      "price_spread": null,
-      "venue_count": 1,
+      "price_spread": 0.0002122691572914448,
+      "venue_count": 2,
       "venues": [
         {
           "dex": "uniswap",
           "liquidity_usd": 1137889.74,
           "pair": "0xc810868393de87e0daA3B1f4E90c6738192d2a06",
           "price": 0.4712,
-          "volume_24h": 84235.44
+          "volume_24h": 82047.69
+        },
+        {
+          "dex": "sushiswap",
+          "liquidity_usd": 253.26,
+          "pair": "0x436404A45b6E430C8dc07d70dEb78a81063d3115",
+          "price": 0.4711,
+          "volume_24h": 3.8
         }
       ]
     },
     {
       "pair_key": "0x6ab4e20f36ca48b61ecd66c0450fdf665fa130be:0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
-      "price_spread": null,
-      "venue_count": 1,
+      "price_spread": 0.12146529562981989,
+      "venue_count": 2,
       "venues": [
         {
           "dex": "uniswap",
           "liquidity_usd": 203995.67,
           "pair": "0xC56DDB5C93B8E92B9409DCE43a9169aa643495b8",
           "price": 0.003112,
-          "volume_24h": 5323.16
+          "volume_24h": 5300.18
+        },
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 0.44,
+          "pair": "0x01E0fbD2328c616De19611e714bF8f4C89606525",
+          "price": 0.00349,
+          "volume_24h": 0
         }
       ]
     },
     {
       "pair_key": "0xbf7970d56a150cd0b60bd08388a4a75a27777777:0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
-      "price_spread": null,
-      "venue_count": 1,
+      "price_spread": 0.0012247397428044593,
+      "venue_count": 2,
       "venues": [
         {
           "dex": "uniswap",
-          "liquidity_usd": 18732477.45,
+          "liquidity_usd": 18748109.53,
           "pair": "0x549BB7E94DA23BC31e5fC4685548587f4f7C9B16",
-          "price": 0.0001632,
-          "volume_24h": 1162.7
+          "price": 0.0001633,
+          "volume_24h": 1165.37
+        },
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 17293.36,
+          "pair": "0x8983FAd9adFbfD3Ccc5f0E2173CddbD940FBD23C",
+          "price": 0.0001635,
+          "volume_24h": 1328.95
         }
       ]
     },
@@ -1261,10 +1338,10 @@
       "venues": [
         {
           "dex": "uniswap",
-          "liquidity_usd": 871404.56,
+          "liquidity_usd": 871390.87,
           "pair": "0x31eC7B008Fb6312c09762Df775984135E41d0Bac",
           "price": 1.027,
-          "volume_24h": 18811.68
+          "volume_24h": 18804.92
         }
       ]
     },
@@ -1278,7 +1355,7 @@
           "liquidity_usd": 47527.05,
           "pair": "0x867f2175C60676114D9895af5Ef6cF723Fc89cF1",
           "price": 0.2839,
-          "volume_24h": 2486.03
+          "volume_24h": 2438.38
         }
       ]
     },
@@ -1289,10 +1366,10 @@
       "venues": [
         {
           "dex": "uniswap",
-          "liquidity_usd": 110485.29,
+          "liquidity_usd": 110143.23,
           "pair": "0xe252750a6833559Ac76CEc7180b8f212a58d636e",
-          "price": 0.0006565,
-          "volume_24h": 17814.23
+          "price": 0.0006507,
+          "volume_24h": 17587.21
         }
       ]
     },
@@ -1303,24 +1380,31 @@
       "venues": [
         {
           "dex": "quickswap",
-          "liquidity_usd": 126549.15,
+          "liquidity_usd": 126363.41,
           "pair": "0xFFd8988e829150A554D30A7D3C4baC236E66ceB1",
-          "price": 3.21,
-          "volume_24h": 3119.25
+          "price": 3.2,
+          "volume_24h": 3212.13
         }
       ]
     },
     {
       "pair_key": "0xc2132d05d31c914a87c6611c10748aeb04b58e8f:0xd6df932a45c0f255f85145f286ea0b292b21c90b",
-      "price_spread": null,
-      "venue_count": 1,
+      "price_spread": 0.02701440768409835,
+      "venue_count": 2,
       "venues": [
         {
           "dex": "uniswap",
-          "liquidity_usd": 234840.04,
+          "liquidity_usd": 234684.12,
           "pair": "0x20fB28b6209eD80eeE40894BAA9a199C07B03e55",
-          "price": 154.58,
-          "volume_24h": 144081.28
+          "price": 153.97,
+          "volume_24h": 142399.36
+        },
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 57.12,
+          "pair": "0x6E6C3ecA437624cb3BB74c1903195DE93d7e31b6",
+          "price": 149.92,
+          "volume_24h": 51.89
         }
       ]
     },
@@ -1340,29 +1424,29 @@
     },
     {
       "pair_key": "0xac0f66379a6d7801d7726d5a943356a172549adb:0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
-      "price_spread": 0.0007880220646176994,
+      "price_spread": 0.0007898894154818592,
       "venue_count": 2,
       "venues": [
         {
           "dex": "quickswap",
-          "liquidity_usd": 497770.35,
+          "liquidity_usd": 497057.05,
           "pair": "0x5Fe84b85bA7dEA0FBc8C4571491Aca80d97F5e01",
-          "price": 0.2538,
-          "volume_24h": 107187.79
+          "price": 0.2534,
+          "volume_24h": 115398.93
         },
         {
           "dex": "uniswap",
-          "liquidity_usd": 301420.3,
+          "liquidity_usd": 300724.34,
           "pair": "0x39BFC628a34b07C5D65f207e59077dD3C8F10730",
-          "price": 0.254,
-          "volume_24h": 23981.73
+          "price": 0.2532,
+          "volume_24h": 22862.83
         }
       ]
     },
     {
       "pair_key": "0x68101d671bb84895da7dd7173bd71751929a7d0e:0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
-      "price_spread": null,
-      "venue_count": 1,
+      "price_spread": 0.11241084165477888,
+      "venue_count": 2,
       "venues": [
         {
           "dex": "uniswap",
@@ -1370,6 +1454,13 @@
           "pair": "0x8F265255b6C9621C7E393DD218cfD658459379a6",
           "price": 0.03505,
           "volume_24h": 487.19
+        },
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 39.97,
+          "pair": "0xbc874ca17aeA9f1C13175ECFD964dE4aa9ef7dC8",
+          "price": 0.03899,
+          "volume_24h": 197.64
         }
       ]
     },
@@ -1383,7 +1474,7 @@
           "liquidity_usd": 145779.63,
           "pair": "0xdD938962fa7CC2152Ea90c3AAe3de111ab786588",
           "price": 0.006398,
-          "volume_24h": 2326.28
+          "volume_24h": 2073.06
         }
       ]
     },
@@ -1397,7 +1488,7 @@
           "liquidity_usd": 501295.76,
           "pair": "0x96eAB320b09AA37C7A4E8DbCe1A9429182B2B9F4",
           "price": 0.003316,
-          "volume_24h": 4674.53
+          "volume_24h": 4603.15
         }
       ]
     },
@@ -1408,10 +1499,10 @@
       "venues": [
         {
           "dex": "dooar",
-          "liquidity_usd": 1238809.58,
+          "liquidity_usd": 1238854.89,
           "pair": "0xB064e9B00d713496D54617C3ef6e659072B8339f",
-          "price": 0.008812,
-          "volume_24h": 14097.04
+          "price": 0.008813,
+          "volume_24h": 11441.98
         }
       ]
     },
@@ -1422,10 +1513,10 @@
       "venues": [
         {
           "dex": "uniswap",
-          "liquidity_usd": 98621.26,
+          "liquidity_usd": 98702.1,
           "pair": "0x4Af62a93775C093Af3e32949EF23C9a323d20817",
-          "price": 0.1918,
-          "volume_24h": 64910
+          "price": 0.1919,
+          "volume_24h": 59710.26
         }
       ]
     },
@@ -1436,10 +1527,10 @@
       "venues": [
         {
           "dex": "sushiswap",
-          "liquidity_usd": 3989094.47,
+          "liquidity_usd": 3989226.82,
           "pair": "0x4097073E82eDAC2D758eCfD594139A891340D59d",
           "price": 0.314,
-          "volume_24h": 7751.79
+          "volume_24h": 7764.89
         }
       ]
     },
@@ -1894,7 +1985,7 @@
           "liquidity_usd": 288622.03,
           "pair": "0x6F207374c5c7946fbae60736d47E9003a9bFBA8f",
           "price": 89257.12,
-          "volume_24h": 154.69
+          "volume_24h": 74.92
         }
       ]
     },
@@ -1925,9 +2016,1185 @@
           "volume_24h": 603.69
         }
       ]
+    },
+    {
+      "pair_key": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359:0xdf7837de1f2fa4631d716cf2502f8b230f1dcc32",
+      "price_spread": 0.006112469437652646,
+      "venue_count": 2,
+      "venues": [
+        {
+          "dex": "balancer",
+          "liquidity_usd": 435254.93,
+          "pair": "0x3bd8a254163f8328efCC4F8c36da566753462433",
+          "price": 0.001646,
+          "volume_24h": 63126.2
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 717.42,
+          "pair": "0xc260F3c5A57Caf193d1813D8fd0A02442073D6fa-0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359-0xdF7837DE1F2Fa4631D716CF2502f8b230F1dcc32",
+          "price": 0.001636,
+          "volume_24h": 21.56
+        }
+      ]
+    },
+    {
+      "pair_key": "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6:0xdf7837de1f2fa4631d716cf2502f8b230f1dcc32",
+      "price_spread": 0.013455657492354778,
+      "venue_count": 3,
+      "venues": [
+        {
+          "dex": "balancer",
+          "liquidity_usd": 658409.38,
+          "pair": "0xE1E09ce7aAC2740846d9B6D9D56f588c65314eCB",
+          "price": 0.001657,
+          "volume_24h": 51680.11
+        },
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 1857.58,
+          "pair": "0xaDdc9C73f3CBaD4E647eAFf691715898825Ac20c",
+          "price": 0.001635,
+          "volume_24h": 75.92
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 1927.31,
+          "pair": "0xF099b7C3BD5A221Aa34Cb83004a50D66B0189ad0-0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6-0xdF7837DE1F2Fa4631D716CF2502f8b230F1dcc32",
+          "price": 0.001644,
+          "volume_24h": 49.89
+        }
+      ]
+    },
+    {
+      "pair_key": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619:0xdf7837de1f2fa4631d716cf2502f8b230f1dcc32",
+      "price_spread": 0.0036496350364962904,
+      "venue_count": 4,
+      "venues": [
+        {
+          "dex": "balancer",
+          "liquidity_usd": 195106.56,
+          "pair": "0xcA6EFA5704f1Ae445e0EE24D9c3Ddde34c5be1C2",
+          "price": 0.001647,
+          "volume_24h": 20002.2
+        },
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 29068.93,
+          "pair": "0xFc2fC983a411C4B1E238f7Eb949308CF0218C750",
+          "price": 0.001647,
+          "volume_24h": 2626.44
+        },
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 13831.81,
+          "pair": "0x22d1c3c541dd649eA4A8709fC787F348dC069e95",
+          "price": 0.001644,
+          "volume_24h": 6990.28
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 456.72,
+          "pair": "0xD5D7bc115B32ad1449C6D0083E43C87be95F2809-0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619-0xdF7837DE1F2Fa4631D716CF2502f8b230F1dcc32",
+          "price": 0.00165,
+          "volume_24h": 3.68
+        }
+      ]
+    },
+    {
+      "pair_key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174:0xdf7837de1f2fa4631d716cf2502f8b230f1dcc32",
+      "price_spread": 0.012883435582822012,
+      "venue_count": 9,
+      "venues": [
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 73135.29,
+          "pair": "0xa5cABfC725DFa129f618D527E93702d10412f039",
+          "price": 0.001648,
+          "volume_24h": 9920.93
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 3634.12,
+          "pair": "0x5c6Ee304399DBdB9C8Ef030aB642B10820DB8F56",
+          "price": 0.00165,
+          "volume_24h": 130.63
+        },
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 2796.25,
+          "pair": "0xA4BF339FC51541dbDDA6a805B1CBa602833398b5",
+          "price": 0.00165,
+          "volume_24h": 262.25
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 2909.17,
+          "pair": "0xdB1db6E248d7Bb4175f6E5A382d0A03fe3DCc813-0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174-0xdF7837DE1F2Fa4631D716CF2502f8b230F1dcc32",
+          "price": 0.001638,
+          "volume_24h": 127.57
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 1926.15,
+          "pair": "0xF099b7C3BD5A221Aa34Cb83004a50D66B0189ad0-0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174-0xdF7837DE1F2Fa4631D716CF2502f8b230F1dcc32",
+          "price": 0.001651,
+          "volume_24h": 32.42
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 1177.96,
+          "pair": "0x39Cd55FF7E7d7C66D7D2736f1d5D4791cDab895B-0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174-0xdF7837DE1F2Fa4631D716CF2502f8b230F1dcc32",
+          "price": 0.001637,
+          "volume_24h": 20.93
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 1003.46,
+          "pair": "0x2dbC9Ab0160087AE59474FB7bed95B9E808fA6bc-0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174-0xdF7837DE1F2Fa4631D716CF2502f8b230F1dcc32",
+          "price": 0.001646,
+          "volume_24h": 40.36
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 595.98,
+          "pair": "0xD208168d2A512240Eb82582205D94a0710BCe4E7-0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174-0xdF7837DE1F2Fa4631D716CF2502f8b230F1dcc32",
+          "price": 0.00163,
+          "volume_24h": 11.64
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 457.8,
+          "pair": "0xD5D7bc115B32ad1449C6D0083E43C87be95F2809-0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174-0xdF7837DE1F2Fa4631D716CF2502f8b230F1dcc32",
+          "price": 0.001651,
+          "volume_24h": 5
+        }
+      ]
+    },
+    {
+      "pair_key": "0x831753dd7087cac61ab5644b308642cc1c33dc13:0xdf7837de1f2fa4631d716cf2502f8b230f1dcc32",
+      "price_spread": 0.06093845216331495,
+      "venue_count": 2,
+      "venues": [
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 18816.82,
+          "pair": "0xE88e24F49338f974B528AcE10350Ac4576c5c8A1",
+          "price": 0.001641,
+          "volume_24h": 2616.27
+        },
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 31.12,
+          "pair": "0x5c1dE0cA479f002Bb6A08B0C7B460f3aFB327456",
+          "price": 0.001741,
+          "volume_24h": 1.52
+        }
+      ]
+    },
+    {
+      "pair_key": "0xd6df932a45c0f255f85145f286ea0b292b21c90b:0xdf7837de1f2fa4631d716cf2502f8b230f1dcc32",
+      "price_spread": 93747.02191113816,
+      "venue_count": 3,
+      "venues": [
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 15677.4,
+          "pair": "0x4917bC6b8E705Ad462ef525937E7eB7C6c87C356",
+          "price": 0.001643,
+          "volume_24h": 1317.55
+        },
+        {
+          "dex": "sushiswap",
+          "liquidity_usd": 379.14,
+          "pair": "0x5d17A3089d7Ff50Cc2fAe3d76f1be37C19e3869E",
+          "price": 0.00165,
+          "volume_24h": 12.47
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 1183.57,
+          "pair": "0x39Cd55FF7E7d7C66D7D2736f1d5D4791cDab895B-0xD6DF932A45C0f255f85145f286eA0b292B21C90B-0xdF7837DE1F2Fa4631D716CF2502f8b230F1dcc32",
+          "price": 154.028,
+          "volume_24h": 25.63
+        }
+      ]
+    },
+    {
+      "pair_key": "0xb5c064f955d8e7f38fe0460c556a72987494ee17:0xdf7837de1f2fa4631d716cf2502f8b230f1dcc32",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 12.32,
+          "pair": "0xc4fea5BB5e391843aFF81E9b0B36f84efBC345DF",
+          "price": 0.001622,
+          "volume_24h": 3.06
+        }
+      ]
+    },
+    {
+      "pair_key": "0xc2132d05d31c914a87c6611c10748aeb04b58e8f:0xdf7837de1f2fa4631d716cf2502f8b230f1dcc32",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 31.82,
+          "pair": "0xbdf8b03bc5FD648fe87a2b592C41155d3BDCDBc3",
+          "price": 0.001648,
+          "volume_24h": 0.89
+        }
+      ]
+    },
+    {
+      "pair_key": "0xbbba073c31bf03b8acf7c28ef0738decf3695683:0xdf7837de1f2fa4631d716cf2502f8b230f1dcc32",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 0.74,
+          "pair": "0xD9400389f7F6c2E7523def36FD96DC450656F330",
+          "price": 0.001634,
+          "volume_24h": 0.02
+        }
+      ]
+    },
+    {
+      "pair_key": "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063:0xdf7837de1f2fa4631d716cf2502f8b230f1dcc32",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 0.6,
+          "pair": "0xc6fFd93E2cC2a221dC466bd78385117Dda4Fd7D7",
+          "price": 0.001648,
+          "volume_24h": 0
+        }
+      ]
+    },
+    {
+      "pair_key": "0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39:0xdf7837de1f2fa4631d716cf2502f8b230f1dcc32",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 0.01,
+          "pair": "0xcEDc1C9Ee5d46A3F6b5F05a8a6524b2E56A9B1f5",
+          "price": 0.001614,
+          "volume_24h": 0
+        }
+      ]
+    },
+    {
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x311434160d7537be358930def317afb606c0d737",
+      "price_spread": 0.06618471893306754,
+      "venue_count": 6,
+      "venues": [
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 25091.35,
+          "pair": "0xe6c36EeD27C2E8eCb9a233Bf12Da06C9730b5955",
+          "price": 0.08554,
+          "volume_24h": 2846.29
+        },
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 8873.79,
+          "pair": "0x1aD30c12200CD340CDF7a315a5f6b89921aC7651",
+          "price": 0.08474,
+          "volume_24h": 509.77
+        },
+        {
+          "dex": "kyberswap",
+          "liquidity_usd": 1032.38,
+          "pair": "0x1317fe389b7992571bC84ff4D9D248225E96D199",
+          "price": 0.08227,
+          "volume_24h": 59.76
+        },
+        {
+          "dex": "kyberswap",
+          "liquidity_usd": 497.37,
+          "pair": "0x353288B2db543cb320472C740513341172b9e305",
+          "price": 0.08067,
+          "volume_24h": 13.35
+        },
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 7.41,
+          "pair": "0x3e353D24857dd791f37Ee75765998113Cf462E48",
+          "price": 0.08466,
+          "volume_24h": 0.16
+        },
+        {
+          "dex": "0x2541DBEa199a22501D75EA141627776Bd4EefC80",
+          "liquidity_usd": 2.71,
+          "pair": "0x96f0f4512c695ac6c8Cf4438276F58DB7dF82F95",
+          "price": 0.08023,
+          "volume_24h": 0.07
+        }
+      ]
+    },
+    {
+      "pair_key": "0x311434160d7537be358930def317afb606c0d737:0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "0xC03C125359111D188b1C4Cd7E5cCd935EDbb5833",
+          "liquidity_usd": 5.23,
+          "pair": "0x6EA70D160DC965ceCB08B988ee31B27109527C0d",
+          "price": 0.07983,
+          "volume_24h": 0.13
+        }
+      ]
+    },
+    {
+      "pair_key": "0x311434160d7537be358930def317afb606c0d737:0xd3e28c74177b812d1543a406ad1a97ee3c398ac2",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "0x2541DBEa199a22501D75EA141627776Bd4EefC80",
+          "liquidity_usd": 4.18,
+          "pair": "0x1839967a4f067F2A5561E19C5d2aAD163c10B1e7",
+          "price": 0.0003732,
+          "volume_24h": 0.07
+        }
+      ]
+    },
+    {
+      "pair_key": "0x311434160d7537be358930def317afb606c0d737:0x7ecb5699d8e0a6572e549dc86dde5a785b8c29bc",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 1.13,
+          "pair": "0x0CfBc42f87948677cFCCFCb81bFE42041469CaC9",
+          "price": 5.187e-07,
+          "volume_24h": 0.04
+        }
+      ]
+    },
+    {
+      "pair_key": "0x311434160d7537be358930def317afb606c0d737:0x8b661d59f1923b138e0048ff5ed5b8fef6f9e5cf",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "0x442266042667407329e1729e6BeAD71424F42021",
+          "liquidity_usd": 3.66,
+          "pair": "0xCf3FD9e4285387296a9bC8D97230c7c458D2451e",
+          "price": 1.702e-06,
+          "volume_24h": 0.06
+        }
+      ]
+    },
+    {
+      "pair_key": "0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39:0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+      "price_spread": 0.016862170087976525,
+      "venue_count": 12,
+      "venues": [
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 374379.56,
+          "pair": "0x3dC10D7Bfb94eeB009203E84a653E5764F71771d",
+          "price": 13.85,
+          "volume_24h": 1527451.11
+        },
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 457732.63,
+          "pair": "0x3e31AB7f37c048FC6574189135D108df80F0ea26",
+          "price": 13.82,
+          "volume_24h": 223819.28
+        },
+        {
+          "dex": "sushiswap",
+          "liquidity_usd": 132079.8,
+          "pair": "0x74D23F21F780CA26B47Db16B0504F2e3832b9321",
+          "price": 13.82,
+          "volume_24h": 7898.7
+        },
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 110353.53,
+          "pair": "0x5cA6CA6c3709E1E6CFe74a50Cf6B2B6BA2Dadd67",
+          "price": 13.84,
+          "volume_24h": 5774.39
+        },
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 37122.85,
+          "pair": "0xAb52931301078E2405c3a3EBB86e11ad0dFD2CfD",
+          "price": 13.82,
+          "volume_24h": 49289.17
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 17657.84,
+          "pair": "0x36128D5436d2d70cab39C9AF9CcE146C38554ff0-0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39-0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "price": 13.86,
+          "volume_24h": 411.86
+        },
+        {
+          "dex": "0xa98ea6356A316b44Bf710D5f9b6b4eA0081409Ef",
+          "liquidity_usd": 9385.58,
+          "pair": "0x70bF5ffCC6090A8D243FD05485Ec4c084BD10Ae5",
+          "price": 13.84,
+          "volume_24h": 445.19
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 7319.02,
+          "pair": "0xce66904B68f1f070332Cbc631DE7ee98B650b499-0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39-0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "price": 13.83,
+          "volume_24h": 188.17
+        },
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 3718.96,
+          "pair": "0x1a6289354fCEcBf4D19ECd7f21C0c1cE7f2fdd40",
+          "price": 13.83,
+          "volume_24h": 1822.56
+        },
+        {
+          "dex": "0x5eDe3f4e7203Bf1F12d57aF1810448E5dB20f46C",
+          "liquidity_usd": 928.88,
+          "pair": "0x436803355d26943DD0BC9826D39F9079199a890a",
+          "price": 13.83,
+          "volume_24h": 24.4
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 997.69,
+          "pair": "0xC22bb237A5B8b7260190cb9e4998A9901a68af6f-0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39-0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "price": 13.64,
+          "volume_24h": 1.88
+        },
+        {
+          "dex": "apeswap",
+          "liquidity_usd": 402.73,
+          "pair": "0xab291E39CD0F8235BA42A20a86F996A3F8B934e1",
+          "price": 13.87,
+          "volume_24h": 10.94
+        }
+      ]
+    },
+    {
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39",
+      "price_spread": 0.006498194945848468,
+      "venue_count": 4,
+      "venues": [
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 82702.75,
+          "pair": "0x0A28C2F5E0E8463E047C203F00F649812aE67E4f",
+          "price": 13.85,
+          "volume_24h": 224091.28
+        },
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 13920.27,
+          "pair": "0x98b9162161164De1ED182A0dFA08f5fBf0F733CA",
+          "price": 13.86,
+          "volume_24h": 3353.01
+        },
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 435.82,
+          "pair": "0x3c986748414A812e455DCd5418246B8fdEd5C369",
+          "price": 13.94,
+          "volume_24h": 22.53
+        },
+        {
+          "dex": "polyzap",
+          "liquidity_usd": 1587.49,
+          "pair": "0xAB55c21663E56aC97F40522D3Ff59E53A7A4d3b2",
+          "price": 13.86,
+          "volume_24h": 76.35
+        }
+      ]
+    },
+    {
+      "pair_key": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359:0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39",
+      "price_spread": 0.0,
+      "venue_count": 2,
+      "venues": [
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 332281.89,
+          "pair": "0x79E4240E33C121402dfc9009dE266356c91f241d",
+          "price": 13.84,
+          "volume_24h": 213504.89
+        },
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 4592.57,
+          "pair": "0xc10a06863f858f67C2Cd46F1675eE029D3F7acd8",
+          "price": 13.84,
+          "volume_24h": 9220.61
+        }
+      ]
+    },
+    {
+      "pair_key": "0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39:0xd6df932a45c0f255f85145f286ea0b292b21c90b",
+      "price_spread": 0.002883922134102379,
+      "venue_count": 2,
+      "venues": [
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 60694.64,
+          "pair": "0xfaE91e08188332ED6Ea09b314BBE3FC6cD1432C1",
+          "price": 13.91,
+          "volume_24h": 13096.64
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 17679.11,
+          "pair": "0x36128D5436d2d70cab39C9AF9CcE146C38554ff0-0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39-0xD6DF932A45C0f255f85145f286eA0b292B21C90B",
+          "price": 13.87,
+          "volume_24h": 319.34
+        }
+      ]
+    },
+    {
+      "pair_key": "0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39:0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3",
+      "price_spread": 0.007230657989877098,
+      "venue_count": 2,
+      "venues": [
+        {
+          "dex": "balancer",
+          "liquidity_usd": 17633.71,
+          "pair": "0x36128D5436d2d70cab39C9AF9CcE146C38554ff0-0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39-0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3",
+          "price": 13.83,
+          "volume_24h": 121.4
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 7277.06,
+          "pair": "0xce66904B68f1f070332Cbc631DE7ee98B650b499-0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39-0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3",
+          "price": 13.93,
+          "volume_24h": 69.64
+        }
+      ]
+    },
+    {
+      "pair_key": "0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39:0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
+      "price_spread": 0.0014471780028944004,
+      "venue_count": 2,
+      "venues": [
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 14600.22,
+          "pair": "0x3c92bd9596E6aca8cfa29ec733ebe0c189bec1F3",
+          "price": 13.84,
+          "volume_24h": 1211.7
+        },
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 256.46,
+          "pair": "0x4953593C5706534719A9404cec8542bE97c31a99",
+          "price": 13.82,
+          "volume_24h": 41.54
+        }
+      ]
+    },
+    {
+      "pair_key": "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6:0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39",
+      "price_spread": 0.0036284470246734646,
+      "venue_count": 2,
+      "venues": [
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 2643.45,
+          "pair": "0x0c61D1E9bBEC03cA9d1cA2Db0C94fa08AC91Ad5a",
+          "price": 13.83,
+          "volume_24h": 109
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 1041.2,
+          "pair": "0xC22bb237A5B8b7260190cb9e4998A9901a68af6f-0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6-0x53E0bca35eC356BD5ddDFebbD1Fc0fD03FaBad39",
+          "price": 13.78,
+          "volume_24h": 1.95
+        }
+      ]
+    },
+    {
+      "pair_key": "0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39:0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 1561.36,
+          "pair": "0x153D9ecFbe79FFecdB2aACfab5Abc4756F5f0CF0",
+          "price": 13.82,
+          "volume_24h": 211.92
+        }
+      ]
+    },
+    {
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x2c72d25530191ebd244eb6325e1892480b0e6e28",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 0.19,
+          "pair": "0xC705C1e394566BC72392E9E4D679950562C37017",
+          "price": 0.5215,
+          "volume_24h": 0.66
+        }
+      ]
+    },
+    {
+      "pair_key": "0x1e9909f1c7051ad4bf4496a345736dcedc2a3cfd:0x2c72d25530191ebd244eb6325e1892480b0e6e28",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "sushiswap",
+          "liquidity_usd": 12.99,
+          "pair": "0x2B42F767f92B2117625aC831684e2c07395d0A19",
+          "price": 0.3514,
+          "volume_24h": 5.81
+        }
+      ]
+    },
+    {
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x1bdf71ede1a4777db1eebe7232bcda20d6fc1610",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "sushiswap",
+          "liquidity_usd": 0.03,
+          "pair": "0x92E822b400a23D9eB7e66B15E708AB3708d4aBC3",
+          "price": 0.2832,
+          "volume_24h": 0
+        }
+      ]
+    },
+    {
+      "pair_key": "0x1bdf71ede1a4777db1eebe7232bcda20d6fc1610:0x1e9909f1c7051ad4bf4496a345736dcedc2a3cfd",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "sushiswap",
+          "liquidity_usd": 13.38,
+          "pair": "0xB67B06Bb375A0d54ef1DE81ea262791d22E81f07",
+          "price": 0.3235,
+          "volume_24h": 0.14
+        }
+      ]
+    },
+    {
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x6ab4e20f36ca48b61ecd66c0450fdf665fa130be",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 89.18,
+          "pair": "0x4e175dB82970B5Db1a266B18F71Ed0bbA2B41363",
+          "price": 0.003129,
+          "volume_24h": 10.19
+        }
+      ]
+    },
+    {
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0xbf7970d56a150cd0b60bd08388a4a75a27777777",
+      "price_spread": 0.07129798903107853,
+      "venue_count": 2,
+      "venues": [
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 9188.05,
+          "pair": "0xDa67d7c01C4C8F757C105c0890d94AC489952cD5",
+          "price": 0.0001641,
+          "volume_24h": 600.02
+        },
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 0.01,
+          "pair": "0x5280A54B2545C4aCA6dA56Fdb7c6Cd4E7b7D4Fc9",
+          "price": 0.0001758,
+          "volume_24h": 0
+        }
+      ]
+    },
+    {
+      "pair_key": "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6:0xbf7970d56a150cd0b60bd08388a4a75a27777777",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 106.8,
+          "pair": "0xDFF7c5184D144EA0A7A78a891A2dD94E6D89dFE2",
+          "price": 84048.026,
+          "volume_24h": 2.75
+        }
+      ]
+    },
+    {
+      "pair_key": "0x1e9909f1c7051ad4bf4496a345736dcedc2a3cfd:0xbf7970d56a150cd0b60bd08388a4a75a27777777",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "sushiswap",
+          "liquidity_usd": 15.13,
+          "pair": "0x6254c10919Fb4347a36a559f59078A0d44Dd5e8c",
+          "price": 0.316,
+          "volume_24h": 2.94
+        }
+      ]
+    },
+    {
+      "pair_key": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359:0xd6df932a45c0f255f85145f286ea0b292b21c90b",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 222301.97,
+          "pair": "0xc42BF5CD16D9eb1E892b66bB32A3892Dcb7bb75C",
+          "price": 153.93,
+          "volume_24h": 347104.76
+        }
+      ]
+    },
+    {
+      "pair_key": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619:0xd6df932a45c0f255f85145f286ea0b292b21c90b",
+      "price_spread": 0.026151184455682763,
+      "venue_count": 11,
+      "venues": [
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 559966.96,
+          "pair": "0x2aCeda63B5e958c45bd27d916ba701BC1DC08F7a",
+          "price": 153.85,
+          "volume_24h": 316835.63
+        },
+        {
+          "dex": "sushiswap",
+          "liquidity_usd": 178878.45,
+          "pair": "0x2813D43463C374a680f235c428FB1D7f08dE0B69",
+          "price": 153.87,
+          "volume_24h": 14644.98
+        },
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 62010.34,
+          "pair": "0x90bc3E68Ba8393a3Bf2D79309365089975341a43",
+          "price": 153.9,
+          "volume_24h": 4584.66
+        },
+        {
+          "dex": "0x03DAa61d8007443a6584e3d8f85105096543C19c",
+          "liquidity_usd": 53297.81,
+          "pair": "0x0c787944946d22922C9f41C477CC539700d35bB2",
+          "price": 153.94,
+          "volume_24h": 3971.95
+        },
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 43760.67,
+          "pair": "0x44720A6f572649526Ac9073caE9200755cc78e0A",
+          "price": 153.81,
+          "volume_24h": 36174.69
+        },
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 24504.38,
+          "pair": "0x25FB97799F80433e422f47E75173314e54dAE174",
+          "price": 153.51,
+          "volume_24h": 61158.51
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 17621.62,
+          "pair": "0x36128D5436d2d70cab39C9AF9CcE146C38554ff0-0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619-0xD6DF932A45C0f255f85145f286eA0b292B21C90B",
+          "price": 154.18,
+          "volume_24h": 369.38
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 7315.03,
+          "pair": "0xce66904B68f1f070332Cbc631DE7ee98B650b499-0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619-0xD6DF932A45C0f255f85145f286eA0b292B21C90B",
+          "price": 154.21,
+          "volume_24h": 187.11
+        },
+        {
+          "dex": "dfyn",
+          "liquidity_usd": 5323.9,
+          "pair": "0x7162c0AcF32820920a741D8fA466b8e6D60D530D",
+          "price": 154.19,
+          "volume_24h": 185.17
+        },
+        {
+          "dex": "0x5eDe3f4e7203Bf1F12d57aF1810448E5dB20f46C",
+          "liquidity_usd": 919.66,
+          "pair": "0x80F93221e875D14aeDdFdFC778Ca755Ab3562ce3",
+          "price": 154.13,
+          "volume_24h": 19.25
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 266.08,
+          "pair": "0x415747EE98D482e6dD9B431fa76Ad5553744F247-0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619-0xD6DF932A45C0f255f85145f286eA0b292B21C90B",
+          "price": 150.28,
+          "volume_24h": 1.6
+        }
+      ]
+    },
+    {
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0xd6df932a45c0f255f85145f286ea0b292b21c90b",
+      "price_spread": 0.009239239824175183,
+      "venue_count": 4,
+      "venues": [
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 79539.72,
+          "pair": "0xa9077cDB3D13F45B8B9d87C43E11bCe0e73d8631",
+          "price": 154.017,
+          "volume_24h": 117309.61
+        },
+        {
+          "dex": "polyzap",
+          "liquidity_usd": 9473.34,
+          "pair": "0x4485DF5F2B6Bf03935CeE44bf41ba65C06650B84",
+          "price": 154.48,
+          "volume_24h": 636.22
+        },
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 559.96,
+          "pair": "0x0554059D42E26f35CC958581C71FdfD92405d02f",
+          "price": 154.32,
+          "volume_24h": 21.82
+        },
+        {
+          "dex": "sushiswap",
+          "liquidity_usd": 457.71,
+          "pair": "0x7d88D931504D04BFBEE6F9745297A93063CAb24c",
+          "price": 155.44,
+          "volume_24h": 13.44
+        }
+      ]
+    },
+    {
+      "pair_key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174:0xd6df932a45c0f255f85145f286ea0b292b21c90b",
+      "price_spread": 0.017839992632451285,
+      "venue_count": 7,
+      "venues": [
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 44505.08,
+          "pair": "0xa236278beC0e0677A48527340cfB567b4E6e9AdC",
+          "price": 153.99,
+          "volume_24h": 12826.08
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 17656.96,
+          "pair": "0x36128D5436d2d70cab39C9AF9CcE146C38554ff0-0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174-0xD6DF932A45C0f255f85145f286eA0b292B21C90B",
+          "price": 154.73,
+          "volume_24h": 870.4
+        },
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 2127.05,
+          "pair": "0x7c76B6B3FE14831A39C0fec908DA5f17180df677",
+          "price": 154.58,
+          "volume_24h": 91.05
+        },
+        {
+          "dex": "0x42E635D36913c94a340567761Ec8383b9932906a",
+          "liquidity_usd": 1863.37,
+          "pair": "0xEc3434a26545a8A04dc3971C8bDdCBA23efB1b61",
+          "price": 154.47,
+          "volume_24h": 69.28
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 593.41,
+          "pair": "0x39Cd55FF7E7d7C66D7D2736f1d5D4791cDab895B-0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174-0xD6DF932A45C0f255f85145f286eA0b292B21C90B",
+          "price": 152.018,
+          "volume_24h": 15.86
+        },
+        {
+          "dex": "sushiswap",
+          "liquidity_usd": 267.59,
+          "pair": "0x3E9a0586088caEb2aDFf32B0C06CfA44151c7a5B",
+          "price": 153.79,
+          "volume_24h": 7.27
+        },
+        {
+          "dex": "0xf08aE17C2A2728a788bb1b6C243fe7eb3E5bBaDc",
+          "liquidity_usd": 272.08,
+          "pair": "0x939e9Fef580aA433DEb7c86E79aeA0cC7C3555B3",
+          "price": 153.62,
+          "volume_24h": 3.9
+        }
+      ]
+    },
+    {
+      "pair_key": "0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3:0xd6df932a45c0f255f85145f286ea0b292b21c90b",
+      "price_spread": 0.01331322140608604,
+      "venue_count": 3,
+      "venues": [
+        {
+          "dex": "balancer",
+          "liquidity_usd": 17589.8,
+          "pair": "0x36128D5436d2d70cab39C9AF9CcE146C38554ff0-0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3-0xD6DF932A45C0f255f85145f286eA0b292B21C90B",
+          "price": 153.38,
+          "volume_24h": 90.07
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 7321.32,
+          "pair": "0xce66904B68f1f070332Cbc631DE7ee98B650b499-0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3-0xD6DF932A45C0f255f85145f286eA0b292B21C90B",
+          "price": 154.51,
+          "volume_24h": 88.24
+        },
+        {
+          "dex": "balancer",
+          "liquidity_usd": 264.82,
+          "pair": "0x415747EE98D482e6dD9B431fa76Ad5553744F247-0x9a71012B13CA4d3D0Cdc72A177DF3ef03b0E76A3-0xD6DF932A45C0f255f85145f286eA0b292B21C90B",
+          "price": 152.48,
+          "volume_24h": 1.55
+        }
+      ]
+    },
+    {
+      "pair_key": "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6:0xd6df932a45c0f255f85145f286ea0b292b21c90b",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 10796.18,
+          "pair": "0x141688f5EAB27CBa15b5588f011bdEfc25F9Eae6",
+          "price": 154.2,
+          "volume_24h": 3423.17
+        }
+      ]
+    },
+    {
+      "pair_key": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359:0xac0f66379a6d7801d7726d5a943356a172549adb",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 199166.97,
+          "pair": "0xE13a7818F1b2391f89608Db3159e738eE052d57f",
+          "price": 0.2532,
+          "volume_24h": 6300.74
+        }
+      ]
+    },
+    {
+      "pair_key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174:0xac0f66379a6d7801d7726d5a943356a172549adb",
+      "price_spread": 0.003165809259992214,
+      "venue_count": 3,
+      "venues": [
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 11406.76,
+          "pair": "0xB372b5AbDb7c2ab8aD9E614BE9835A42d0009153",
+          "price": 0.2535,
+          "volume_24h": 267.19
+        },
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 371.72,
+          "pair": "0x397B664C282c9677E28D82a10768E8f112462387",
+          "price": 0.2527,
+          "volume_24h": 7.12
+        },
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 130.28,
+          "pair": "0xa5Cc7C4aEFCF984B3fD58A856Cd083F72B2C6e4c",
+          "price": 0.2532,
+          "volume_24h": 0.88
+        }
+      ]
+    },
+    {
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0xac0f66379a6d7801d7726d5a943356a172549adb",
+      "price_spread": 0.005924170616113722,
+      "venue_count": 3,
+      "venues": [
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 8436.74,
+          "pair": "0x6b5AA9Fb0BEb9bcdA2B0F76bB2174041d326e3dd",
+          "price": 0.2537,
+          "volume_24h": 730.66
+        },
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 514.79,
+          "pair": "0x0D78BD69A0535BE801d904cE1D29973e77141716",
+          "price": 0.2547,
+          "volume_24h": 11.03
+        },
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 365.54,
+          "pair": "0xf0e36ede3f68bbaDA2C2A5689925AE10a129594A",
+          "price": 0.2532,
+          "volume_24h": 21.03
+        }
+      ]
+    },
+    {
+      "pair_key": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619:0xac0f66379a6d7801d7726d5a943356a172549adb",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 650.44,
+          "pair": "0x2b66Bb526914Bc7035507Fea26D80E8f477e67bd",
+          "price": 0.2537,
+          "volume_24h": 5.79
+        }
+      ]
+    },
+    {
+      "pair_key": "0x831753dd7087cac61ab5644b308642cc1c33dc13:0xac0f66379a6d7801d7726d5a943356a172549adb",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "quickswap",
+          "liquidity_usd": 64.3,
+          "pair": "0x8100Bb8A1D219AAb2774eFA62285B115050d1392",
+          "price": 13.38,
+          "volume_24h": 3.47
+        }
+      ]
+    },
+    {
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x714db550b574b3e927af3d93e26127d15721d4c2",
+      "price_spread": 0.01177936346132058,
+      "venue_count": 2,
+      "venues": [
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 2728.58,
+          "pair": "0xB12104d57e907ff0ff944791BC00246297a8DaCA",
+          "price": 0.008933,
+          "volume_24h": 646.82
+        },
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 611.27,
+          "pair": "0xb2131540048397D2C958Bb5Cc38B6Db0E3c8Fe88",
+          "price": 0.008829,
+          "volume_24h": 17.91
+        }
+      ]
+    },
+    {
+      "pair_key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174:0x714db550b574b3e927af3d93e26127d15721d4c2",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "sushiswap",
+          "liquidity_usd": 70.05,
+          "pair": "0x11472fc1Ba40F95627CBeabD4F34F4f3f2D07e4A",
+          "price": 0.008823,
+          "volume_24h": 0.33
+        }
+      ]
+    },
+    {
+      "pair_key": "0x714db550b574b3e927af3d93e26127d15721d4c2:0x8349314651ede274f8c5fef01aa65ff8da75e57c",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "dooar",
+          "liquidity_usd": 35702.92,
+          "pair": "0x4D9865903e0590D27130B6cCc50b17b4c7221A71",
+          "price": 0.0007445,
+          "volume_24h": 101.31
+        }
+      ]
+    },
+    {
+      "pair_key": "0x714db550b574b3e927af3d93e26127d15721d4c2:0xa499b5ebdf67d98a28dd5c70294de50ee7ba3e81",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "dooar",
+          "liquidity_usd": 2505.69,
+          "pair": "0x404fAc6814A05DD5a936080F64248808C62Eb4dF",
+          "price": 0.0007919,
+          "volume_24h": 1.48
+        }
+      ]
+    },
+    {
+      "pair_key": "0x714db550b574b3e927af3d93e26127d15721d4c2:0xffffff9936bd58a008855b0812b44d2c8dffe2aa",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "0x3dD8Fd033f7A3231e38a54ce6d710d5E5F074745",
+          "liquidity_usd": 93.06,
+          "pair": "0x68625bEe2beeB0444e8eB806e803D6fa1BBbF0b2",
+          "price": 1.0073,
+          "volume_24h": 0.71
+        }
+      ]
+    },
+    {
+      "pair_key": "0x4ed141110f6eeeaba9a1df36d8c26f684d2475dc:0xe6a537a407488807f0bbeb0038b79004f19dddfb",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "uniswap",
+          "liquidity_usd": 15421.16,
+          "pair": "0x6E05B2e9C6cCCa3308A73F597b4C92EA4e6cFb86",
+          "price": 0.1919,
+          "volume_24h": 7183.47
+        }
+      ]
+    },
+    {
+      "pair_key": "0x06737d16ad9c1e41aa44fee2a952b26723b20673:0x27ab6e82f3458edbc0703db2756391b899ce6324",
+      "price_spread": null,
+      "venue_count": 1,
+      "venues": [
+        {
+          "dex": "0x2d7360Db7216792cfc2c73B79C0cA629007E2af4",
+          "liquidity_usd": 140861.97,
+          "pair": "0xe0CF7d7554f4BD1Be6b24994Dc11588556d3750A",
+          "price": 0.007465,
+          "volume_24h": 79.58
+        }
+      ]
     }
   ],
-  "pair_groups": 65,
+  "pair_groups": 115,
   "task": "p8_features",
-  "time": "2026-09-25T19:38:29Z"
+  "time": "2026-09-25T20:13:54Z"
 }

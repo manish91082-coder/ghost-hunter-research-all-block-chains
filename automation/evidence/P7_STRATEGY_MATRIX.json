@@ -4,113 +4,113 @@
   "strategies": [
     {
       "candidate": true,
-      "route_context_count": 102048,
+      "route_context_count": 193107,
       "status": "RESEARCH_CANDIDATE",
       "strategy": "dex_dex"
     },
     {
       "candidate": true,
-      "route_context_count": 102048,
+      "route_context_count": 193107,
       "status": "RESEARCH_CANDIDATE",
       "strategy": "intra_dex"
     },
     {
       "candidate": true,
-      "route_context_count": 102048,
+      "route_context_count": 193107,
       "status": "RESEARCH_CANDIDATE",
       "strategy": "triangular"
     },
     {
       "candidate": true,
-      "route_context_count": 102048,
+      "route_context_count": 193107,
       "status": "RESEARCH_CANDIDATE",
       "strategy": "multi_hop"
     },
     {
       "candidate": true,
-      "route_context_count": 102048,
+      "route_context_count": 193107,
       "status": "RESEARCH_CANDIDATE",
       "strategy": "split"
     },
     {
       "candidate": true,
-      "route_context_count": 102048,
+      "route_context_count": 193107,
       "status": "RESEARCH_CANDIDATE",
       "strategy": "flash_loan"
     },
     {
       "candidate": true,
-      "route_context_count": 102048,
+      "route_context_count": 193107,
       "status": "RESEARCH_CANDIDATE",
       "strategy": "liquidation"
     },
     {
       "candidate": true,
-      "route_context_count": 102048,
+      "route_context_count": 193107,
       "status": "RESEARCH_CANDIDATE",
       "strategy": "backrun"
     },
     {
       "candidate": true,
-      "route_context_count": 102048,
+      "route_context_count": 193107,
       "status": "RESEARCH_CANDIDATE",
       "strategy": "orderflow_mev"
     },
     {
       "candidate": true,
-      "route_context_count": 102048,
+      "route_context_count": 193107,
       "status": "RESEARCH_CANDIDATE",
       "strategy": "intent_rfq_filler"
     },
     {
       "candidate": true,
-      "route_context_count": 102048,
+      "route_context_count": 193107,
       "status": "RESEARCH_CANDIDATE",
       "strategy": "solver_relayer"
     },
     {
       "candidate": true,
-      "route_context_count": 102048,
+      "route_context_count": 193107,
       "status": "RESEARCH_CANDIDATE",
       "strategy": "liquidity_state_transition"
     },
     {
       "candidate": true,
-      "route_context_count": 102048,
+      "route_context_count": 193107,
       "status": "RESEARCH_CANDIDATE",
       "strategy": "cross_domain"
     },
     {
       "candidate": true,
-      "route_context_count": 102048,
+      "route_context_count": 193107,
       "status": "RESEARCH_CANDIDATE",
       "strategy": "statistical_temporal"
     },
     {
       "candidate": true,
-      "route_context_count": 102048,
+      "route_context_count": 193107,
       "status": "RESEARCH_CANDIDATE",
       "strategy": "gas_regime"
     },
     {
       "candidate": true,
-      "route_context_count": 102048,
+      "route_context_count": 193107,
       "status": "RESEARCH_CANDIDATE",
       "strategy": "failed_tx_retry_state"
     },
     {
       "candidate": true,
-      "route_context_count": 102048,
+      "route_context_count": 193107,
       "status": "RESEARCH_CANDIDATE",
       "strategy": "protocol_structural"
     },
     {
       "candidate": true,
-      "route_context_count": 102048,
+      "route_context_count": 193107,
       "status": "RESEARCH_CANDIDATE",
       "strategy": "negative_space_hypothesis"
     }
   ],
   "task": "p7_strategy_matrix",
-  "time": "2026-09-25T19:33:17Z"
+  "time": "2026-09-25T20:19:58Z"
 }

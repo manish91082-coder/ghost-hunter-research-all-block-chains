@@ -2,13 +2,13 @@
   "automation": "GHOST_HUNTER_SATURATION_CONVEYOR",
   "commit_required": true,
   "created_at": "2026-09-26T00:00:00Z",
-  "critical_stage": "P3",
+  "critical_stage": "P4",
   "cursors": {
     "critical": 1,
-    "shadow": 3
+    "shadow": 5
   },
-  "last_progress_signature": "{\"executed\": [\"P2_PROVENANCE\", \"P2_REGRESSION\", \"P4\", \"P5\"], \"gate\": \"P2_CLOSED\", \"tasks\": {\"P10\": 1, \"P2_CONTROL_FUNCTION\": 3, \"P2_DERIVED\": 2, \"P2_PROVENANCE\": 3, \"P2_REGRESSION\": 4, \"P3\": 2, \"P4\": 3, \"P5\": 3, \"P6\": 2, \"P7\": 2, \"P8\": 3, \"P9\": 2}}",
-  "last_run": "2026-09-25T20:00:42Z",
+  "last_progress_signature": "{\"executed\": [\"P3\", \"P6\", \"P7\"], \"gate\": \"P2_CLOSED\", \"tasks\": {\"P10\": 2, \"P2_CONTROL_FUNCTION\": 3, \"P2_DERIVED\": 2, \"P2_PROVENANCE\": 3, \"P2_REGRESSION\": 4, \"P3\": 7, \"P4\": 4, \"P5\": 4, \"P6\": 4, \"P7\": 4, \"P8\": 4, \"P9\": 3}}",
+  "last_run": "2026-09-25T20:19:58Z",
   "research_gate": "P2_CLOSED",
   "schema_version": 1,
   "shadow_lane": true,
@@ -56,12 +56,12 @@
   },
   "tasks": {
     "P10": {
-      "attempts": 1,
-      "code_epoch": "53540e973ed788b5277cb603d4de6e8f1a087f99c71bb755e2505a10d28e0540",
+      "attempts": 2,
+      "code_epoch": "e02b5e8c65e889f118425c21398f05fb30a643808caa1241106299ae52118ace",
       "cooldown_until": 0,
       "last_error": "",
       "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 0.07, 'stdout': 'automation/evidence/P10_SATURATION_AUDIT.json\\n', 'stderr': ''}",
-      "last_run": "2026-09-25T19:58:06Z",
+      "last_run": "2026-09-25T20:15:15Z",
       "ok": true
     },
     "P2_CONTROL_FUNCTION": {
@@ -101,66 +101,67 @@
       "ok": true
     },
     "P3": {
-      "attempts": 2,
-      "code_epoch": "53540e973ed788b5277cb603d4de6e8f1a087f99c71bb755e2505a10d28e0540",
+      "attempts": 7,
+      "code_epoch": "c5d51173df2203eb4780478954ecb48728cf80958b786f03d1a6bb2fb450ce29",
       "cooldown_until": 0,
       "last_error": "",
-      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 0.6, 'stdout': 'automation/evidence/P3_PROTOCOL_SNAPSHOT.json\\n', 'stderr': ''}",
-      "last_run": "2026-09-25T19:58:07Z",
-      "ok": true
+      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 0.9, 'stdout': 'automation/evidence/P3_PROTOCOL_SNAPSHOT.json\\n', 'stderr': ''}",
+      "last_run": "2026-09-25T20:19:56Z",
+      "ok": true,
+      "revision": "p3-multisource-closure-v1"
     },
     "P4": {
-      "attempts": 3,
-      "code_epoch": "03227f2eb6315bb1c2c46776ab0a1692c96897220feeba786154b3f4496315b6",
+      "attempts": 4,
+      "code_epoch": "c5d51173df2203eb4780478954ecb48728cf80958b786f03d1a6bb2fb450ce29",
       "cooldown_until": 0,
       "last_error": "",
-      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 0.08, 'stdout': 'automation/evidence/P4_TOKEN_SNAPSHOT.json\\n', 'stderr': ''}",
-      "last_run": "2026-09-25T20:00:39Z",
+      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 0.06, 'stdout': 'automation/evidence/P4_TOKEN_SNAPSHOT.json\\n', 'stderr': ''}",
+      "last_run": "2026-09-25T20:17:48Z",
       "ok": true
     },
     "P5": {
-      "attempts": 3,
-      "code_epoch": "03227f2eb6315bb1c2c46776ab0a1692c96897220feeba786154b3f4496315b6",
+      "attempts": 4,
+      "code_epoch": "c5d51173df2203eb4780478954ecb48728cf80958b786f03d1a6bb2fb450ce29",
       "cooldown_until": 0,
       "last_error": "",
-      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 2.91, 'stdout': 'automation/evidence/P5_PAIR_SNAPSHOT.json\\n', 'stderr': ''}",
-      "last_run": "2026-09-25T20:00:42Z",
+      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 5.13, 'stdout': 'automation/evidence/P5_PAIR_SNAPSHOT.json\\n', 'stderr': ''}",
+      "last_run": "2026-09-25T20:17:54Z",
       "ok": true
     },
     "P6": {
-      "attempts": 2,
-      "code_epoch": "d7186da2bc2789f3adf4d85d161669af157867cd00d3df8131052ee1b5bbdf6f",
+      "attempts": 4,
+      "code_epoch": "c5d51173df2203eb4780478954ecb48728cf80958b786f03d1a6bb2fb450ce29",
       "cooldown_until": 0,
       "last_error": "",
-      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 0.49, 'stdout': 'automation/evidence/P6_ROUTE_SNAPSHOT.json\\n', 'stderr': ''}",
-      "last_run": "2026-09-25T19:23:42Z",
+      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 2.38, 'stdout': 'automation/evidence/P6_ROUTE_SNAPSHOT.json\\n', 'stderr': ''}",
+      "last_run": "2026-09-25T20:19:58Z",
       "ok": true
     },
     "P7": {
-      "attempts": 2,
-      "code_epoch": "4633f59fa032ca81a4b7e083b11e19538864c1d53c58f95cc571e4708bd6cc3b",
+      "attempts": 4,
+      "code_epoch": "c5d51173df2203eb4780478954ecb48728cf80958b786f03d1a6bb2fb450ce29",
       "cooldown_until": 0,
       "last_error": "",
       "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 0.07, 'stdout': 'automation/evidence/P7_STRATEGY_MATRIX.json\\n', 'stderr': ''}",
-      "last_run": "2026-09-25T19:33:17Z",
+      "last_run": "2026-09-25T20:19:58Z",
       "ok": true
     },
     "P8": {
-      "attempts": 3,
-      "code_epoch": "68a5a29f0f1410837d057be348249a7765dd3ef1c476d30b25e8e750b98344d5",
+      "attempts": 4,
+      "code_epoch": "97bb46b89b994b59954fac56e93d265a1f56e21ebc696d177765b8ae2f95a940",
       "cooldown_until": 0,
       "last_error": "",
-      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 0.07, 'stdout': 'automation/evidence/P8_FEATURE_SNAPSHOT.json\\n', 'stderr': ''}",
-      "last_run": "2026-09-25T19:38:29Z",
+      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 0.08, 'stdout': 'automation/evidence/P8_FEATURE_SNAPSHOT.json\\n', 'stderr': ''}",
+      "last_run": "2026-09-25T20:13:54Z",
       "ok": true
     },
     "P9": {
-      "attempts": 2,
-      "code_epoch": "68a5a29f0f1410837d057be348249a7765dd3ef1c476d30b25e8e750b98344d5",
+      "attempts": 3,
+      "code_epoch": "97bb46b89b994b59954fac56e93d265a1f56e21ebc696d177765b8ae2f95a940",
       "cooldown_until": 0,
       "last_error": "",
       "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 0.07, 'stdout': 'automation/evidence/P9_ECONOMIC_SCREEN.json\\n', 'stderr': ''}",
-      "last_run": "2026-09-25T19:38:29Z",
+      "last_run": "2026-09-25T20:13:54Z",
       "ok": true
     }
   }
