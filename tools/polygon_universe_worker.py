@@ -38,7 +38,15 @@ def append_jsonl(path, rows):
 def load_jsonl(path):
     p=Path(path)
     if not p.exists(): return []
-    return [json.loads(x) for x in p.read_text(encoding="utf-8").splitlines() if x.strip()]
+    raw=p.read_text(encoding="utf-8")
+    records=[]
+    for line in raw.splitlines():
+        # Recover legacy artifacts where a writer emitted the two-character
+        # sequence "\\n" instead of a real line feed.
+        for chunk in line.split("\\n"):
+            if chunk.strip():
+                records.append(json.loads(chunk))
+    return records
 
 def task_p2_provenance_replay():
     text=P2_PROV.read_text(encoding="utf-8") if P2_PROV.exists() else ""
@@ -111,7 +119,7 @@ def task_p4_tokens():
     for row in tokens.values(): existing[row["address"].lower()]=row
     rows=list(existing.values())
     token_path=UNIV/"tokens.jsonl"
-    token_path.write_text("".join(json.dumps(x,sort_keys=True)+"\\n" for x in rows),encoding="utf-8")
+    token_path.write_text("".join(json.dumps(x,sort_keys=True)+"\n" for x in rows),encoding="utf-8")
     return write_json("P4_TOKEN_SNAPSHOT.json",{
         "task":"p4_token_discovery",
         "time":now(),
@@ -154,9 +162,9 @@ def task_p5_pairs():
     existing_tokens={str(x.get("address","")).lower():x for x in load_jsonl(token_path)}
     tokens_before=len(existing_tokens)
     existing_tokens.update(discovered_tokens)
-    token_path.write_text("".join(json.dumps(x,sort_keys=True)+"\\n" for x in existing_tokens.values()),encoding="utf-8")
+    token_path.write_text("".join(json.dumps(x,sort_keys=True)+"\n" for x in existing_tokens.values()),encoding="utf-8")
     new_tokens=max(0,len(existing_tokens)-tokens_before)
-    pair_path.write_text("".join(json.dumps(x,sort_keys=True)+"\\n" for x in merged),encoding="utf-8")
+    pair_path.write_text("".join(json.dumps(x,sort_keys=True)+"\n" for x in merged),encoding="utf-8")
     cursor=min(len(tokens),cursor+len(batch))
     write_json("P5_CURSOR.json",{"cursor":cursor,"total_tokens":len(tokens)})
     return write_json("P5_PAIR_SNAPSHOT.json",{
