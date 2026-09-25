@@ -4,14 +4,6 @@ on:
   schedule:
     - cron: '*/5 * * * *'
   workflow_dispatch:
-  push:
-    paths:
-      - 'tools/saturation_conveyor.py'
-      - 'tools/polygon_universe_worker.py'
-      - 'tools/automation_state_store.py'
-      - 'automation/saturation_plan.json'
-      - '.github/workflows/saturation-conveyor.yml'
-
 concurrency:
   group: polygon-saturation-conveyor
   cancel-in-progress: false
