@@ -138,6 +138,10 @@ def main():
         encoding="utf-8",
     )
     print(json.dumps(summary, indent=2, sort_keys=True))
+    if summary["evidence_state"] != "VERIFIED":
+        raise SystemExit(
+            f"Polygon reconciliation gate not passed: {summary['evidence_state']}"
+        )
 
 
 if __name__ == "__main__":
