@@ -56,6 +56,19 @@ def provenance_fingerprint(observation):
     })
 
 
+def complete_provenance_observation(tx_response, receipt_response):
+    """Require both transaction and receipt objects before counting an RPC observation."""
+    if not tx_response.get("ok") or not receipt_response.get("ok"):
+        return False
+    tx_body = tx_response.get("body")
+    receipt_body = receipt_response.get("body")
+    if not isinstance(tx_body, dict) or not isinstance(receipt_body, dict):
+        return False
+    tx_result = tx_body.get("result")
+    receipt_result = receipt_body.get("result")
+    return isinstance(tx_result, dict) and isinstance(receipt_result, dict)
+
+
 def task_p2_provenance_replay():
     text=P2_PROV.read_text(encoding="utf-8") if P2_PROV.exists() else ""
     import re
@@ -68,18 +81,66 @@ def task_p2_provenance_replay():
     except Exception as e:
         result["status"]="BLOCKED_IMPORT"; result["error"]=f"{type(e).__name__}: {e}"; return write_json("P2_PROVENANCE_REPLAY.json",result)
     if not RPC_POOL.exists(): result["status"]="BLOCKED_NO_RPC_POOL"; return write_json("P2_PROVENANCE_REPLAY.json",result)
-    endpoints=load_rpc_endpoints(None,str(RPC_POOL)); pool=RpcPool(endpoints,1.0)
+
+    endpoints=load_rpc_endpoints(None,str(RPC_POOL))
+    pool=RpcPool(endpoints,1.0)
+    recovery_rounds=2
+
     for tx in txs:
         obs=[]
-        for item in pool.ordered():
-            eid=item["id"];
-            a=pool.request(eid,"eth_getTransactionByHash",[tx],f"{eid}:tx:{tx}",12,1)
-            b=pool.request(eid,"eth_getTransactionReceipt",[tx],f"{eid}:receipt:{tx}",12,1)
-            if a.get("ok") or b.get("ok"): pool.mark_success(eid)
-            else: pool.mark_failure(eid,b if not b.get("ok") else a)
-            if a.get("ok") and b.get("ok"):
-                obs.append({"rpc":eid,"tx":a["body"].get("result"),"receipt":b["body"].get("result")})
-            if len(obs)>=2: break
+        observed_endpoints=set()
+        diagnostics=[]
+
+        for recovery_round in range(1,recovery_rounds + 1):
+            for item in pool.ordered():
+                eid=item["id"]
+                if eid in observed_endpoints:
+                    continue
+
+                a=pool.request(eid,"eth_getTransactionByHash",[tx],f"{eid}:tx:{tx}:r{recovery_round}",12,1)
+                b=pool.request(eid,"eth_getTransactionReceipt",[tx],f"{eid}:receipt:{tx}:r{recovery_round}",12,1)
+
+                complete=complete_provenance_observation(a,b)
+                diagnostics.append({
+                    "rpc":eid,
+                    "round":recovery_round,
+                    "transaction_ok":bool(a.get("ok")),
+                    "receipt_ok":bool(b.get("ok")),
+                    "transaction_http_status":a.get("http_status"),
+                    "receipt_http_status":b.get("http_status"),
+                    "transaction_error":a.get("message") or ((a.get("body") or {}).get("error") if isinstance(a.get("body"),dict) else None),
+                    "receipt_error":b.get("message") or ((b.get("body") or {}).get("error") if isinstance(b.get("body"),dict) else None),
+                    "complete":complete,
+                })
+
+                if a.get("ok") or b.get("ok"):
+                    pool.mark_success(eid)
+                else:
+                    pool.mark_failure(eid,b if not b.get("ok") else a)
+
+                if complete:
+                    observed_endpoints.add(eid)
+                    obs.append({
+                        "rpc":eid,
+                        "tx":a["body"]["result"],
+                        "receipt":b["body"]["result"],
+                    })
+                    if len(obs)>=2:
+                        break
+
+            if len(obs)>=2:
+                break
+
+            if recovery_round < recovery_rounds:
+                cooldowns=[
+                    pool.state[eid]["cooldown_until"] - time.monotonic()
+                    for eid in pool.state
+                    if eid not in observed_endpoints
+                    and pool.state[eid]["cooldown_until"] > time.monotonic()
+                ]
+                if cooldowns:
+                    time.sleep(min(max(0.0,max(cooldowns)),60.0))
+
         fingerprints=[provenance_fingerprint(x) for x in obs]
         result["transactions"].append({
             "tx_hash":tx,
@@ -87,7 +148,10 @@ def task_p2_provenance_replay():
             "matching":len(obs)>=2 and len(set(fingerprints))==1,
             "semantic_fingerprints":fingerprints,
             "observations":obs,
+            "endpoint_diagnostics":diagnostics,
+            "recovery_rounds":recovery_rounds,
         })
+
     result["status"]="REPLAYED" if txs and all(x["independent_observations"]>=2 and x["matching"] for x in result["transactions"]) else "PARTIAL"
     return write_json("P2_PROVENANCE_REPLAY.json",result)
 
