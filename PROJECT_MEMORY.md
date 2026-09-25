@@ -283,3 +283,8 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - Both repairs have executable regression coverage.
 - Corrected dedicated control-function CI run is `36180198453`, currently pending.
 - A fresh conveyor run must be triggered from the corrected HEAD before P2 can be evaluated again.
+
+## 2026-09-26 — Conveyor speed checkpoint
+- Main HEAD: `798525a31e9f3486844acfc83653bb8c78f18e0c`.
+- Critical P2 work is now content-aware and non-redundant across heartbeat rounds.
+- Two independent critical tasks may execute per bounded run, while stage promotion remains fail-closed.
