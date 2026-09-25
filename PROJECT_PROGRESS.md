@@ -31,24 +31,22 @@
 - Polygon RPC evidence model with official public-RPC discovery list.
 - Polygon block/timing/finality evidence model.
 - Recent mainnet protocol-generation evidence recorded.
+- Polygon system/bridge contract discovery census with documented addresses.
+- Upgradeability/proxy/control-surface research requirements.
 
-### Important research finding
-Polygon's official RPC documentation lists multiple public endpoints and explicitly warns that public endpoints may have rate limits or traffic restrictions. Therefore the research architecture will treat them as a candidate mesh, not as automatically trusted execution infrastructure.
+### Important evidence discipline
+Documented addresses are not yet marked VERIFIED. Live chain-137 bytecode, proxy implementation, creation and behavior checks remain mandatory.
 
-Polygon's published 2025 material reports approximately 5-second finality after Heimdall v2; later 2025/2026 upgrade material reports further changes to block production, reorg behavior and capacity. These are documented protocol facts, not substitutes for live measurements.
-
-### Verification limitation
-The current research environment could not execute direct JSON-RPC POST requests against Polygon endpoints. Therefore no current block number, RPC latency, head agreement or live reorg metric was invented.
+### Current verification limitation
+The research environment does not currently execute direct JSON-RPC POST calls. Therefore live bytecode and latest-state values are not fabricated.
 
 ### Next gate
 P1 continuation:
-1. obtain live JSON-RPC telemetry through an available execution environment;
-2. verify chain ID and latest block across independent endpoints;
-3. capture block/header fields;
-4. measure block cadence;
-5. measure head/hash agreement;
-6. capture finality/reorg observations;
-7. build system and bridge contract discovery/evidence.
+1. live-verify documented Polygon system/bridge addresses;
+2. discover remaining bridge/state-sync contracts;
+3. capture bytecode and proxy implementation evidence;
+4. build machine-readable address registry;
+5. only after the chain infrastructure layer is verified, start DEX/protocol discovery.
 
 ### Git Verification
 Repository and branch remain locked to:
