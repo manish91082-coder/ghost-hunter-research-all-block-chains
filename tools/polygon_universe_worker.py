@@ -46,9 +46,11 @@ def task_p2_provenance_replay():
     txs=sorted(set(re.findall(r"(?im)(?:tx|creation tx)\s*=\s*(0x[a-fA-F0-9]{64})", text)))
     result={"task":"p2_provenance_replay","time":now(),"status":"DISCOVERY_ONLY","transactions":[],"source":"canonical provenance candidate file"}
     try:
-        from chains.polygon_pos.polygon_readonly_verifier import RpcPool, load_rpc_endpoints
-    except Exception:
-        result["status"]="BLOCKED_IMPORT"; return write_json("P2_PROVENANCE_REPLAY.json",result)
+        import sys
+        sys.path.insert(0, str(Path('chains/polygon-pos').resolve()))
+        from polygon_readonly_verifier import RpcPool, load_rpc_endpoints
+    except Exception as e:
+        result["status"]="BLOCKED_IMPORT"; result["error"]=f"{type(e).__name__}: {e}"; return write_json("P2_PROVENANCE_REPLAY.json",result)
     if not RPC_POOL.exists(): result["status"]="BLOCKED_NO_RPC_POOL"; return write_json("P2_PROVENANCE_REPLAY.json",result)
     endpoints=load_rpc_endpoints(None,str(RPC_POOL)); pool=RpcPool(endpoints,1.0)
     for tx in txs:
