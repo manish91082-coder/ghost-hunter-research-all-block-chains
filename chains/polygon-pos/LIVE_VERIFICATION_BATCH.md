@@ -306,3 +306,19 @@ Next work:
 7. cross-RPC reconciliation of control-plane fields.
 
 No DEX discovery is promoted until the remaining P2 infrastructure/address-control surface is sufficiently reconciled.
+
+## P2 execution slice — ERC-1967 storage consistency
+The first P2 execution slice reads these standard proxy slots for every bounded critical Polygon target:
+- implementation slot;
+- admin slot;
+- beacon slot.
+
+The slot constants follow ERC-1967. citeturn422867search0
+
+Acceptance:
+- chain-137 identity on at least two independent RPC endpoints;
+- every target/slot combination observed successfully on at least two independent endpoints;
+- identical raw slot results across those independent endpoints;
+- no unresolved slot conflicts.
+
+Passing this slice advances P2 only for storage-slot consistency. Proxy implementation semantics, control roles, creation evidence and function/event identity remain separate P2 sub-gates.
