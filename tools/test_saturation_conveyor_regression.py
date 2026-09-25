@@ -48,10 +48,15 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         source = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn('all(x["independent_observations"]>=2 and x["matching"] for x in result["transactions"])', source)
 
+    def test_control_reconciliation_is_fail_closed(self):
+        source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
+        self.assertIn("Reconciliation skipped because live verifier did not produce a valid observation set", source)
+
     def test_shadow_dependency_override_backfills_empty_queues(self):
         source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
         self.assertIn('if task=="P5" and not Path("automation/universe/tokens.jsonl").exists()', source)
-        self.assertIn('if task=="P6" and not Path("automation/universe/pairs.jsonl").exists()', source)
+        self.assertIn('elif task=="P6":', source)
+        self.assertIn('for _ in range(8):', source)
 
     def test_pair_snapshot_deduplicates_pair_addresses(self):
         source = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
