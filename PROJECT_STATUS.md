@@ -25,19 +25,22 @@ Real-money deployment: OFF
 ## Polygon Work Completed
 - Polygon-only scope lock created.
 - Polygon evidence README created.
-- Polygon PoS base profile created from official documentation and indexed-data references.
+- Polygon PoS base profile created.
 - Pre-transaction static-data saturation checklist created.
 - Polygon saturation research plan created.
 - Polygon RPC evidence file created with documented public RPC candidates and a live verification checklist.
 - Polygon block/timing/finality evidence file created.
-- Recent protocol-generation evidence recorded: August 2026 Austin/Kyoto security hardfork announcement.
-- Current live block/RPC telemetry deliberately NOT fabricated because direct JSON-RPC POST execution is unavailable in this research environment.
+- Recent protocol-generation evidence recorded.
+- Polygon system/bridge contract discovery census created with address-level evidence and explicit live-verification state.
+- Proxy/control/upgradeability requirements recorded.
 
 ## Polygon Work Not Yet Complete
 - Live RPC ground-truth capture.
 - Current block/header/finality measurements.
 - RPC endpoint census and health measurements.
-- System/bridge contract census.
+- Live bytecode verification of system/bridge addresses.
+- Proxy implementation/control verification.
+- Full bridge/state-sync surface census.
 - DEX/protocol address census.
 - Token universe census.
 - Pool/pair census.
@@ -56,4 +59,4 @@ This repository plus the latest committed research/evidence files.
 No live execution should be enabled from this repository until all required validation gates are explicitly satisfied.
 
 ## Next gate
-P1 continuation: obtain reproducible live Polygon RPC ground truth, then build system/bridge contract evidence.
+P1 continuation: live-verify the Polygon system/bridge address candidates, then enumerate the remaining bridge/state-sync contracts before beginning the DEX universe.
