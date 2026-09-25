@@ -176,3 +176,9 @@ Inspect the first CI run using the full adaptive RPC pool. If fewer than two ind
 
 ### Next atomic step
 Inspect the corrected adaptive-pool run. Its decisive artifact is expected to show chain/head quorum plus per-target independent code counts through the reconciliation layer.
+## 2026-09-25 — RPC cooldown recovery added
+- Adaptive rotation now has a bounded recovery phase for rate-limited endpoints.
+- HTTP 429 increases that endpoint's local request interval and applies cooldown; after cooldown, the endpoint is eligible to re-enter the address-code rotation.
+- The workflow now uses 1.0 second base per-endpoint pacing and two total address-code passes.
+- This is intended to convert temporary provider throttling into a recoverable condition while retaining the two-independent-endpoint evidence requirement.
+- P1 remains NOT PASSED until the corrected run reconciles all 11 targets as VERIFIED.
