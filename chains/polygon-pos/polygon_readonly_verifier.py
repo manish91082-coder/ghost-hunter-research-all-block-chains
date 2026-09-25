@@ -491,7 +491,7 @@ def main():
 
     identity_results = []
     with ThreadPoolExecutor(max_workers=min(len(endpoints), 8)) as executor:
-        futures = [executor.submit(probe_identity, item) for item in endpoints]
+        futures = [executor.submit(probe_identity, item) for item in pool.endpoints]
         for future in futures:
             identity_results.append(future.result())
 
