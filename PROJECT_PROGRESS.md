@@ -385,3 +385,13 @@ Each result is captured across the dynamically eligible Polygon RPC pool and rec
 
 ### Execution
 Run `36170466071` is **IN_PROGRESS**. P2 is not declared passed until the artifact is inspected and reconciliation returns VERIFIED.
+
+## 2026-09-25 — P2 allowlist defect corrected
+### Run #1 result
+- P2 workflow `36170466071` reached source validation successfully.
+- Execution failed on `ValueError: Method not allowed: eth_getStorageAt`.
+- Reconciliation had no input artifact, so P2 was not advanced.
+### Correction
+- Added `eth_getStorageAt` to the shared read-only RPC allowlist.
+- This method is read-only and is required for ERC-1967 implementation/admin/beacon storage-slot inspection.
+- Corrected P2 run `36170624761` is executing against the fixed source.
