@@ -243,3 +243,16 @@ Obtain/observe the actual GitHub Actions execution evidence. If the connector st
 
 ### Next atomic step
 Observe the GitHub execution/artifacts and use the reconciliation artifact as the first machine-readable P1 decision input.
+
+
+## 2026-09-25 — CI command-path normalization
+
+The Polygon verification workflow was rewritten with explicit YAML block-scalar command lines and separate validation/execution steps. This removes ambiguity from command concatenation in the stored workflow representation and keeps verifier failure separate from reconciliation execution.
+
+### Gate state
+- P1 live evidence: NOT PASSED.
+- No runner result is inferred from configuration.
+- Polygon saturation remains OPEN.
+
+### Next atomic step
+Observe actual workflow artifacts/run output. If unavailable through the connector, use the unchanged verifier in a permitted outbound-RPC environment rather than changing evidence semantics.
