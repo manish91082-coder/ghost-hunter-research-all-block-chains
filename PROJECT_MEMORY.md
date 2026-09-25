@@ -93,3 +93,10 @@ Never force a trade simply to make a profit appear every minute. Continuous scan
 ## 2026-09-25 — CI command-path lock
 - The Polygon workflow uses explicit multiline shell commands to avoid command-concatenation ambiguity.
 - Validation, verification, reconciliation, and artifact upload remain separate stages.
+
+## 2026-09-25 — Run #13 canonical memory
+- Parallel RPC verifier speed hardening introduced a newline serialization defect; commit `84fadf926ee9cd96c3b2b0a228458ebb28d9b1a8` repaired it.
+- Run #13 artifact `10876891277` is valid JSONL: 51 records, 51 physical lines, zero literal `\\n` serialization artifacts, zero JSON parsing errors.
+- Run #13 still fails P1 correctly: one RPC supplied chain ID 137 and block 94,433,671; independent two-RPC quorum was not achieved.
+- Four of eleven critical addresses returned code from only that one endpoint; all eleven remain unverified under the cross-RPC gate.
+- Do not weaken quorum, target coverage, or fail-closed behavior to obtain a green workflow. Next work must improve independent RPC accessibility/rate-limit coverage or move the unchanged verifier to another permitted execution environment.
