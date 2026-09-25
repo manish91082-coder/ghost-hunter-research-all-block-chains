@@ -539,3 +539,20 @@ Matching transport failures could previously be fingerprinted like contract outc
 - P2 derived runtime-code: fresh evidence acquisition pending inspection.
 - P2 control-function: fresh evidence acquisition re-triggered after this hardening.
 - Overall P2: IN PROGRESS.
+
+## 2026-09-26 — P2 provenance discovery integrated
+### External discovery findings
+- EIP1559Burn proxy external records expose constructor logic/admin relationships.
+- sPOL deployment transaction records show the parent/admin creation relationship and historical upgrade/admin events.
+- The current sPOL implementation candidate has a distinct Create2 deployment record.
+
+### Control-surface expansion
+- P2 control-function manifest expanded to 17 read-only probes.
+- New probes cover AccessManaged authority on the sPOL parent and owner/pendingOwner plus ProxyAdmin relationship reads on both derived admin addresses.
+- These are discovery-informed probes only. Live two-RPC reconciliation remains the gate.
+
+### Gate state
+- P2 ERC-1967 storage: PASSED.
+- P2 derived runtime-code: pending actual corrected CI artifact.
+- P2 control-function: expanded and hardened, pending actual CI artifact.
+- Overall P2: IN PROGRESS.
