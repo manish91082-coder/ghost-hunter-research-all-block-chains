@@ -66,7 +66,7 @@ The Polygon security scope and PIP-54 also identify legacy Plasma-side contracts
 
 ## Administrative/control discovery
 
-PIP-54 identifies additional role/control surfaces that matter for upgradeability and state-transition authority, including `MAPPER_ROLE`, `MANAGER_ROLE`, `DEFAULT_ADMIN_ROLE`, ownership and ProxyAdmin relationships. These are control-plane objects and must be tracked separately from liquidity/execution venues. citeturn0search1
+PIP-54 identifies additional role/control surfaces that matter for upgradeability and state-transition authority, including `MAPPER_ROLE`, `MANAGER_ROLE`, `DEFAULT_ADMIN_ROLE`, ownership and ProxyAdmin relationships. These are control-plane objects and must be tracked separately from liquidity/execution venues. [Polygon PIP-54](https://github.com/0xPolygon/Polygon-Improvement-Proposals/blob/main/PIPs/PIP-54.md).
 
 ## Verification schema
 
