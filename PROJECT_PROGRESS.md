@@ -354,3 +354,16 @@ Observe the new push-triggered run and inspect its artifact. If the new pool is 
 - Added a bounded second address-code recovery pass after cooldown, allowing temporarily rate-limited providers to re-enter rotation.
 - CI base pacing changed to 1.0 second per endpoint and recovery rounds fixed at 2.
 - No evidence threshold changed: every target still needs two distinct successful RPC endpoints with matching code hashes.
+
+## 2026-09-25 — Polygon P1 PASSED: Run #30
+
+- Adaptive 14-endpoint RPC pool established 3 live Polygon identity/head endpoints.
+- Run `36169503083` completed successfully.
+- All three head endpoints reported chain ID 137 and block 94,435,638.
+- All 11 canonical P1 targets received at least two independent successful `eth_getCode` observations.
+- Runtime-code hashes matched for every target.
+- Reconciliation: `evidence_state = VERIFIED`.
+- Artifact: `10879647689`, digest `sha256:bc53e3255ac12c2e99d62a5ef189c60fe26f1deb6e1c67178f043cc296546bbe`.
+
+### Gate decision
+**P1 PASSED.** The bounded targets move to PARTIAL, preserving unresolved control/proxy/behavior fields. Next atomic work is P2 address/control/bridge census.
