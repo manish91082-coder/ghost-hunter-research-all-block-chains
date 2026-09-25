@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/manish91082-coder/ghost-hunter-research-all-block-chains/blob/main/chains/polygon-pos/polygon-verification-record.schema.json",
+  "title": "Polygon Verification Evidence Record",
+  "type": "object",
+  "required": [
+    "record_type",
+    "object_id",
+    "network",
+    "chain_id",
+    "observation_time_utc",
+    "method",
+    "request",
+    "outcome",
+    "evidence_state"
+  ],
+  "properties": {
+    "record_type": {
+      "const": "polygon_verification"
+    },
+    "object_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "network": {
+      "const": "polygon-pos-mainnet"
+    },
+    "chain_id": {
+      "const": 137
+    },
+    "address": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "observation_time_utc": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "observation_block": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "rpc_endpoint_id": {
+      "type": "string"
+    },
+    "method": {
+      "type": "string"
+    },
+    "request": {
+      "type": "object",
+      "required": [
+        "jsonrpc",
+        "id",
+        "method",
+        "params"
+      ],
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "id": {},
+        "method": {
+          "type": "string"
+        },
+        "params": {
+          "type": "array"
+        }
+      },
+      "additionalProperties": false
+    },
+    "outcome": {
+      "type": "object",
+      "required": [
+        "ok"
+      ],
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "result_hash_sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "error_code": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "error_message": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "latency_ms": {
+          "type": "number",
+          "minimum": 0
+        },
+        "http_status": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "timeout": {
+          "type": "boolean"
+        },
+        "rate_limited": {
+          "type": "boolean"
+        },
+        "stale_head": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "evidence_state": {
+      "enum": [
+        "VERIFIED",
+        "PARTIAL",
+        "UNVERIFIED",
+        "CONFLICTED",
+        "HISTORICAL",
+        "STALE",
+        "DEPRECATED"
+      ]
+    },
+    "cross_rpc_agreement": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}
