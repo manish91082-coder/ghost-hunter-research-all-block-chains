@@ -84,4 +84,10 @@ A single endpoint cannot become the sole source of truth for:
 - simulation,
 - or execution authorization.
 
-The execution layer must compare state from independent sources and quarantine conflicting/stale observations.
+The execution layer must compare state from independent sources and quarantine conflicting/stale observations.## 2026-09-25 — GitHub-hosted runner RPC access reconnaissance
+- Read-only GitHub Actions reconnaissance run `36165023744` tested the existing public candidate set with only `eth_chainId` and `eth_blockNumber`.
+- From the GitHub-hosted runner, Tatum (`https://polygon-mainnet.gateway.tatum.io/`) and QuickNode public (`https://rpc-mainnet.matic.quiknode.pro`) both returned chain ID 137 and a block number. The other tested public endpoints returned HTTP 403, HTTP 429, or DNS failure from this runner context.
+- A later reconnaissance run `36165547555` added PublicNode Bor and Llama; both remained unusable from the runner. Run `36165720300` added Ankr and BlastAPI; Ankr reported that an API key is required, while BlastAPI returned HTTP 403. Run `36166095405` added NodeFlare public; it returned HTTP 403 from the runner.
+- Main verification runs showed QuickNode public can return all 11 target code observations, while anonymous Tatum became HTTP 429-limited during the code phase. Tatum's current documentation states that its Free Plan provides 3 requests/second and that an API key is used for authenticated access. Source: https://docs.tatum.io/docs/plans-limits and https://docs.tatum.io/reference/rpc-polygon
+- The verifier now supports an optional `TATUM_API_KEY` environment variable. The GitHub workflow maps the repository secret `TATUM_API_KEY` to that environment variable without storing the key in source or artifacts.
+- This evidence does not mark any endpoint EXECUTION-TRUSTED. It only establishes runner-specific reachability and the next evidence-collection path.
