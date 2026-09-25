@@ -82,7 +82,7 @@ are all sufficiently reconciled.
 
 ## Evidence discipline
 
-The authoritative 0xPolygon security scope publishes the core deployed contract addresses. The 0xPolygon Fx Portal repository documents the FxRoot/FxChild deployment surface. These sources establish discovery provenance, not live execution state. citeturn0search0turn0search10
+The authoritative [0xPolygon security scope](https://github.com/0xPolygon/security/blob/main/scope-pos-contracts.md) publishes the core deployed contract addresses. The official [0xPolygon Fx Portal repository](https://github.com/0xPolygon/fx-portal) documents the FxRoot/FxChild deployment surface. These sources establish discovery provenance, not live execution state.
 
 ## Current limitation
 
