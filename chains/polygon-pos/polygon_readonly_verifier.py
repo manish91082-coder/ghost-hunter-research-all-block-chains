@@ -201,6 +201,7 @@ def main():
         checkpoint.update(json.loads(cp.read_text()))
 
     block_numbers = {}
+    chain_ids = {}
     with open(args.out, "a", encoding="utf-8") as out:
         for endpoint_index, url in enumerate(args.rpc, start=1):
             endpoint_id = f"rpc-{endpoint_index}"
@@ -213,6 +214,11 @@ def main():
                 out.write(json.dumps(record, sort_keys=True) + "\n")
                 out.flush()
                 checkpoint["completed"][key] = "ok" if obs.get("ok") else "failed"
+                if method == "eth_chainId" and obs.get("ok"):
+                    try:
+                        chain_ids[endpoint_id] = int(obs["body"]["result"], 16)
+                    except (KeyError, TypeError, ValueError):
+                        pass
                 if method == "eth_blockNumber" and obs.get("ok"):
                     try:
                         block_numbers[endpoint_id] = int(obs["body"]["result"], 16)
@@ -244,10 +250,14 @@ def main():
                 checkpoint["completed"][key] = "ok" if obs.get("ok") else "failed"
                 cp.write_text(json.dumps(checkpoint, indent=2) + "\n")
 
-    if block_numbers:
-        freshest = max(block_numbers.values())
+    if block_numbers or chain_ids:
+        freshest = max(block_numbers.values()) if block_numbers else None
+        chain_id_values = sorted(set(chain_ids.values()))
         summary = {
             "chain_id_expected": 137,
+            "chain_ids_observed": chain_ids,
+            "chain_id_agreement": chain_id_values == [137],
+            "chain_id_values": chain_id_values,
             "freshest_observed_block": freshest,
             "stale_block_tolerance": args.stale_block_tolerance,
             "rpc_blocks": block_numbers,
@@ -260,6 +270,8 @@ def main():
         Path("polygon_rpc_head_summary.json").write_text(
             json.dumps(summary, indent=2) + "\n"
         )
+        if chain_ids and chain_id_values != [137]:
+            raise SystemExit("P1 identity failure: RPC chain IDs do not unanimously equal 137")
 
     print(f"Wrote {args.out}")
     print(f"Checkpoint: {args.checkpoint}")
