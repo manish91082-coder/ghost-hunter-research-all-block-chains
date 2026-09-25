@@ -476,3 +476,18 @@ Commit 5b0212d5ca8ce094f4438f60e424189bc0259e6a updates .github/workflows/polygo
 
 ### Next atomic step
 Inspect the first corrected derived-control CI run and its artifact. Promote the four derived runtime identities only when the fresh-head quorum and two-endpoint code reconciliation both return VERIFIED.
+
+## 2026-09-25 — P2 control-function probe stage wired
+### Scope
+Two P2 parent contracts now have explicit read-only selector candidates for `owner()`, `admin()`, `implementation()` and `proxiableUUID()`.
+
+### Evidence rule
+A probe needs two independent chain-137 RPC observations. A JSON-RPC success or reproducible JSON-RPC error both count as observations; HTTP/network failures do not. Matching outcomes are reconciled without majority selection.
+
+### Gate state
+- P2 ERC-1967 storage consistency: PASSED.
+- P2 derived runtime-code: PENDING corrected CI evidence.
+- P2 control-function probes: WIRED, awaiting CI evidence.
+- Overall P2: IN PROGRESS.
+- Polygon saturation: OPEN.
+- DEX/protocol discovery: BLOCKED.
