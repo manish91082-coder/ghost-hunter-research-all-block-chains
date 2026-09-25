@@ -182,3 +182,26 @@ Inspect the corrected adaptive-pool run. Its decisive artifact is expected to sh
 - The workflow now uses 1.0 second base per-endpoint pacing and two total address-code passes.
 - This is intended to convert temporary provider throttling into a recoverable condition while retaining the two-independent-endpoint evidence requirement.
 - P1 remains NOT PASSED until the corrected run reconciles all 11 targets as VERIFIED.
+
+## 2026-09-25 — P1 PASSED: live Polygon code reconciliation
+
+Run `36169503083` completed successfully.
+- Artifact: `10879647689`
+- Artifact digest: `sha256:bc53e3255ac12c2e99d62a5ef189c60fe26f1deb6e1c67178f043cc296546bbe`
+- Observation block: 94,435,638
+- Chain ID: 137
+- Independent identity/head endpoints: 3
+- Exact target set: 11/11
+- Independent successful code observations: >=2 per target
+- Matching code hashes: 11/11
+- Reconciliation: VERIFIED
+- Conflicts: 0
+
+### Gate transition
+- **P1 live infrastructure + bounded critical runtime-code gate: PASSED.**
+- The 11 bounded target entries are PARTIAL in the registry because runtime-code identity is verified but proxy/control/creation/behavior fields remain pending.
+- Polygon saturation gate: OPEN.
+- DEX/protocol discovery remains blocked pending P2 address/control/bridge reconciliation.
+
+### Next gate
+P2: reconcile proxy implementations, admin/owner/roles, creation evidence, contract-specific probes and current-vs-historical classification.
