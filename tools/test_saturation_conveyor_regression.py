@@ -50,6 +50,67 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("safe_member", source)
         self.assertIn("automation/saturation_state.json", source)
 
+    def test_p3_closure_requires_multi_source_convergence_and_stability(self):
+        import importlib.util
+        worker_path = ROOT / "tools" / "polygon_universe_worker.py"
+        spec = importlib.util.spec_from_file_location("polygon_universe_worker_p3", worker_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        base = {
+            "checks": {
+                "defillama_protocols_ok": True,
+                "geckoterminal_dexes_ok": True,
+            },
+            "polygon_protocol_count": 10,
+            "polygon_dex_protocol_count": 4,
+            "geckoterminal_dex_count": 5,
+            "dex_name_overlap_count": 3,
+            "llama_duplicate_dex_names": 0,
+            "gecko_duplicate_dex_names": 0,
+            "universe_fingerprint": "abc",
+        }
+
+        self.assertFalse(
+            module.p3_closure_ready(base, {"fingerprint": "xyz", "stable_runs": 4})
+        )
+        self.assertFalse(
+            module.p3_closure_ready(base, {"fingerprint": "abc", "stable_runs": 0})
+        )
+        self.assertTrue(
+            module.p3_closure_ready(base, {"fingerprint": "abc", "stable_runs": 1})
+        )
+
+    def test_p3_dex_duplicate_detection_uses_normalized_names(self):
+        import importlib.util
+        worker_path = ROOT / "tools" / "polygon_universe_worker.py"
+        spec = importlib.util.spec_from_file_location("polygon_universe_worker_p3_dupes", worker_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        llama = [
+            {"name": "QuickSwap", "chains": ["Polygon"], "category": "Dexs"},
+            {"name": "QUICK-SWAP", "chains": ["Polygon"], "category": "Dexs"},
+            {"name": "Uniswap", "chains": ["Polygon"], "category": "Dexs"},
+        ]
+        gecko = [
+            {"attributes": {"name": "Quickswap"}},
+            {"attributes": {"name": "Uniswap"}},
+            {"attributes": {"name": "RamsesX"}},
+        ]
+        llama_set, gecko_set = module.p3_dex_sets(llama, gecko)
+        self.assertEqual(len(llama_set), 2)
+        self.assertIn("quickswap", llama_set)
+        self.assertIn("uniswap", llama_set)
+        self.assertIn("quickswap", gecko_set)
+
+    def test_p3_sources_and_closure_markers_are_present(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn("https://api.geckoterminal.com/api/v2/networks/polygon/dexes", worker)
+        self.assertIn('"stage_gate": "CLOSED"', worker)
+        self.assertIn("P3_CLOSURE_STATE.json", worker)
+
+
     def test_provenance_replay_requires_matching_observations(self):
         source = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn('all(x["independent_observations"]>=2 and x["matching"] for x in result["transactions"])', source)
