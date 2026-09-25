@@ -79,6 +79,39 @@ class ControlFunctionRegressionTests(unittest.TestCase):
         self.assertEqual(RECONCILER.fingerprint(a), RECONCILER.fingerprint(b))
 
 
+    def test_provider_entitlement_error_is_not_evidence(self):
+        row = {
+            "outcome": {
+                "ok": False,
+                "error_code": -16401,
+                "error_message": "Method 'eth_call' is available for paid plans only.",
+                "http_status": 200,
+            }
+        }
+        self.assertIsNone(RECONCILER.fingerprint(row))
+
+    def test_malformed_request_error_is_not_evidence(self):
+        row = {
+            "outcome": {
+                "ok": False,
+                "error_code": -32602,
+                "error_message": "invalid argument",
+                "http_status": 200,
+            }
+        }
+        self.assertIsNone(RECONCILER.fingerprint(row))
+
+    def test_evm_revert_error_is_semantic_evidence(self):
+        row = {
+            "outcome": {
+                "ok": False,
+                "error_code": 3,
+                "error_message": "execution reverted",
+                "http_status": 200,
+            }
+        }
+        self.assertEqual(RECONCILER.fingerprint(row), ("error", "3"))
+
     def test_transport_failure_is_not_evidence(self):
         row = {"outcome": {"ok": False, "http_status": 403, "error_message": "Forbidden"}}
         self.assertIsNone(RECONCILER.fingerprint(row))
