@@ -254,3 +254,11 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - Shadow discovery may continue while P2 is open, but shadow evidence never bypasses the P2 promotion gate.
 - Stage completion is predicate-based, not file-existence-based.
 - P10 must explicitly close before P11 can become READY.
+
+## 2026-09-26 — Conveyor failure lesson lock
+- A red automation workflow must be root-caused before increasing concurrency or adding more workers.
+- Regression fixtures must reflect the exact evidence contract, including transport-level metadata required by reconciliation.
+- Push-triggered autonomous conveyor runs are disabled to prevent a commit storm during active engineering; schedule/manual dispatch is the heartbeat.
+- The conveyor's durable working set includes checkpoint state plus evidence and universe files. Losing the latter would invalidate multi-run saturation progress.
+- Artifact restore errors are fail-closed; first-run absence of an artifact is the only permitted clean bootstrap case.
+- Stage files are preparation artifacts. Promotion requires an explicit CLOSED gate marker.
