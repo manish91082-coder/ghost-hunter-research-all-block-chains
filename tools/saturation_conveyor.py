@@ -227,7 +227,7 @@ def p2_gate(state):
 def main():
     ap=argparse.ArgumentParser(); ap.add_argument('--max-critical',type=int,default=1); ap.add_argument('--max-shadow',type=int,default=2); ap.add_argument('--time-budget',type=int,default=780); args=ap.parse_args()
     state=load_json(STATE,{'schema_version':1,'critical_stage':'P2','research_gate':'P2_OPEN','shadow_lane':True,'stages':{},'tasks':{},'last_progress_signature':'','last_run':None})
-    old_gate=state.get('research_gate','P2_OPEN'); old_stage=state.get('critical_stage','P2'); started=time.time(); executed=[]
+    old_gate=state.get('research_gate','P2_OPEN'); old_stage=state.get('critical_stage','P2'); old_stage_metadata=json.dumps(state.get('stages',{}),sort_keys=True); started=time.time(); executed=[]
     if state.get('research_gate') != 'P2_CLOSED':
         critical_list=CRITICAL_P2
         critical_cursor=int(state.get('cursors',{}).get('critical',0))
@@ -305,9 +305,15 @@ def main():
     sync_stage_metadata(state)
     state.setdefault('cursors',{'critical':0,'shadow':0})
     state['last_run']=now()
-    state['commit_required']=(old_gate!=state['research_gate'] or old_stage!=state['critical_stage'])
+    stage_metadata_changed = old_stage_metadata != json.dumps(state.get('stages',{}),sort_keys=True)
+    commit_required = (
+        old_gate!=state['research_gate']
+        or old_stage!=state['critical_stage']
+        or stage_metadata_changed
+    )
+    state['commit_required']=False
     state['last_progress_signature']=json.dumps({'gate':state['research_gate'],'tasks':{k:v.get('attempts') for k,v in state['tasks'].items()},'executed':executed},sort_keys=True)
-    report={'time':now(),'critical_stage':state['critical_stage'],'research_gate':state['research_gate'],'commit_required':state.get('commit_required',False),'p2_conditions':conditions,'executed':executed,'task_states':state['tasks'],'shadow_lane':state.get('shadow_lane',True)}
+    report={'time':now(),'critical_stage':state['critical_stage'],'research_gate':state['research_gate'],'commit_required':commit_required,'p2_conditions':conditions,'executed':executed,'task_states':state['tasks'],'shadow_lane':state.get('shadow_lane',True)}
     save_json(STATE,state); save_json(REPORT,report)
     print(json.dumps(report,indent=2,sort_keys=True))
 
