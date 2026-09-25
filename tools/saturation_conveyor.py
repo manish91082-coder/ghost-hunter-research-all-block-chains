@@ -91,6 +91,23 @@ def execute(task):
 def task_state(state,task):
     return state['tasks'].setdefault(task,{'attempts':0,'ok':False,'last_error':'','last_run':None,'cooldown_until':0})
 
+
+def critical_task_complete(task, state):
+    """Skip already-closed critical work and avoid redoing proven evidence every heartbeat."""
+    if task == 'P2_REGRESSION':
+        ts=state.get('tasks',{}).get(task,{})
+        return bool(ts.get('ok')) and ts.get('code_epoch') == current_code_epoch()
+    if task == 'P2_DERIVED':
+        p=Path('automation/evidence/P2_DERIVED_LATEST.json')
+        return p.exists() and load_json(p,{}).get('evidence_state') == 'VERIFIED'
+    if task == 'P2_CONTROL_FUNCTION':
+        p=Path('automation/evidence/P2_CONTROL_FUNCTION_LATEST.json')
+        return p.exists() and load_json(p,{}).get('evidence_state') == 'VERIFIED'
+    if task == 'P2_PROVENANCE':
+        p=Path('automation/evidence/P2_PROVENANCE_LATEST.json')
+        return p.exists() and load_json(p,{}).get('status') == 'REPLAYED'
+    return False
+
 def stage_ready(stage):
     files={
       'P3':Path('automation/evidence/P3_PROTOCOL_SNAPSHOT.json'),
@@ -186,6 +203,8 @@ def main():
             task=critical_list[critical_cursor % len(critical_list)]
             critical_cursor=(critical_cursor+1) % len(critical_list)
             attempts += 1
+            if critical_task_complete(task, state):
+                continue
             ts=task_state(state,task)
             epoch=current_code_epoch()
             if ts.get('code_epoch') != epoch:
