@@ -282,3 +282,10 @@ Evidence:
 - A reproducible revert/error is now treated as RPC evidence rather than as a missing observation; transport failures such as HTTP 403/429 are still not counted as evidence.
 - Added GitHub Actions workflow `polygon-p2-control-function-verification.yml` with fail-closed reconciliation and unconditional artifact upload.
 - Overall P2 remains IN PROGRESS. No control-function semantics are promoted from selector identity alone.
+## 2026-09-25 — P2 control-function verifier regression hardening
+- A runtime audit found stale successful[...] references after the control-function evidence model was changed to observed[...].
+- Commit b24a9820ad632a983c44873cb4c3c98e9564b109 removes the stale references.
+- Deterministic regression coverage was added at chains/polygon-pos/test_p2_control_function_regression.py.
+- The control-function workflow now runs that regression suite before any live RPC probes and triggers when the test file changes.
+- The test also locks the read-only eth_call allowlist and verifies deterministic matching/conflict fingerprints for successful calls and JSON-RPC errors.
+- No live control-function gate is promoted from source inspection. CI evidence is still required.
