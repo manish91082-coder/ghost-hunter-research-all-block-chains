@@ -703,3 +703,12 @@ Inspect the corrected control-function CI artifact. Then run the corrected conve
 - P2 remains **OPEN**.
 - No P2 promotion is allowed until the new artifact is completed and independently reconciled as VERIFIED, and P2 provenance is REPLAYED.
 \n\n## 2026-09-25 — P2 CLOSED, P3 unlocked\n\n### Closure evidence\n- Control-function verification Run #21: GitHub Actions `36181785712`, artifact `10883649934`, raw reconciliation VERIFIED, 17/17 probes with two independent matching semantic RPC observations, 0 conflicts, 0 incomplete.\n- Provenance recovery Run #23: conveyor `36183085089`, artifact `10884629388`, P2 provenance status REPLAYED for both canonical candidate transactions.\n- Transaction `0x5c28747a85e014b1ce0c35b5af88d577893cd6531b0523b7f64e5d82ba2e7c78`: 2 matching independent observations from Tatum and QuickNode after bounded recovery; seven endpoint attempts were recorded, including provider/transport failures as diagnostics only.\n- Transaction `0xa72eaebdc560af2fa6dad4d5b275b9205c1e20ec4c3413ca6bb0a3d7d65e434f`: 2 matching independent observations.\n- Conveyor report: `research_gate=P2_CLOSED`, `critical_stage=P3`, all four P2 conditions true.\n\n### Gate transition\n- Gate-transition commit: `b9bbd925eeeeb350381027d6c0d626f8c00a2a22`, `chore: advance saturation gate [skip ci]`.\n- Latest main HEAD after this transition: `b9bbd925eeeeb350381027d6c0d626f8c00a2a22`.\n- P3 is now the critical stage. Protocol discovery remains research evidence only until its own closure gate is explicitly satisfied.\n
+
+## 2026-09-25 — P3 multi-source protocol/DEX gate CLOSED
+- P3 Run #30: GitHub Actions conveyor `36185107384`, completed SUCCESS.
+- P3 closure artifact: `P3_PROTOCOL_SNAPSHOT.json` with `stage_gate=CLOSED`, `stable_runs=2`, universe fingerprint `28e93a53c2480c01c7590c256cd22830eecd7558cf52528267ffcb10a335db5f`.
+- Three external discovery feeds returned HTTP 200: DefiLlama protocols, DexScreener Polygon token profiles, and GeckoTerminal Polygon PoS DEX registry.
+- Snapshot contained 720 Polygon protocol candidates, 128 normalized DEX-category candidates, 62 GeckoTerminal DEX records, 12 normalized DEX-name overlaps, zero duplicate-name conflicts.
+- P3 gate transitioned to the next critical stage, **P4**.
+- Gate-transition commit: `658e9d7dbc7f4c91a2d125def13e863464c90d1d`.
+- Follow-up persisted stage-ledger reconciliation commit: `5362d2db433ffbd320babd11bcfe9975195fa18f`.
