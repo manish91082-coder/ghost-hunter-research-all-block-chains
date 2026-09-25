@@ -129,3 +129,18 @@ Never force a trade simply to make a profit appear every minute. Continuous scan
 - Per-endpoint pacing adapts independently, so one provider's rate limit does not globally throttle the pool.
 - Recovery is bounded to prevent CI hangs or endless retries.
 - The P1 independence rule remains unchanged: two distinct successful endpoint observations per critical target are mandatory.
+
+## 2026-09-25 — P1 verified memory lock
+
+Run #30 (`36169503083`) is the canonical live-evidence checkpoint for the bounded Polygon P1 target set.
+
+Locked facts:
+- chain ID 137;
+- observation block 94,435,638;
+- 3 live identity/head endpoints: OnFinality, QuickNode public, Tatum;
+- all 11 critical Polygon-side target addresses have >=2 independent successful `eth_getCode` observations;
+- all 11 code hashes reconcile exactly;
+- reconciliation state VERIFIED;
+- no unresolved code conflicts.
+
+Boundary: runtime-code identity is verified, but proxy implementation/admin, owner/roles, creation evidence, ABI/source, function/event behavior and historical/current classification remain P2 work.
