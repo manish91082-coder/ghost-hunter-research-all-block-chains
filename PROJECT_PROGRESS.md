@@ -512,3 +512,8 @@ The first control-function verifier revision renamed the per-probe evidence set 
 - The report covers the canonical Polygon read-only, P2 storage, P2 derived-control and P2 control-function workflows.
 - It records latest main SHA, workflow runs, job status/conclusion and artifact identifiers/digests.
 - It does not trigger or rerun any workflow.
+
+## 2026-09-25 — CI evidence automation closed
+- CI state extraction is now automatically invoked after completion of the canonical Polygon verification workflows.
+- The collector captures the triggering run context and full recent workflow/job/artifact state for the four monitored workflows.
+- This removes the need to infer whether a push-triggered verification actually ran merely from repository commits.
