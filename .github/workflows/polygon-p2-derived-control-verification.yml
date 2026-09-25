@@ -1,0 +1,54 @@
+name: Polygon P2 Derived Control Code Verification
+
+on:
+  push:
+    paths:
+      - "chains/polygon-pos/p2_derived_control_targets.txt"
+      - "chains/polygon-pos/p2_derived_control_provenance.txt"
+      - "chains/polygon-pos/polygon_readonly_verifier.py"
+      - "chains/polygon-pos/rpc_pool.txt"
+      - ".github/workflows/polygon-p2-derived-control-verification.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: polygon-p2-derived-control-main
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  polygon-p2-derived:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TATUM_API_KEY: ${{ secrets.TATUM_API_KEY }}
+    steps:
+      - name: Checkout canonical repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate verifier
+        run: |
+          set -euo pipefail
+          python -m py_compile chains/polygon-pos/polygon_readonly_verifier.py
+
+      - name: Verify derived control runtime code
+        run: |
+          set -euo pipefail
+          python chains/polygon-pos/polygon_readonly_verifier.py             --rpc-pool-file chains/polygon-pos/rpc_pool.txt             --min-request-interval 1.0             --min-code-endpoints 2             --code-recovery-rounds 2             --stale-block-tolerance 2             --address "@chains/polygon-pos/p2_derived_control_targets.txt"
+
+      - name: Upload derived evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: polygon-p2-derived-control-verification
+          path: |
+            polygon_rpc_observations.jsonl
+            polygon_verifier_checkpoint.json
+            polygon_rpc_head_summary.json
+          if-no-files-found: warn
