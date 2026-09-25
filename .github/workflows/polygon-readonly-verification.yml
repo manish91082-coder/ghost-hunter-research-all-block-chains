@@ -1,6 +1,10 @@
 name: Polygon Read-Only Verification
 
 on:
+  push:
+    paths:
+      - "chains/polygon-pos/polygon_readonly_verifier.py"
+      - ".github/workflows/polygon-readonly-verification.yml"
   workflow_dispatch:
 
 permissions:
@@ -20,23 +24,9 @@ jobs:
           python-version: "3.12"
 
       - name: Run read-only Polygon capability probe
-        env:
-          POLYGON_RPC_1: ${{ secrets.POLYGON_RPC_1 }}
-          POLYGON_RPC_2: ${{ secrets.POLYGON_RPC_2 }}
-          POLYGON_RPC_3: ${{ secrets.POLYGON_RPC_3 }}
         run: |
           set -euo pipefail
-          RPC_ARGS=()
-          for endpoint in "$POLYGON_RPC_1" "$POLYGON_RPC_2" "$POLYGON_RPC_3"; do
-            if [ -n "$endpoint" ]; then
-              RPC_ARGS+=(--rpc "$endpoint")
-            fi
-          done
-          if [ "${#RPC_ARGS[@]}" -lt 2 ]; then
-            echo "Need at least two independent Polygon RPC endpoints."
-            exit 1
-          fi
-          python chains/polygon-pos/polygon_readonly_verifier.py "${RPC_ARGS[@]}"
+          python chains/polygon-pos/polygon_readonly_verifier.py             --rpc "https://polygon.drpc.org"             --rpc "https://polygon.publicnode.com"             --rpc "https://1rpc.io/matic"
 
       - name: Upload verification artifacts
         if: always()
