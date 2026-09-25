@@ -94,6 +94,33 @@ def stage_ready(stage):
         return data.get('status')=='READY'
     return False
 
+def shadow_dependency_override(task):
+    # Prevent the shadow conveyor from consuming cycles when an upstream discovery
+    # queue is empty or stale. This is a scheduling hint only; it never closes gates.
+    if task=="P5" and not Path("automation/universe/tokens.jsonl").exists():
+        return "P4"
+    if task=="P5":
+        try:
+            if not Path("automation/universe/tokens.jsonl").read_text(encoding="utf-8").strip():
+                return "P4"
+        except Exception:
+            return "P4"
+    if task=="P6" and not Path("automation/universe/pairs.jsonl").exists():
+        return "P5"
+    if task=="P6":
+        try:
+            if not Path("automation/universe/pairs.jsonl").read_text(encoding="utf-8").strip():
+                return "P5"
+        except Exception:
+            return "P5"
+    if task=="P7" and not Path("automation/evidence/P6_ROUTE_SNAPSHOT.json").exists():
+        return "P6"
+    if task=="P8" and not Path("automation/universe/pairs.jsonl").exists():
+        return "P5"
+    if task=="P9" and not Path("automation/evidence/P8_FEATURE_SNAPSHOT.json").exists():
+        return "P8"
+    return task
+
 def p2_gate(state):
     conditions={
       'storage_checkpoint': Path('chains/polygon-pos/P2_ERC1967_STORAGE_RUN_4.md').exists(),
@@ -144,6 +171,7 @@ def main():
     while attempts < len(SHADOW) and shadow_run < args.max_shadow and time.time()-started <= args.time_budget:
         task=SHADOW[shadow_cursor % len(SHADOW)]
         shadow_cursor=(shadow_cursor+1) % len(SHADOW)
+        task=shadow_dependency_override(task)
         attempts += 1
         ts=task_state(state,task)
         if ts.get('cooldown_until',0)>time.time(): continue
