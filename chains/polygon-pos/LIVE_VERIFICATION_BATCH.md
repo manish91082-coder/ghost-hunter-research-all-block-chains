@@ -333,3 +333,15 @@ P2 storage verification now uses request-level adaptive rotation:
 - two distinct successful endpoint values remain mandatory.
 
 Run #2 showed this is necessary because one endpoint (Tatum) returned a mix of successful responses and HTTP 429 responses within the same 33-probe batch.
+
+## P2 sub-gate completed — ERC-1967 storage consistency
+
+Run `36171378222` closed the first P2 control-plane slice:
+- 11 targets × 3 standard storage slots;
+- 33 expected combinations;
+- 66 successful independent observations;
+- reconciliation VERIFIED;
+- zero conflicts;
+- observation block 94,436,387.
+
+The next P2 slice should focus on the four non-zero derived control addresses first, then extend owner/role/control probes to the full bounded set.
