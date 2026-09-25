@@ -42,6 +42,7 @@ Real-money deployment: OFF
 - Current block/header/finality measurements.
 - RPC endpoint census and health measurements.
 - Live bytecode verification of system/bridge addresses.
+- Current-vs-historical reconciliation of the expanded Polygon Plasma/PoS discovery registry.
 - Proxy implementation/control verification.
 - Full bridge/state-sync surface census.
 - Remaining bridge/predicate/exit/withdrawal/control surface reconciliation.
