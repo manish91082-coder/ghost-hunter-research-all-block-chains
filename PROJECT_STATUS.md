@@ -205,3 +205,18 @@ Run `36169503083` completed successfully.
 
 ### Next gate
 P2: reconcile proxy implementations, admin/owner/roles, creation evidence, contract-specific probes and current-vs-historical classification.
+
+## 2026-09-25 — P2 control-plane verification launched
+- P1 is closed from Run #30 with VERIFIED runtime-code reconciliation for the 11 bounded Polygon targets.
+- P2 now probes the standardized ERC-1967 implementation, admin and beacon storage slots across the same target set.
+- P2 workflow: `polygon-p2-control-verification.yml`
+- P2 run: `36170466071`
+- Current runner state at checkpoint: **IN_PROGRESS**.
+- P2 remains read-only and fail-closed. At least two independent chain-137 RPC observations must match for every target/slot combination; conflicts are preserved.
+- ERC-1967 slot definitions follow the standard's published implementation/admin/beacon slots. citeturn422867search0
+
+### Current gate
+- P1: **PASSED**
+- P2 ERC-1967 storage consistency: **RUNNING**
+- Polygon saturation: **OPEN**
+- DEX/protocol discovery: **BLOCKED pending P2 completion**
