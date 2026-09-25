@@ -444,3 +444,13 @@ Added:
 - `.github/workflows/polygon-p2-derived-control-verification.yml`
 
 Scope: runtime-code verification of the four non-zero addresses discovered from P2 ERC-1967 storage. This bridges storage-level evidence to live deployed-code evidence without assuming proxy semantics.
+## 2026-09-25 — Derived-control head quorum hardening
+### Run #2 finding
+- All four derived addresses: 2/2 matching code hashes from OnFinality + QuickNode.
+- Failure reason: successful head blocks were 94,436,836 / 94,436,834 / 94,436,833, giving span 3 against tolerance 2.
+- Tatum was the stale third head for this snapshot; no code conflict existed.
+
+### Correction
+- Added optional deterministic fresh-head quorum to the shared verifier.
+- P1 default remains all-endpoint head agreement.
+- Derived-control sub-gate requires a two-endpoint fresh-head quorum and records the selected endpoints/span.
