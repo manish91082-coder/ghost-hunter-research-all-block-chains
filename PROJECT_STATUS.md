@@ -296,3 +296,9 @@ Evidence:
 - It never dispatches, reruns or mutates GitHub Actions.
 - GITHUB_TOKEN is optional and is used only as an HTTP bearer token when present.
 - This reduces dependence on connector-side Actions listing limitations while preserving the repository as the source of truth.
+
+## 2026-09-25 — Automated CI evidence collector wired
+- Added `.github/workflows/github-ci-state-evidence.yml` using `workflow_run` completion triggers for the four canonical Polygon verification workflows.
+- The collector has `actions: read` permission, runs the read-only CI state extractor, validates the report shape, and uploads `github-ci-state-evidence` as an artifact.
+- The report now includes triggering workflow context when available, plus main HEAD, recent runs, jobs and artifact metadata.
+- This collector is observational only. It does not dispatch or rerun workflows.
