@@ -289,3 +289,10 @@ Evidence:
 - The control-function workflow now runs that regression suite before any live RPC probes and triggers when the test file changes.
 - The test also locks the read-only eth_call allowlist and verifies deterministic matching/conflict fingerprints for successful calls and JSON-RPC errors.
 - No live control-function gate is promoted from source inspection. CI evidence is still required.
+
+## 2026-09-25 — Canonical CI state extraction added
+- Added read-only tools/github_ci_state.py.
+- It resolves main HEAD and inspects the four canonical Polygon workflows, including run status, job conclusions and artifact metadata for recent main runs.
+- It never dispatches, reruns or mutates GitHub Actions.
+- GITHUB_TOKEN is optional and is used only as an HTTP bearer token when present.
+- This reduces dependence on connector-side Actions listing limitations while preserving the repository as the source of truth.
