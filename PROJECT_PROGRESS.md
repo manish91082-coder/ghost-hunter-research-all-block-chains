@@ -227,3 +227,19 @@ Observe the GitHub-hosted run and, if artifacts become accessible, reconcile cha
 
 ### Next atomic step
 Obtain/observe the actual GitHub Actions execution evidence. If the connector still cannot expose push-triggered runs, use an explicit workflow-dispatch-capable GitHub action if available; otherwise use the same verifier unchanged in a permitted outbound-RPC environment. No DEX expansion before P1 reconciliation.
+
+
+## 2026-09-25 — Automated evidence reconciliation
+
+### Added
+- Added `chains/polygon-pos/polygon_verification_reconciliation.py` to deterministically reconcile verifier output without majority-selecting conflicting RPC observations.
+- GitHub Actions now runs the reconciler after the read-only verifier, even when the verifier exits non-zero, and uploads the reconciliation artifact.
+- The reconciliation layer checks chain-identity agreement from the head summary, per-address code-hash agreement, conflicts, stale endpoints, and an evidence-state classification.
+
+### Gate state
+- P1 remains NOT PASSED until an actual runner artifact is observed and independently inspected.
+- No RPC disagreement is silently resolved by majority vote.
+- Polygon saturation remains OPEN and DEX discovery remains blocked.
+
+### Next atomic step
+Observe the GitHub execution/artifacts and use the reconciliation artifact as the first machine-readable P1 decision input.
