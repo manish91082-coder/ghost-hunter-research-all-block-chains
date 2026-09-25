@@ -41,6 +41,15 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("safe_member", source)
         self.assertIn("automation/saturation_state.json", source)
 
+    def test_provenance_replay_requires_matching_observations(self):
+        source = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn('all(x["independent_observations"]>=2 and x["matching"] for x in result["transactions"])', source)
+
+    def test_pair_snapshot_deduplicates_pair_addresses(self):
+        source = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn('by_address={str(x.get("pairAddress","")).lower():x for x in existing_pairs if x.get("pairAddress")}', source)
+        self.assertIn('"new_unique_pairs"', source)
+
     def test_no_conveyor_subprocess_accepts_shell(self):
         for node in ast.walk(self.tree):
             if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
