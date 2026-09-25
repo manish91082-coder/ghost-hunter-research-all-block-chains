@@ -247,3 +247,10 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - A task result never equals a stage-gate result. Promotion is controlled by explicit predicates.
 - The conveyor never enables live execution or weakens two-endpoint evidence rules.
 - P11 is closure and next-chain-unlock candidate only; a new chain is not started until Polygon saturation audit explicitly closes.
+
+## 2026-09-26 — Conveyor correctness lock
+- Automation cadence is now decoupled from repository commit cadence.
+- Checkpoint artifacts carry task cursors and retry state; main commits represent only actual stage/gate transitions.
+- Shadow discovery may continue while P2 is open, but shadow evidence never bypasses the P2 promotion gate.
+- Stage completion is predicate-based, not file-existence-based.
+- P10 must explicitly close before P11 can become READY.
