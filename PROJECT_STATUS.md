@@ -160,3 +160,19 @@ P1 continuation: execute the read-only Polygon live-verification batch against i
 
 ### Next atomic step
 Inspect the first CI run using the full adaptive RPC pool. If fewer than two independent code-capable endpoints are reachable, preserve that evidence and move the same verifier to the permitted outbound-RPC environment rather than weakening the gate.
+## 2026-09-25 — Run #26 adaptive-rotation evidence
+- Run 36169111299 / #26 executed the adaptive RPC pool after the worker-input fix.
+- Live identity/head evidence came from OnFinality and QuickNode public: chain ID 137 on both; latest blocks 94,435,462 and 94,435,461; head span 1 with tolerance 2; head agreement true.
+- The 14-endpoint pool was actually exercised. The verifier produced two-endpoint code coverage for several critical targets and reported the exact targets still short of two independent observations.
+- This proves the new rotation path is functioning and that provider-specific failures are being bypassed rather than terminating the verifier at the first bad RPC.
+- Reconciliation did not consume the verifier records in Run #26 because the rewritten record serializer accidentally omitted the required top-level method field. This was a verifier serialization regression, not an RPC/evidence failure.
+- Commit bcdd68f7b662c20f247062be326b72656513d97e restores the top-level method field required by the reconciliation schema.
+- P1 remains NOT PASSED until the corrected run produces reconciliation VERIFIED.
+
+### Gate state
+- P1 live verification: NOT PASSED.
+- Polygon saturation gate: OPEN.
+- DEX/protocol discovery remains blocked.
+
+### Next atomic step
+Inspect the corrected adaptive-pool run. Its decisive artifact is expected to show chain/head quorum plus per-target independent code counts through the reconciliation layer.
