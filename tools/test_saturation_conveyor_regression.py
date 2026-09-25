@@ -124,6 +124,81 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("P3_CLOSURE_STATE.json", worker)
 
 
+    def test_p4_helper_parses_gecko_and_dex_token_addresses(self):
+        import importlib.util
+        worker_path = ROOT / "tools" / "polygon_universe_worker.py"
+        spec = importlib.util.spec_from_file_location("polygon_universe_worker_p4_helpers", worker_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        gecko = {
+            "data": [{
+                "id": "pool_polygon_pos_0x1111111111111111111111111111111111111111",
+                "relationships": {
+                    "base_token": {"data": {"id": "token_polygon_pos_0x2222222222222222222222222222222222222222"}},
+                    "quote_token": {"data": {"id": "token_polygon_pos_0x3333333333333333333333333333333333333333"}},
+                },
+            }],
+            "included": [{
+                "type": "token",
+                "id": "token_polygon_pos_0x4444444444444444444444444444444444444444",
+                "attributes": {"address": "0x5555555555555555555555555555555555555555"},
+            }],
+        }
+        got = module.extract_gecko_token_addresses(gecko)
+        self.assertIn("0x2222222222222222222222222222222222222222", got)
+        self.assertIn("0x3333333333333333333333333333333333333333", got)
+        self.assertIn("0x4444444444444444444444444444444444444444", got)
+        self.assertIn("0x5555555555555555555555555555555555555555", got)
+
+        dex = [{
+            "chainId": "polygon",
+            "baseToken": {"address": "0x6666666666666666666666666666666666666666"},
+            "quoteToken": {"address": "0x7777777777777777777777777777777777777777"},
+        }]
+        self.assertEqual(
+            module.extract_dex_token_addresses(dex),
+            [
+                "0x6666666666666666666666666666666666666666",
+                "0x7777777777777777777777777777777777777777",
+            ],
+        )
+
+    def test_p4_closure_requires_verified_multisource_stable_universe(self):
+        import importlib.util
+        worker_path = ROOT / "tools" / "polygon_universe_worker.py"
+        spec = importlib.util.spec_from_file_location("polygon_universe_worker_p4_gate", worker_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        base = {
+            "candidate_count": 8,
+            "provider_overlap_count": 3,
+            "duplicate_address_count": 0,
+            "verified_token_count": 8,
+            "chain_137_verified_count": 8,
+            "identity_conflict_count": 0,
+            "universe_fingerprint": "abc",
+            "checks": {
+                "geckoterminal_top_pools_ok": True,
+                "dexscreener_profiles_ok": True,
+                "dexscreener_tokens_ok": True,
+            },
+        }
+        self.assertFalse(module.p4_closure_ready(base, {"fingerprint": "xyz", "stable_runs": 1}))
+        self.assertFalse(module.p4_closure_ready(base, {"fingerprint": "abc", "stable_runs": 0}))
+        self.assertTrue(module.p4_closure_ready(base, {"fingerprint": "abc", "stable_runs": 1}))
+
+    def test_p4_gate_is_explicitly_written_by_worker(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn("P4_CLOSURE_STATE.json", worker)
+        self.assertIn('snapshot["stage_gate"] = "CLOSED"', worker)
+        self.assertIn("p4_closure_ready", worker)
+        self.assertIn("eth_getCode", worker)
+        self.assertIn("0x313ce567", worker)
+        self.assertIn("0x18160ddd", worker)
+
+
     def test_provenance_replay_requires_matching_observations(self):
         source = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn('all(x["independent_observations"]>=2 and x["matching"] for x in result["transactions"])', source)
