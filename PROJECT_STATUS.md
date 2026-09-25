@@ -416,3 +416,19 @@ Evidence:
 - P2 control-function: OPEN pending corrected artifact.
 - Polygon saturation gate: OPEN.
 - No P2 promotion is made from queued/pending state.
+
+
+## 2026-09-25 — Current P2 control-function repair checkpoint
+- Run `36181173124` raw artifact was PARTIAL with 17 probes, 0 semantic conflicts, and 8 probes lacking two semantic RPC observations.
+- Root cause isolated to evidence-slot accounting and recovery timing: provider-policy errors such as Tatum `-16401` were counted as attempted observations, while cooled independent RPCs were not given a full recovery window.
+- Repair commit: `b722866860fb2d3a919fd388eac38260a08d9383`.
+- Regression commit: `357969627248bea4be97dff542fab0cde73deaa5`.
+- The new verifier only counts semantic HTTP-200 contract evidence toward the two-independent-RPC quorum and honors the requested recovery-round count with cooldown-aware recovery.
+- Run #20 on the first repair commit was cancelled by the workflow concurrency policy when the regression commit arrived.
+- Run #21 on `357969627248bea4be97dff542fab0cde73deaa5` is currently in the live-probe step; source validation is GREEN, but the workflow is not GREEN until the complete artifact is reconciled.
+
+## Gate state
+- P2 control-function: **OPEN / VERIFICATION IN PROGRESS**.
+- P2 provenance: still requires **REPLAYED** evidence.
+- Polygon saturation: **OPEN**.
+- DEX/protocol promotion: **BLOCKED** until P2 closes.
