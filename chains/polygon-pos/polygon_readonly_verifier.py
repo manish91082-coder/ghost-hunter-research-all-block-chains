@@ -11,6 +11,7 @@ import argparse
 import hashlib
 import json
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
@@ -212,55 +213,79 @@ def main():
     if cp.exists():
         checkpoint.update(json.loads(cp.read_text()))
 
-    block_numbers = {}
-    chain_ids = {}
-    with open(args.out, "a", encoding="utf-8") as out:
-        for endpoint_index, url in enumerate(args.rpc, start=1):
-            endpoint_id = f"rpc-{endpoint_index}"
-            for method, params in capability_methods:
-                key = f"{endpoint_id}:{method}:network"
-                if checkpoint["completed"].get(key) == "ok":
-                    continue
-                obs = rpc(url, method, params, key, args.timeout, args.retries)
-                record = make_record(endpoint_id, method, params, obs)
-                out.write(json.dumps(record, sort_keys=True) + "\n")
-                out.flush()
-                checkpoint["completed"][key] = "ok" if obs.get("ok") else "failed"
-                if method == "eth_chainId" and obs.get("ok"):
-                    try:
-                        chain_ids[endpoint_id] = int(obs["body"]["result"], 16)
-                    except (KeyError, TypeError, ValueError):
-                        pass
-                if method == "eth_blockNumber" and obs.get("ok"):
-                    try:
-                        block_numbers[endpoint_id] = int(obs["body"]["result"], 16)
-                    except (KeyError, TypeError, ValueError):
-                        pass
-                cp.write_text(json.dumps(checkpoint, indent=2) + "\n")
+    def run_endpoint(endpoint_index, url):
+        endpoint_id = f"rpc-{endpoint_index}"
+        records = []
+        local_chain_id = None
+        local_block_number = None
+        local_completed = {}
 
-            for address in addresses:
-                key = f"{endpoint_id}:eth_getCode:{address}"
-                if checkpoint["completed"].get(key) == "ok":
-                    continue
-                obs = rpc(
-                    url,
-                    "eth_getCode",
-                    [address, "latest"],
-                    key,
-                    args.timeout,
-                    args.retries,
-                )
-                record = make_record(
+        for method, params in capability_methods:
+            key = f"{endpoint_id}:{method}:network"
+            if checkpoint["completed"].get(key) == "ok":
+                continue
+            obs = rpc(url, method, params, key, args.timeout, args.retries)
+            records.append(make_record(endpoint_id, method, params, obs))
+            local_completed[key] = "ok" if obs.get("ok") else "failed"
+            if method == "eth_chainId" and obs.get("ok"):
+                try:
+                    local_chain_id = int(obs["body"]["result"], 16)
+                except (KeyError, TypeError, ValueError):
+                    pass
+            if method == "eth_blockNumber" and obs.get("ok"):
+                try:
+                    local_block_number = int(obs["body"]["result"], 16)
+                except (KeyError, TypeError, ValueError):
+                    pass
+
+        for address in addresses:
+            key = f"{endpoint_id}:eth_getCode:{address}"
+            if checkpoint["completed"].get(key) == "ok":
+                continue
+            obs = rpc(
+                url,
+                "eth_getCode",
+                [address, "latest"],
+                key,
+                args.timeout,
+                args.retries,
+            )
+            records.append(
+                make_record(
                     endpoint_id,
                     "eth_getCode",
                     [address, "latest"],
                     obs,
                     address=address,
                 )
-                out.write(json.dumps(record, sort_keys=True) + "\n")
+            )
+            local_completed[key] = "ok" if obs.get("ok") else "failed"
+
+        return endpoint_id, records, local_completed, local_chain_id, local_block_number
+
+    block_numbers = {}
+    chain_ids = {}
+    endpoint_results = []
+    with ThreadPoolExecutor(max_workers=len(args.rpc)) as executor:
+        futures = [
+            executor.submit(run_endpoint, endpoint_index, url)
+            for endpoint_index, url in enumerate(args.rpc, start=1)
+        ]
+        for future in futures:
+            endpoint_results.append(future.result())
+
+    endpoint_results.sort(key=lambda item: item[0])
+    with open(args.out, "a", encoding="utf-8") as out:
+        for endpoint_id, records, local_completed, local_chain_id, local_block_number in endpoint_results:
+            for record in records:
+                out.write(json.dumps(record, sort_keys=True) + "\\n")
                 out.flush()
-                checkpoint["completed"][key] = "ok" if obs.get("ok") else "failed"
-                cp.write_text(json.dumps(checkpoint, indent=2) + "\n")
+            checkpoint["completed"].update(local_completed)
+            if local_chain_id is not None:
+                chain_ids[endpoint_id] = local_chain_id
+            if local_block_number is not None:
+                block_numbers[endpoint_id] = local_block_number
+            cp.write_text(json.dumps(checkpoint, indent=2) + "\\n")
 
     freshest = max(block_numbers.values()) if block_numbers else None
     chain_id_values = sorted(set(chain_ids.values()))
