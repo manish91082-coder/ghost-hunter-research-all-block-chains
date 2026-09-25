@@ -99,15 +99,20 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
             {"attributes": {"name": "RamsesX"}},
         ]
         llama_set, gecko_set = module.p3_dex_sets(llama, gecko)
-        self.assertEqual(len(llama_set), 2)
+        self.assertEqual(len(llama_set), 3)
         self.assertIn("quickswap", llama_set)
         self.assertIn("uniswap", llama_set)
-        self.assertIn("quickswap", gecko_set)
+        self.assertIn("ramsesx", gecko_set)
+        self.assertEqual(
+            module.normalize_market_name("Quick-Swap"),
+            module.normalize_market_name("QUICKSWAP"),
+        )
 
     def test_p3_sources_and_closure_markers_are_present(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn("https://api.geckoterminal.com/api/v2/networks/polygon/dexes", worker)
-        self.assertIn('"stage_gate": "CLOSED"', worker)
+        self.assertIn('snapshot["stage_gate"]', worker)
+        self.assertIn('"CLOSED"', worker)
         self.assertIn("P3_CLOSURE_STATE.json", worker)
 
 
