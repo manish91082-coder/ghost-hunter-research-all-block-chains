@@ -28,13 +28,13 @@ jobs:
       - name: Validate Python sources
         run: |
           set -euo pipefail
-          python -m py_compile             chains/polygon-pos/polygon_readonly_verifier.py             chains/polygon-pos/polygon_verification_reconciliation.py
+          python -m py_compile chains/polygon-pos/polygon_readonly_verifier.py chains/polygon-pos/polygon_verification_reconciliation.py
 
       - name: Run read-only Polygon verification
         run: |
           set -euo pipefail
           verifier_status=0
-          python chains/polygon-pos/polygon_readonly_verifier.py             --rpc "https://polygon.drpc.org"             --rpc "https://polygon.publicnode.com"             --rpc "https://1rpc.io/matic"             --address "@chains/polygon-pos/verification_targets.txt" || verifier_status=$?
+          python chains/polygon-pos/polygon_readonly_verifier.py --rpc "https://polygon.drpc.org" --rpc "https://polygon.publicnode.com" --rpc "https://1rpc.io/matic" --address "@chains/polygon-pos/verification_targets.txt" || verifier_status=$?
           python chains/polygon-pos/polygon_verification_reconciliation.py || true
           exit "$verifier_status"
 
