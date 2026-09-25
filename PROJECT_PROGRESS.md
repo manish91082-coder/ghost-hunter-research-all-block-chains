@@ -156,3 +156,13 @@ Added `polygon-verification-record.schema.json` and `COLAB_VERIFIER_RUNNER.md`. 
 
 ### Next atomic step
 Implement the actual Colab-ready verifier script against this contract, with only read-only JSON-RPC methods and no credentials embedded. Then run it in an environment that permits outbound JSON-RPC POST and bring the resulting evidence artifacts back into the canonical repository.
+
+## 2026-09-25 — First Colab-ready read-only verifier implementation
+
+Added `chains/polygon-pos/polygon_readonly_verifier.py`. It implements the first deterministic, dependency-light JSON-RPC probe runner: explicit read-only allowlist, hard denylist for transaction/signing methods, endpoint-by-endpoint identity/head/gas probes, normalized SHA-256 result hashes, append-only JSONL observations, and resumable checkpoints. It is intentionally limited to capability probes in this milestone; address/proxy/role verification remains a subsequent batch. Official Bor documents the underlying RPC/trace architecture and archive requirements. citeturn0search0turn0search5
+
+### Execution status
+The script is committed but has **not** been run against live Polygon RPCs from this environment. No live result, endpoint health score, current block, or address has been promoted to VERIFIED.
+
+### Next atomic step
+Run the verifier in a permitted outbound-JSON-RPC environment with multiple independent Polygon endpoints, capture the raw evidence artifacts, reconcile chain/head results, then expand into address-level code/proxy/control probes.
