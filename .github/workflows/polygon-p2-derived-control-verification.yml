@@ -18,6 +18,8 @@ concurrency:
 permissions:
   contents: read
 
+# Evidence-trigger marker: force a fresh derived-control CI execution from main.
+
 jobs:
   polygon-p2-derived:
     runs-on: ubuntu-latest
