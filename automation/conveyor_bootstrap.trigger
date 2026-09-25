@@ -5,3 +5,4 @@ purpose=one-shot live validation of optimized critical lane and repaired P2 evid
 2026-09-26T00:10:00Z P3-multisource-closure-bootstrap
 2026-09-26T00:12:00Z P3-regression-fix-bootstrap
 2026-09-26T00:14:00Z P3-test-final-bootstrap
+2026-09-26T00:16:00Z P3-loader-fix-bootstrap
