@@ -282,6 +282,7 @@ class RpcPool:
                 "failures": 0,
                 "cooldown_until": 0.0,
                 "last_request_at": 0.0,
+                "request_interval": max(0.0, min_request_interval),
                 "lock": threading.Lock(),
             }
             for item in self.endpoints
@@ -311,7 +312,7 @@ class RpcPool:
         state = self.state[endpoint_id]
         with state["lock"]:
             now = time.monotonic()
-            wait = self.min_request_interval - (now - state["last_request_at"])
+            wait = state["request_interval"] - (now - state["last_request_at"])
             if wait > 0:
                 time.sleep(wait)
             state["last_request_at"] = time.monotonic()
@@ -336,6 +337,10 @@ class RpcPool:
             state = self.state[endpoint_id]
             state["failures"] = 0
             state["cooldown_until"] = 0.0
+            state["request_interval"] = max(
+                self.min_request_interval,
+                state["request_interval"] * 0.85,
+            )
 
     def mark_failure(self, endpoint_id, obs):
         status = obs.get("http_status")
@@ -352,6 +357,11 @@ class RpcPool:
         with self.state_lock:
             state = self.state[endpoint_id]
             state["failures"] += 1
+            if status == 429 or obs.get("rate_limited"):
+                state["request_interval"] = min(
+                    max(self.min_request_interval, state["request_interval"] * 2.0),
+                    4.0,
+                )
             state["cooldown_until"] = max(
                 state["cooldown_until"],
                 time.monotonic() + cooldown,
@@ -410,6 +420,12 @@ def main():
         type=int,
         default=2,
         help="Minimum distinct successful RPC endpoints required per critical target",
+    )
+    parser.add_argument(
+        "--code-recovery-rounds",
+        type=int,
+        default=2,
+        help="Total address-code passes, allowing cooled RPCs to re-enter after rate limits",
     )
     parser.add_argument(
         "--reuse-checkpoint",
@@ -629,6 +645,64 @@ def main():
                     break
             else:
                 pool.mark_failure(endpoint_id, obs)
+
+    # Recovery passes let rate-limited endpoints re-enter the rotation pool
+    # after their cooldown instead of permanently losing the rest of the batch.
+    for recovery_round in range(1, max(1, args.code_recovery_rounds)):
+        incomplete_addresses = [
+            address
+            for address in addresses
+            if len(code_successes[address]) < args.min_code_endpoints
+        ]
+        if not incomplete_addresses:
+            break
+
+        cooldown_waits = []
+        now = time.monotonic()
+        for endpoint_id in eligible_for_code:
+            state = pool.state[endpoint_id]
+            if state["cooldown_until"] > now:
+                cooldown_waits.append(state["cooldown_until"] - now)
+        if cooldown_waits:
+            time.sleep(min(max(0.0, min(cooldown_waits)), 30.0))
+
+        for address in incomplete_addresses:
+            for item in pool.ordered(eligible_for_code):
+                endpoint_id = item["id"]
+                if endpoint_id in code_successes[address]:
+                    continue
+
+                key = f"{endpoint_id}:eth_getCode:{address}"
+                obs = pool.request(
+                    endpoint_id,
+                    "eth_getCode",
+                    [address, "latest"],
+                    key,
+                    args.timeout,
+                    args.retries,
+                )
+                record = make_record(
+                    endpoint_id,
+                    "eth_getCode",
+                    [address, "latest"],
+                    obs,
+                    address=address,
+                )
+                all_records.append(record)
+                checkpoint_completed[key] = "ok" if obs.get("ok") else "failed"
+
+                if obs.get("ok"):
+                    pool.mark_success(endpoint_id)
+                    code_successes[address].add(endpoint_id)
+                    if len(code_successes[address]) >= args.min_code_endpoints:
+                        break
+                else:
+                    pool.mark_failure(endpoint_id, obs)
+
+        print(
+            f"RPC code recovery round {recovery_round}: "
+            f"remaining_targets={sum(1 for value in code_successes.values() if len(value) < args.min_code_endpoints)}"
+        )
 
     # Append only this invocation's new evidence records.
     if all_records:
