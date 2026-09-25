@@ -239,3 +239,11 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - The control-function target manifest intentionally includes both standard proxy selectors and contract-specific authority/owner surfaces.
 - ProxyAdmin owner/pendingOwner and proxy relationship calls are read-only and require two independent chain-137 outcomes before interpretation.
 - No external historical claim is allowed to override live RPC evidence.
+
+## 2026-09-26 — Saturation conveyor lock
+- The project now uses an autonomous evidence conveyor instead of requiring one manual Next for every small batch.
+- GitHub scheduled execution is the heartbeat; the persistent checkpoint artifact stores task cursors and retry state.
+- P2 remains a hard promotion gate, while P3-P10 evidence can be prepared in shadow mode.
+- A task result never equals a stage-gate result. Promotion is controlled by explicit predicates.
+- The conveyor never enables live execution or weakens two-endpoint evidence rules.
+- P11 is closure and next-chain-unlock candidate only; a new chain is not started until Polygon saturation audit explicitly closes.
