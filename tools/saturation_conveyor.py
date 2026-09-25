@@ -11,7 +11,8 @@ PLAN=Path('automation/saturation_plan.json')
 EVID=Path('automation/evidence')
 REPORT=Path('automation/conveyor_report.json')
 
-CRITICAL=['P2_REGRESSION','P2_DERIVED','P2_CONTROL_FUNCTION','P2_PROVENANCE']
+CRITICAL_P2=['P2_REGRESSION','P2_DERIVED','P2_CONTROL_FUNCTION','P2_PROVENANCE']
+PROMOTION=['P3','P4','P5','P6','P7','P8','P9','P10']
 SHADOW=['P3','P4','P5','P6','P7','P8','P9','P10']
 WORKER=Path('tools/polygon_universe_worker.py')
 
@@ -82,28 +83,41 @@ def main():
     ap=argparse.ArgumentParser(); ap.add_argument('--max-critical',type=int,default=1); ap.add_argument('--max-shadow',type=int,default=2); ap.add_argument('--time-budget',type=int,default=780); args=ap.parse_args()
     state=load_json(STATE,{'schema_version':1,'critical_stage':'P2','research_gate':'P2_OPEN','shadow_lane':True,'stages':{},'tasks':{},'last_progress_signature':'','last_run':None})
     started=time.time(); executed=[]
-    for task in CRITICAL:
-        if len([x for x in executed if x in CRITICAL])>=args.max_critical: break
-        ts=task_state(state,task);
+    critical_list = CRITICAL_P2 if state.get('research_gate') != 'P2_CLOSED' else PROMOTION
+    critical_cursor = int(state.get('cursors',{}).get('critical',0))
+    attempts=0
+    while attempts < len(critical_list) and len([x for x in executed if x in critical_list]) < args.max_critical:
+        task=critical_list[critical_cursor % len(critical_list)]
+        critical_cursor=(critical_cursor+1) % len(critical_list)
+        attempts += 1
+        ts=task_state(state,task)
         if ts.get('cooldown_until',0)>time.time(): continue
-        result=execute(task); ts['attempts']=ts.get('attempts',0)+1; ts['last_run']=now(); ts['ok']=bool(result.get('ok'));
+        result=execute(task); ts['attempts']=ts.get('attempts',0)+1; ts['last_run']=now(); ts['ok']=bool(result.get('ok'))
         ts['last_result_summary']=str(result)[-4000:]
         if ts['ok']: ts['last_error']=''; ts['cooldown_until']=0
         else: ts['last_error']=str(result)[-1500:]; ts['cooldown_until']=time.time()+min(3600,300*(2**min(ts['attempts'],4)))
         executed.append(task)
         if time.time()-started>args.time_budget: break
+    state.setdefault('cursors',{})['critical']=critical_cursor
+
     shadow_run=0
-    for task in SHADOW:
-        if shadow_run>=args.max_shadow or time.time()-started>args.time_budget: break
+    shadow_cursor=int(state.get('cursors',{}).get('shadow',0))
+    attempts=0
+    while attempts < len(SHADOW) and shadow_run < args.max_shadow and time.time()-started <= args.time_budget:
+        task=SHADOW[shadow_cursor % len(SHADOW)]
+        shadow_cursor=(shadow_cursor+1) % len(SHADOW)
+        attempts += 1
         ts=task_state(state,task)
         if ts.get('cooldown_until',0)>time.time(): continue
         result=execute(task); ts['attempts']=ts.get('attempts',0)+1; ts['last_run']=now(); ts['ok']=bool(result.get('ok')); ts['last_result_summary']=str(result)[-3500:]
         if ts['ok']: ts['last_error']=''; ts['cooldown_until']=0
         else: ts['last_error']=str(result)[-1500:]; ts['cooldown_until']=time.time()+min(3600,300*(2**min(ts['attempts'],4)))
         shadow_run+=1; executed.append(task)
+    state.setdefault('cursors',{})['shadow']=shadow_cursor
     closed,conditions=p2_gate(state)
     state['research_gate']='P2_CLOSED' if closed else 'P2_OPEN'
     state['critical_stage']='P3' if closed else 'P2'
+    state.setdefault('cursors',{'critical':0,'shadow':0})
     state['last_run']=now()
     state['last_progress_signature']=json.dumps({'gate':state['research_gate'],'tasks':{k:v.get('attempts') for k,v in state['tasks'].items()},'executed':executed},sort_keys=True)
     report={'time':now(),'critical_stage':state['critical_stage'],'research_gate':state['research_gate'],'p2_conditions':conditions,'executed':executed,'task_states':state['tasks'],'shadow_lane':state.get('shadow_lane',True)}
