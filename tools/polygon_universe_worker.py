@@ -466,7 +466,9 @@ def _p4_rpc_token_verification(candidates):
         result = ((obs.get("body") or {}).get("result") if isinstance(obs.get("body"), dict) else None)
         if str(result).lower() == "0x89":
             chain_ok.append(eid)
-        if len(chain_ok) >= 4:
+        # P4 requires two independent Polygon RPC observations, not a majority.
+        # Stop discovery of chain-eligible endpoints once the hard quorum is available.
+        if len(chain_ok) >= 2:
             break
 
     verified = {}
