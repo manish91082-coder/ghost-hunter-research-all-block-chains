@@ -360,3 +360,19 @@ Evidence:
 - P2 derived runtime-code sub-gate is now VERIFIED from conveyor Run #14 at Polygon observation block 94,439,097.
 - Four derived addresses were matched across two independent RPC observations each with zero conflicts and zero incomplete targets.
 - Canonical evidence: `chains/polygon-pos/P2_DERIVED_CONTROL_CODE_RUN_4.md`.
+
+## 2026-09-26 — P2 provenance reconciliation defect repaired
+- Canonical live checkpoint before repair: main HEAD `2c9426d9feb0ac1f8ba46de2ee0c18971bd72ad4`.
+- Conveyor Run `36179352109` was green at the job/step level, but its evidence reported P2 provenance `PARTIAL` because semantic matching incorrectly included the provider-specific `rpc` field.
+- The two candidate transactions each had two independent observations from different RPCs; their transaction/receipt payloads matched. No semantic chain-data conflict was identified.
+- Commit `8f6867b95de5430a6726e47fc572dbde4b260e5a` repaired the semantic fingerprint in `tools/polygon_universe_worker.py`.
+- Commit `2c9426d9feb0ac1f8ba46de2ee0c18971bd72ad4` added executable regression coverage in `tools/test_saturation_conveyor_regression.py`.
+
+### Gate state
+- P1: PASSED.
+- P2 ERC-1967 storage: PASSED.
+- P2 derived runtime-code: VERIFIED.
+- P2 control-function: OPEN.
+- P2 provenance: pending corrected live replay.
+- Polygon saturation gate: OPEN.
+- DEX/protocol discovery remains shadow-only until P2 closes.
