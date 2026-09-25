@@ -100,3 +100,9 @@ Never force a trade simply to make a profit appear every minute. Continuous scan
 - Run #13 still fails P1 correctly: one RPC supplied chain ID 137 and block 94,433,671; independent two-RPC quorum was not achieved.
 - Four of eleven critical addresses returned code from only that one endpoint; all eleven remain unverified under the cross-RPC gate.
 - Do not weaken quorum, target coverage, or fail-closed behavior to obtain a green workflow. Next work must improve independent RPC accessibility/rate-limit coverage or move the unchanged verifier to another permitted execution environment.
+
+## 2026-09-25 — Current P1 memory
+- GitHub runner-specific public RPC access is constrained: QuickNode public is fully usable for the 11 target code probes; Tatum is reachable for identity/head but becomes 429-limited for the code phase under anonymous access.
+- Head quorum logic now uses the configured stale-block tolerance. Run #23 observed Tatum block 94,434,648 and QuickNode block 94,434,649 and classified the fresh one-block span as head agreement.
+- Verifier supports `TATUM_API_KEY` via environment variable; workflow maps GitHub secret `TATUM_API_KEY` without exposing it.
+- Do not weaken the two-endpoint code-hash agreement gate. The remaining dependency is authenticated/free-tier Tatum capacity or an equivalent second independent code-capable RPC environment.
