@@ -40,9 +40,13 @@ def run_p2_derived():
     return {'ok':a['ok'] and b['ok'],'verifier':a,'reconciliation':b,'reconciliation_state':recon.get('evidence_state')}
 
 def run_p2_control():
-    cmd=['python','chains/polygon-pos/polygon_p2_control_function_verifier.py','--rpc-pool-file','chains/polygon-pos/rpc_pool.txt','--min-request-interval','1.0','--min-head-endpoints','2','--min-probe-endpoints','2','--recovery-rounds','2','--stale-block-tolerance','2','--target-file','chains/polygon-pos/p2_control_function_targets.txt']
+    cmd=['python','chains/polygon-pos/polygon_p2_control_function_verifier.py','--rpc-pool-file','chains/polygon-pos/rpc_pool.txt','--min-request-interval','1.0','--min-head-endpoints','2','--head-recovery-rounds','3','--min-probe-endpoints','2','--recovery-rounds','2','--stale-block-tolerance','2','--target-file','chains/polygon-pos/p2_control_function_targets.txt']
     a=run(cmd,timeout=800)
-    b=run(['python','chains/polygon-pos/polygon_p2_control_function_reconciliation.py'],timeout=60)
+    obs_path=Path('polygon_p2_control_function_observations.jsonl')
+    if a['ok'] and obs_path.exists():
+        b=run(['python','chains/polygon-pos/polygon_p2_control_function_reconciliation.py'],timeout=60)
+    else:
+        b={'ok':False,'returncode':125,'elapsed_sec':0,'stdout':'','stderr':'Reconciliation skipped because live verifier did not produce a valid observation set'}
     recon=load_json(Path('polygon_p2_control_function_reconciliation.json'),{})
     return {'ok':a['ok'] and b['ok'],'verifier':a,'reconciliation':b,'reconciliation_state':recon.get('evidence_state')}
 
@@ -95,30 +99,38 @@ def stage_ready(stage):
     return False
 
 def shadow_dependency_override(task):
-    # Prevent the shadow conveyor from consuming cycles when an upstream discovery
-    # queue is empty or stale. This is a scheduling hint only; it never closes gates.
-    if task=="P5" and not Path("automation/universe/tokens.jsonl").exists():
-        return "P4"
-    if task=="P5":
-        try:
-            if not Path("automation/universe/tokens.jsonl").read_text(encoding="utf-8").strip():
-                return "P4"
-        except Exception:
-            return "P4"
-    if task=="P6" and not Path("automation/universe/pairs.jsonl").exists():
-        return "P5"
-    if task=="P6":
-        try:
-            if not Path("automation/universe/pairs.jsonl").read_text(encoding="utf-8").strip():
-                return "P5"
-        except Exception:
-            return "P5"
-    if task=="P7" and not Path("automation/evidence/P6_ROUTE_SNAPSHOT.json").exists():
-        return "P6"
-    if task=="P8" and not Path("automation/universe/pairs.jsonl").exists():
-        return "P5"
-    if task=="P9" and not Path("automation/evidence/P8_FEATURE_SNAPSHOT.json").exists():
-        return "P8"
+    # Resolve prerequisites recursively so P7->P6->P5 and similar chains
+    # never execute downstream work against an empty upstream queue.
+    for _ in range(8):
+        original=task
+        if task=="P5":
+            try:
+                if not Path("automation/universe/tokens.jsonl").read_text(encoding="utf-8").strip():
+                    task="P4"
+                elif not Path("automation/universe/tokens.jsonl").exists():
+                    task="P4"
+            except Exception:
+                task="P4"
+        elif task=="P6":
+            try:
+                if not Path("automation/universe/pairs.jsonl").read_text(encoding="utf-8").strip():
+                    task="P5"
+                elif not Path("automation/universe/pairs.jsonl").exists():
+                    task="P5"
+            except Exception:
+                task="P5"
+        elif task=="P7" and not Path("automation/evidence/P6_ROUTE_SNAPSHOT.json").exists():
+            task="P6"
+        elif task=="P8":
+            try:
+                if not Path("automation/universe/pairs.jsonl").read_text(encoding="utf-8").strip():
+                    task="P5"
+            except Exception:
+                task="P5"
+        elif task=="P9" and not Path("automation/evidence/P8_FEATURE_SNAPSHOT.json").exists():
+            task="P8"
+        if task==original:
+            break
     return task
 
 def p2_gate(state):
