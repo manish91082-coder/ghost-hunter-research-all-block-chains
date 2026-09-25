@@ -151,3 +151,9 @@ Boundary: runtime-code identity is verified, but proxy implementation/admin, own
 - First P2 slice is deliberately narrow: ERC-1967 implementation/admin/beacon storage slots only.
 - Two independent matching results per target/slot are mandatory; no majority selection.
 - P2 read-only storage verification does not by itself prove proxy semantics for non-standard proxies. Further function/control probes remain required even after this slice passes.
+
+## 2026-09-25 — P2 method allowlist lesson
+- P2 must use the same explicit read-only method policy as P1, but each new read-only method must be registered in the shared allowlist before execution.
+- `eth_getStorageAt` is now explicitly allowed.
+- No transaction, signing or mutation method was introduced.
+- P2 #1 failure is retained as an engineering evidence point and does not change the P1 gate.
