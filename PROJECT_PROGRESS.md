@@ -517,3 +517,9 @@ The first control-function verifier revision renamed the per-probe evidence set 
 - CI state extraction is now automatically invoked after completion of the canonical Polygon verification workflows.
 - The collector captures the triggering run context and full recent workflow/job/artifact state for the four monitored workflows.
 - This removes the need to infer whether a push-triggered verification actually ran merely from repository commits.
+
+## 2026-09-25 — Fresh CI evidence reacquisition
+- Re-triggered the derived-control and control-function verification workflows from the canonical main branch.
+- No verifier thresholds were changed.
+- The purpose is to obtain fresh runner evidence after the workflow, verifier and regression corrections were locked.
+- Gate promotion still requires raw artifact inspection plus reconciliation.
