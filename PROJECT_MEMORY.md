@@ -209,3 +209,8 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - The control-function verifier must contain no stale successful[...] reference after the observed evidence-set migration.
 - CI runs the deterministic regression suite before touching Polygon RPCs.
 - Commit b24a9820ad632a983c44873cb4c3c98e9564b109 is the canonical runtime-reference correction.
+
+## 2026-09-25 — CI state observability lock
+- The canonical research process now includes a read-only GitHub CI state extractor at tools/github_ci_state.py.
+- This tool is for evidence discovery only. It must never be used to trigger, rerun or mutate Actions.
+- A workflow is not GREEN merely because source code exists or a trigger was expected; the extractor observed run/job/artifact state is authoritative for CI-state reporting.
