@@ -42,8 +42,25 @@ These addresses are **not chain-137 execution contracts**. They are retained bec
 | ERC20PredicateProxy | `0x40ec5B33f54e0E8A33A975908C5BA1c14e5BbbDf` | Ethereum | DOCUMENTED | Polygon security/PIP evidence |
 | ERC721PredicateProxy | `0xE6F45376f64e1F568BD1404C155e5fFD2F80F7AD` | Ethereum | DOCUMENTED | Polygon security/PIP evidence |
 | ERC1155PredicateProxy | `0x0B9020d4E32990D67559b1317c7BF0C15D6EB88f` | Ethereum | DOCUMENTED | Polygon security/PIP evidence |
+| MintableERC20PredicateProxy | `0x9923263fA127b3d1484cFD649df8f1831c2A74e4` | Ethereum | DOCUMENTED | Polygon PIP-54 |
+| MintableERC721PredicateProxy | `0x932532aA4c0174b8453839A6E44eE09Cc615F2b7` | Ethereum | DOCUMENTED | Polygon PIP-54 |
+| MintableERC1155PredicateProxy | `0x2d641867411650cd05dB93B59964536b1ED5b1B7` | Ethereum | DOCUMENTED | Polygon PIP-54 |
+| EtherPredicateProxy | `0x8484Ef722627bf18ca5Ae6BcF031c23E6e922B30` | Ethereum | DOCUMENTED | Polygon PIP-54 |
+| ChainExitERC1155Predicate | `0xDB2382413bCb9c2F1B6b62B52238558266361D68` | Ethereum | DOCUMENTED | Polygon PIP-54 |
 | FxRoot | `0xfe5e5D361b2ad62c541bAb87C45a0B9B018389a2` | Ethereum | DOCUMENTED | 0xPolygon fx-portal |
 | sPOL PolBridger | `0x67a40D016EFE809a5BFcd942a8FAf2D9cF0758E2` | Ethereum + Polygon | DOCUMENTED | 0xPolygon sPOL security scope |
+
+## Additional legacy/root bridge discovery
+
+The Polygon security scope and PIP-54 also identify legacy Plasma-side contracts that must be classified as historical/current before the bridge census is considered saturated:
+
+| Object | Address | Domain | State | Classification work |
+|---|---|---|---|---|
+| DepositManagerProxy | `0x401F6c983eA34274ec46f84D70b31C151321188b` | Ethereum | DOCUMENTED | determine current operational relevance |
+| WithdrawManagerProxy | `0x2A88696e0fFA76bAA1338F2C74497cC013495922` | Ethereum | DOCUMENTED | determine current operational relevance |
+| EventsHubProxy | `0x6dF5CB08d3f0193C768C8A01f42ac4424DC5086b` | Ethereum | DOCUMENTED | determine current operational relevance |
+| Plasma RootChainProxy | `0x86E4Dc95c7FBdBf52e33D563BbDB00823894C287` | Ethereum | DOCUMENTED | historical/current classification |
+| Plasma StakeManagerProxy | `0x5e3Ef299fDDf15eAa0432E6e66473ace8c13D908` | Ethereum | DOCUMENTED | historical/current classification |
 
 ## Verification schema
 
