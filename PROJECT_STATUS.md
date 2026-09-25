@@ -302,3 +302,12 @@ Evidence:
 - The collector has `actions: read` permission, runs the read-only CI state extractor, validates the report shape, and uploads `github-ci-state-evidence` as an artifact.
 - The report now includes triggering workflow context when available, plus main HEAD, recent runs, jobs and artifact metadata.
 - This collector is observational only. It does not dispatch or rerun workflows.
+
+## 2026-09-25 — Fresh P2 evidence reacquisition triggered
+- The derived-control verification workflow was deliberately re-triggered from main through a deterministic workflow-marker-only change.
+- The control-function verification workflow was likewise deliberately re-triggered from main.
+- Trigger commits:
+  - derived control: b97b8fb44583b25f7eda96f8d7da8fdb434d3e39
+  - control function: bfe36c431d56de65e1b0164429d48d387ca30f7f
+- These commits are evidence-acquisition triggers only. They do not relax thresholds or promote any gate.
+- P2 derived runtime-code and P2 control-function remain pending until their actual CI job conclusions and artifacts are inspected.
