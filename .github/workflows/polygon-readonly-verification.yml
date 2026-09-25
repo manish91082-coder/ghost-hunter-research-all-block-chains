@@ -34,9 +34,13 @@ jobs:
         run: |
           set -euo pipefail
           verifier_status=0
+          reconciliation_status=0
           python chains/polygon-pos/polygon_readonly_verifier.py --rpc "https://polygon-mainnet.gateway.tatum.io/" --rpc "https://rpc-mainnet.matic.quiknode.pro" --address "@chains/polygon-pos/verification_targets.txt" || verifier_status=$?
-          python chains/polygon-pos/polygon_verification_reconciliation.py || true
-          exit "$verifier_status"
+          python chains/polygon-pos/polygon_verification_reconciliation.py || reconciliation_status=$?
+          if [ "$verifier_status" -ne 0 ]; then
+            exit "$verifier_status"
+          fi
+          exit "$reconciliation_status"
 
       - name: Upload verification artifacts
         if: always()
