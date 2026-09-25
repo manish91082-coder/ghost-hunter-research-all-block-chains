@@ -49,7 +49,7 @@ jobs:
       - name: Execute bounded conveyor round
         run: |
           set -euo pipefail
-          python tools/saturation_conveyor.py --max-critical 1 --max-shadow 2 --time-budget 720 | tee automation/conveyor_stdout.json
+          python tools/saturation_conveyor.py --max-critical 2 --max-shadow 2 --time-budget 720 | tee automation/conveyor_stdout.json
 
       - name: Upload conveyor evidence
         if: always()
