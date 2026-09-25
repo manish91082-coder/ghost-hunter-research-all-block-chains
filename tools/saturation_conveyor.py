@@ -3,7 +3,7 @@
 Runs bounded work, checkpoints state, preserves failures, and never promotes
 a research gate from a single failed/partial observation.
 """
-import argparse, json, os, subprocess, sys, time, shutil
+import argparse, hashlib, json, os, subprocess, sys, time, shutil
 from pathlib import Path
 
 STATE=Path('automation/saturation_state.json')
@@ -15,6 +15,26 @@ CRITICAL_P2=['P2_REGRESSION','P2_DERIVED','P2_CONTROL_FUNCTION','P2_PROVENANCE']
 PROMOTION=['P3','P4','P5','P6','P7','P8','P9','P10','P11']
 SHADOW=['P3','P4','P5','P6','P7','P8','P9','P10']
 WORKER=Path('tools/polygon_universe_worker.py')
+CODE_EPOCH_FILES=[
+    Path("tools/saturation_conveyor.py"),
+    Path("tools/polygon_universe_worker.py"),
+    Path("tools/automation_state_store.py"),
+    Path("chains/polygon-pos/polygon_p2_control_function_verifier.py"),
+    Path("chains/polygon-pos/polygon_p2_control_function_reconciliation.py"),
+    Path("chains/polygon-pos/polygon_readonly_verifier.py"),
+    Path("chains/polygon-pos/p2_control_function_targets.txt"),
+    Path("chains/polygon-pos/p2_derived_control_targets.txt"),
+    Path("chains/polygon-pos/p4_seed_tokens.txt"),
+]
+
+def current_code_epoch():
+    h=hashlib.sha256()
+    for path in CODE_EPOCH_FILES:
+        if path.exists():
+            h.update(str(path).encode())
+            h.update(path.read_bytes())
+    return h.hexdigest()
+
 
 def now(): return time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())
 def load_json(p,default):
@@ -99,38 +119,47 @@ def stage_ready(stage):
     return False
 
 def shadow_dependency_override(task):
-    # Resolve prerequisites recursively so P7->P6->P5 and similar chains
-    # never execute downstream work against an empty upstream queue.
-    for _ in range(8):
-        original=task
-        if task=="P5":
-            try:
-                if not Path("automation/universe/tokens.jsonl").read_text(encoding="utf-8").strip():
-                    task="P4"
-                elif not Path("automation/universe/tokens.jsonl").exists():
-                    task="P4"
-            except Exception:
-                task="P4"
-        elif task=="P6":
-            try:
-                if not Path("automation/universe/pairs.jsonl").read_text(encoding="utf-8").strip():
-                    task="P5"
-                elif not Path("automation/universe/pairs.jsonl").exists():
-                    task="P5"
-            except Exception:
-                task="P5"
-        elif task=="P7" and not Path("automation/evidence/P6_ROUTE_SNAPSHOT.json").exists():
-            task="P6"
-        elif task=="P8":
-            try:
-                if not Path("automation/universe/pairs.jsonl").read_text(encoding="utf-8").strip():
-                    task="P5"
-            except Exception:
-                task="P5"
-        elif task=="P9" and not Path("automation/evidence/P8_FEATURE_SNAPSHOT.json").exists():
-            task="P8"
-        if task==original:
-            break
+    # Always fill the earliest missing shadow prerequisite first. This keeps the
+    # conveyor productive when an upstream queue is empty or a downstream
+    # snapshot was created from an empty source.
+    checks=[
+        ("P3", Path("automation/evidence/P3_PROTOCOL_SNAPSHOT.json").exists()),
+        ("P4", Path("automation/universe/tokens.jsonl").exists() and bool(Path("automation/universe/tokens.jsonl").read_text(encoding="utf-8").strip())),
+        ("P5", Path("automation/universe/pairs.jsonl").exists() and bool(Path("automation/universe/pairs.jsonl").read_text(encoding="utf-8").strip())),
+    ]
+    if not checks[0][1]:
+        return "P3"
+    if not checks[1][1]:
+        return "P4"
+    if not checks[2][1]:
+        return "P5"
+
+    p6=Path("automation/evidence/P6_ROUTE_SNAPSHOT.json")
+    if not p6.exists():
+        return "P6"
+    try:
+        if int(load_json(p6,{}).get("pair_nodes",0)) <= 0:
+            return "P6"
+    except Exception:
+        return "P6"
+
+    p7=Path("automation/evidence/P7_STRATEGY_MATRIX.json")
+    if not p7.exists():
+        return "P7"
+
+    p8=Path("automation/evidence/P8_FEATURE_SNAPSHOT.json")
+    if not p8.exists():
+        return "P8"
+    try:
+        if int(load_json(p8,{}).get("pair_groups",0)) <= 0:
+            return "P8"
+    except Exception:
+        return "P8"
+
+    p9=Path("automation/evidence/P9_ECONOMIC_SCREEN.json")
+    if not p9.exists():
+        return "P9"
+
     return task
 
 def p2_gate(state):
@@ -158,6 +187,10 @@ def main():
             critical_cursor=(critical_cursor+1) % len(critical_list)
             attempts += 1
             ts=task_state(state,task)
+            epoch=current_code_epoch()
+            if ts.get('code_epoch') != epoch:
+                ts['code_epoch']=epoch
+                ts['cooldown_until']=0
             if ts.get('cooldown_until',0)>time.time(): continue
             result=execute(task); ts['attempts']=ts.get('attempts',0)+1; ts['last_run']=now(); ts['ok']=bool(result.get('ok'))
             ts['last_result_summary']=str(result)[-4000:]
@@ -186,6 +219,10 @@ def main():
         task=shadow_dependency_override(task)
         attempts += 1
         ts=task_state(state,task)
+        epoch=current_code_epoch()
+        if ts.get('code_epoch') != epoch:
+            ts['code_epoch']=epoch
+            ts['cooldown_until']=0
         if ts.get('cooldown_until',0)>time.time(): continue
         result=execute(task); ts['attempts']=ts.get('attempts',0)+1; ts['last_run']=now(); ts['ok']=bool(result.get('ok')); ts['last_result_summary']=str(result)[-3500:]
         if ts['ok']: ts['last_error']=''; ts['cooldown_until']=0
