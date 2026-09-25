@@ -333,3 +333,19 @@ Observe the new push-triggered run and inspect its artifact. If the new pool is 
 ### Current gate
 - P1 live verification: **NOT PASSED** until the adaptive-pool run produces two independent matching code observations for every critical target.
 - No DEX/protocol expansion before P1 passes.
+## 2026-09-25 — Adaptive rotation live-run result and serializer correction
+### Run #26
+- Adaptive rotation executed successfully at the verifier layer.
+- Chain/head quorum found OnFinality and QuickNode public at chain 137, with a one-block head span.
+- Several of the 11 critical targets reached two independent successful code endpoints.
+- Remaining targets had only one successful endpoint because the other eligible provider was rate-limited or unavailable for those calls.
+
+### Defect found
+- The rotation rewrite omitted the top-level method field from each evidence record.
+- The raw JSONL contained the observations, but the reconciliation reader could not classify them by method and reported zero code observations.
+- Commit bcdd68f7b662c20f247062be326b72656513d97e restores the canonical top-level field.
+
+### Gate state
+- Rotation architecture: PROVEN WORKING at live-run level.
+- Evidence reconciliation: pending corrected run.
+- P1: NOT PASSED.
