@@ -1,0 +1,66 @@
+name: GitHub CI State Evidence Collector
+
+on:
+  workflow_run:
+    workflows:
+      - Polygon Read-Only Verification
+      - Polygon P2 Control Verification
+      - Polygon P2 Derived Control Code Verification
+      - Polygon P2 Control Function Verification
+    types:
+      - completed
+  workflow_dispatch:
+
+concurrency:
+  group: github-ci-state-evidence
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout canonical repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate CI state extractor
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/github_ci_state.py
+
+      - name: Collect CI state
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python tools/github_ci_state.py > github_ci_state_report.json
+          python - <<'PY'
+          import json
+          with open("github_ci_state_report.json", encoding="utf-8") as handle:
+              data = json.load(handle)
+          assert data["repository"] == "manish91082-coder/ghost-hunter-research-all-block-chains"
+          assert data["branch"] == "main"
+          assert data["head_sha"]
+          assert len(data["workflows"]) == 4
+          print(json.dumps({
+              "head_sha": data["head_sha"],
+              "workflows": sorted(data["workflows"]),
+          }, indent=2))
+          PY
+
+      - name: Upload CI state evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-ci-state-evidence
+          path: github_ci_state_report.json
+          if-no-files-found: error
