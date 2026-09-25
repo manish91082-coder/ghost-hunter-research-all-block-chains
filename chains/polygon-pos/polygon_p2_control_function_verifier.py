@@ -54,6 +54,21 @@ def head_quorum_ready(quorum_endpoints, best_span, min_endpoints, tolerance):
     )
 
 
+def semantic_probe_observation(obs):
+    """Return True only when the HTTP-200 JSON-RPC response is contract evidence."""
+    if obs.get("http_status") != 200:
+        return False
+    if obs.get("ok") is True:
+        return True
+    body = obs.get("body")
+    error = body.get("error") if isinstance(body, dict) else None
+    code = error.get("code") if isinstance(error, dict) else None
+    try:
+        code = int(code)
+    except (TypeError, ValueError):
+        code = None
+    return code == 3 or (code is not None and -32099 <= code <= -32000)
+
 def make_record(endpoint_id, target, obs, observation_block):
     body = obs.get("body")
     result = body.get("result") if isinstance(body, dict) else None
@@ -277,7 +292,7 @@ def main():
                     blocks.get(endpoint_id),
                 )
             )
-            if isinstance(obs.get("body"), dict) and obs.get("http_status") == 200:
+            if semantic_probe_observation(obs):
                 observed[index].add(endpoint_id)
                 if obs.get("ok"):
                     pool.mark_success(endpoint_id)
@@ -286,6 +301,9 @@ def main():
                 if len(observed[index]) >= args.min_probe_endpoints:
                     break
             else:
+                # Preserve the raw observation, but do not consume one of the
+                # independent evidence slots for provider-policy, malformed
+                # request, transport, or other non-semantic failures.
                 pool.mark_failure(endpoint_id, obs)
         return local
 
@@ -294,7 +312,7 @@ def main():
         for future in futures:
             observations.extend(future.result())
 
-    for recovery_round in range(1, max(1, args.recovery_rounds)):
+    for recovery_round in range(1, max(1, args.recovery_rounds) + 1):
         incomplete = [
             index
             for index in range(len(targets))
@@ -304,11 +322,16 @@ def main():
             break
         cooldowns = [
             pool.state[eid]["cooldown_until"] - time.monotonic()
+            for index in incomplete
             for eid in eligible
-            if pool.state[eid]["cooldown_until"] > time.monotonic()
+            if eid not in observed[index]
+            and pool.state[eid]["cooldown_until"] > time.monotonic()
         ]
         if cooldowns:
-            time.sleep(min(max(0.0, min(cooldowns)), 30.0))
+            # Give cooled candidates enough time to re-enter before spending a
+            # recovery pass on already-cooldown endpoints. This matters when one
+            # public RPC supplies the only second independent semantic result.
+            time.sleep(min(max(0.0, max(cooldowns)), 60.0))
         with ThreadPoolExecutor(max_workers=min(8, len(incomplete))) as executor:
             futures = [executor.submit(probe, index) for index in incomplete]
             for future in futures:
