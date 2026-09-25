@@ -76,3 +76,9 @@ Never force a trade simply to make a profit appear every minute. Continuous scan
 - First pass intentionally covers only Polygon-side critical system contracts. Ethereum-side bridge/governance objects are not mixed into the chain-137 code probe.
 - GitHub Actions now syntax-checks and runs the verifier with the target file.
 - Actual live evidence is still unconfirmed until workflow artifacts/results are observed. Never promote an address to VERIFIED from workflow configuration alone.
+
+
+## 2026-09-25 — Input integrity lock
+- Verification targets are validated as 20-byte hexadecimal EVM addresses before RPC calls.
+- Changing the target file now triggers the Polygon read-only workflow.
+- Workflow configuration is not evidence. Only observed runner output/artifacts can advance P1.
