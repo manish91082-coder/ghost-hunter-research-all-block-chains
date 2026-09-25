@@ -52,6 +52,18 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
         self.assertIn("Reconciliation skipped because live verifier did not produce a valid observation set", source)
 
+    def test_shadow_lane_prioritizes_earliest_missing_work(self):
+        source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
+        self.assertIn('if not checks[1][1]:', source)
+        self.assertIn('if not checks[2][1]:', source)
+        self.assertIn('if int(load_json(p6,{}).get("pair_nodes",0)) <= 0:', source)
+
+    def test_code_epoch_resets_stale_cooldowns_after_fixes(self):
+        source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
+        self.assertIn("def current_code_epoch():", source)
+        self.assertIn("if ts.get('code_epoch') != epoch:", source)
+        self.assertIn("ts['cooldown_until']=0", source)
+
     def test_shadow_dependency_override_backfills_empty_queues(self):
         source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
         self.assertIn('if task=="P5" and not Path("automation/universe/tokens.jsonl").exists()', source)
