@@ -333,3 +333,11 @@ Evidence:
 - The first-pass worker now continuously prepares protocol, token, pair, route, strategy, feature, economic-screening and saturation-audit evidence.
 - P11 is defined as research closure / next-chain-unlock candidate, not an automatic next-chain authorization.
 - This automation changes execution cadence, not evidence standards.
+
+## 2026-09-26 — Automation quality hardening
+- Conveyor task cursors are persistent across runs, so work does not restart at the first task every heartbeat.
+- Critical promotion is strictly ordered P2 -> P3 -> P4 -> P5 -> P6 -> P7 -> P8 -> P9 -> P10 -> P11.
+- Stage promotion predicates are content-aware; file existence alone is not treated as completion.
+- P10 -> P11 requires the P10 audit to explicitly report stage_gate=CLOSED.
+- P4 token candidates are deduplicated and P6 route enumeration now permits cyclic route closure.
+- Checkpoint restore uses GitHub Actions artifact state, while real stage/gate transitions are the only automation commits to main.
