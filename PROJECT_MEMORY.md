@@ -116,3 +116,10 @@ Never force a trade simply to make a profit appear every minute. Continuous scan
 - Tatum authentication remains optional via the `TATUM_API_KEY` GitHub Actions secret only.
 - Fresh-state rule remains in force: checkpoint reuse is opt-in, not the default, to avoid silently reusing stale live evidence.
 - This rotation architecture is the research-repo precedent for the future production RPC fabric: health-aware routing + cooldown + evidence diversity + fail-closed authorization.
+## 2026-09-25 — Run #26 rotation proof and serializer lesson
+- The adaptive pool successfully found two live Polygon endpoints from the 14-candidate pool: OnFinality and QuickNode public.
+- Their observed chain ID was 137 and their latest blocks differed by one block, satisfying the configured head tolerance.
+- Several critical targets received two independent code observations in the verifier output, proving request-level rotation is functioning.
+- The verifier must preserve the evidence schema exactly. In Run #26 a serializer regression omitted the top-level method field, causing reconciliation to see zero method records even though the raw JSONL contained successful probes.
+- Canonical evidence record fields are now treated as regression-sensitive. Future verifier changes must preserve both top-level and nested request metadata required by the reconciler/schema.
+- No evidence threshold was relaxed to accommodate the serializer defect.
