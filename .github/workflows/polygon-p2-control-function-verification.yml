@@ -6,6 +6,7 @@ on:
       - "chains/polygon-pos/p2_control_function_targets.txt"
       - "chains/polygon-pos/polygon_p2_control_function_verifier.py"
       - "chains/polygon-pos/polygon_p2_control_function_reconciliation.py"
+      - "chains/polygon-pos/test_p2_control_function_regression.py"
       - "chains/polygon-pos/polygon_readonly_verifier.py"
       - "chains/polygon-pos/rpc_pool.txt"
       - ".github/workflows/polygon-p2-control-function-verification.yml"
