@@ -48,6 +48,14 @@ def load_jsonl(path):
                 records.append(json.loads(chunk))
     return records
 
+def provenance_fingerprint(observation):
+    """Fingerprint semantic transaction+receipt payload, excluding transport metadata."""
+    return sha({
+        "tx": observation.get("tx"),
+        "receipt": observation.get("receipt"),
+    })
+
+
 def task_p2_provenance_replay():
     text=P2_PROV.read_text(encoding="utf-8") if P2_PROV.exists() else ""
     import re
@@ -72,7 +80,14 @@ def task_p2_provenance_replay():
             if a.get("ok") and b.get("ok"):
                 obs.append({"rpc":eid,"tx":a["body"].get("result"),"receipt":b["body"].get("result")})
             if len(obs)>=2: break
-        result["transactions"].append({"tx_hash":tx,"independent_observations":len(obs),"matching":len(obs)>=2 and len({json.dumps(x,sort_keys=True) for x in obs})==1,"observations":obs})
+        fingerprints=[provenance_fingerprint(x) for x in obs]
+        result["transactions"].append({
+            "tx_hash":tx,
+            "independent_observations":len(obs),
+            "matching":len(obs)>=2 and len(set(fingerprints))==1,
+            "semantic_fingerprints":fingerprints,
+            "observations":obs,
+        })
     result["status"]="REPLAYED" if txs and all(x["independent_observations"]>=2 and x["matching"] for x in result["transactions"]) else "PARTIAL"
     return write_json("P2_PROVENANCE_REPLAY.json",result)
 
