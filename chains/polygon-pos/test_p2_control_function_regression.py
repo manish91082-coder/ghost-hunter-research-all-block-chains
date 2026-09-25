@@ -79,8 +79,8 @@ class ControlFunctionRegressionTests(unittest.TestCase):
         self.assertIsNone(RECONCILER.fingerprint(row))
 
     def test_conflicting_outcomes_do_not_match(self):
-        a = {"outcome": {"ok": True, "result": "0x1234"}}
-        b = {"outcome": {"ok": False, "error_code": -32000}}
+        a = {"outcome": {"ok": True, "result": "0x1234", "http_status": 200}}
+        b = {"outcome": {"ok": False, "error_code": -32000, "http_status": 200}}
         self.assertNotEqual(RECONCILER.fingerprint(a), RECONCILER.fingerprint(b))
 
 
