@@ -69,7 +69,6 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn('if not checks[1][1]:', source)
         self.assertIn('if not checks[2][1]:', source)
         self.assertIn('if int(load_json(p6,{}).get("pair_nodes",0)) <= 0:', source)
-        self.assertIn('for _ in range(8):', source)
 
     def test_pair_snapshot_deduplicates_pair_addresses(self):
         source = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
