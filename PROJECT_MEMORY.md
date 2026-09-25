@@ -299,3 +299,13 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - Corrected control-function CI run `36181173124` is queued on the latest HEAD.
 - Do not promote P2 until the corrected artifact reports complete independent semantic evidence with zero unresolved conflicts.
 - P2 provenance still needs a second independent observation for one candidate transaction.
+
+
+## 2026-09-25 — P2 control-function semantic evidence recovery lock
+- Canonical prior evidence remains Run `36181173124`, whose raw reconciliation was PARTIAL, not conflicting: 0 semantic conflicts, 17 probes, 8 probes without two semantic RPC observations.
+- Tatum provider-policy `-16401` and malformed-request `-32602` must never satisfy an independent control-function evidence slot.
+- The control verifier now has an explicit `semantic_probe_observation()` gate matching the repository's semantic evidence doctrine: successful HTTP-200 execution, EVM revert code 3, or execution-layer JSON-RPC codes `-32099..-32000` count; provider/request/transport failures do not.
+- Recovery now honors the requested number of rounds and waits for cooled independent endpoints to re-enter before consuming a recovery pass.
+- Repair commits are locked in main history: `b722866860fb2d3a919fd388eac38260a08d9383` followed by regression commit `357969627248bea4be97dff542fab0cde73deaa5`.
+- Run #20 for the first repair was cancelled by concurrency when Run #21 arrived. Run #21 is the authoritative validation run for the combined repair+regression state.
+- Never promote P2 from source validation. Promotion requires the completed Run #21 artifact, raw evidence inspection, reconciliation VERIFIED, and separate P2 provenance REPLAYED evidence.
