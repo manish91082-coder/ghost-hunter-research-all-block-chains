@@ -257,3 +257,9 @@ Evidence:
 - Next P2 atomic work: verify the four non-zero derived implementation/admin addresses, then owner/role/control functions and creation evidence.
 - Polygon saturation: **OPEN**
 - DEX/protocol discovery: **BLOCKED**
+## 2026-09-25 — P2 derived-control code verification launched
+- P2 ERC-1967 storage sub-gate is PASSED.
+- Four non-zero derived control addresses are now in a dedicated runtime-code verification queue.
+- New workflow: `.github/workflows/polygon-p2-derived-control-verification.yml`
+- The four addresses must each obtain matching `eth_getCode` hashes from at least two independent chain-137 RPC endpoints.
+- Overall P2 remains IN PROGRESS.
