@@ -220,3 +220,11 @@ P2: reconcile proxy implementations, admin/owner/roles, creation evidence, contr
 - P2 ERC-1967 storage consistency: **RUNNING**
 - Polygon saturation: **OPEN**
 - DEX/protocol discovery: **BLOCKED pending P2 completion**
+
+## 2026-09-25 — P2 #1 verifier failure and minimal fix
+- P2 run `36170466071` failed before producing evidence because the shared read-only RPC allowlist rejected `eth_getStorageAt`.
+- This was an implementation-layer method allowlist omission, not a Polygon RPC availability failure.
+- Commit `5a0e31ca66c4d252b742f5d5c4c1f7c145be4b12` adds `eth_getStorageAt` to the existing read-only allowlist.
+- No write/sign/send capability was added.
+- Corrected P2 run: `36170624761`, currently **IN_PROGRESS** at the latest checkpoint.
+- P1 rerun is also triggered by the shared verifier change. P1 remains semantically frozen and must still pass its existing gate.
