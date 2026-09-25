@@ -350,3 +350,8 @@ Evidence:
 - Fixed persistent checkpointing so the state artifact restores `automation/saturation_state.json`, `automation/evidence/`, and `automation/universe/` across runs.
 - Artifact API/restore failures are now fail-closed instead of silently resetting state.
 - Stage promotion remains explicit and content-aware; first-pass snapshots cannot be promoted to CLOSED merely because a file exists.
+
+## 2026-09-26 — Saturation integrity hardening
+- P2 provenance replay now reaches `REPLAYED` only when every candidate transaction has at least two independent observations and those observations match exactly.
+- P5 pair universe now canonicalizes by `pairAddress`, preventing duplicate pair rows from cross-token discovery calls from inflating saturation counts.
+- Regression coverage now guards both invariants.
