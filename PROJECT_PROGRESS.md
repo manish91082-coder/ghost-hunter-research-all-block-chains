@@ -55,3 +55,28 @@ Repository and branch remain locked to:
 
 ### Rule
 Each future milestone must update this file, PROJECT_STATUS.md and the relevant Polygon research/evidence files in the same project progression.
+
+
+## 2026-09-25 — Polygon Bridge/State-Sync Registry Step
+
+### Added
+- `chains/polygon-pos/ADDRESS_REGISTRY.md` as the canonical discovery-layer address registry.
+- `chains/polygon-pos/BRIDGE_STATE_SYNC.md` separating PoS Portal, Fx Portal and application-layer state-sync consumers.
+- Documented bridge/state-sync opportunity hypotheses without treating them as profitable or execution-ready.
+- Explicit verification schema for code, runtime hash, proxy/implementation, creation evidence, behavior probes and observation block.
+
+### Evidence result
+- Authoritative Polygon security-scope evidence confirms the published core PoS deployed-address set.
+- Official Fx Portal evidence confirms the FxRoot/FxChild deployment surface.
+- A new Polygon sPOL surface was recorded as an application-layer state-sync consumer, not conflated with the core bridge.
+- No new object was promoted to VERIFIED because live chain-137 JSON-RPC verification remains unavailable in the current environment.
+
+### Gate state
+- Polygon saturation gate remains OPEN.
+- DEX/protocol discovery remains blocked until the chain infrastructure and bridge/state-sync layer is sufficiently reconciled.
+- Next atomic step: expand the bridge/predicate/exit/withdrawal/control census and prepare the live-verification batch without fabricating runtime state.
+
+### Git verification
+- Pre-write HEAD: `2c318960675c8bc29ff0434a2e5b1d2b5631d1ef`.
+- Canonical repository: `manish91082-coder/ghost-hunter-research-all-block-chains`.
+- Canonical branch: `main`.
