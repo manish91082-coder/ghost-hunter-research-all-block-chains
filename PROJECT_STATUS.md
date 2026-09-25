@@ -268,3 +268,10 @@ Evidence:
 - Added an optional deterministic fresh-head quorum mode. The default P1 behavior remains unchanged; derived-control verification explicitly requires any two independent fresh endpoints within the configured tolerance.
 - No majority vote is used. The verifier chooses the smallest-span deterministic pair and records the chosen endpoints, span and excluded stale endpoints as evidence.
 - Corrected derived-control workflow now uses `--min-head-endpoints 2` and reconciliation consumes `head_quorum_agreement`.
+
+## 2026-09-25 — Derived-control workflow invocation defect corrected
+- Derived-control Run #4 (36172904065) failed because the workflow checked out commit 310e9f9837cd9b06f2bfa05f93e5a26823b3071a but its live shell invocation omitted the newly supported --min-head-endpoints 2 argument.
+- The verifier itself was already quorum-capable, and Run #4 still obtained matching runtime-code hashes for all four derived addresses from OnFinality + QuickNode. The failure was therefore a workflow wiring defect, not a derived-code conflict.
+- Commit 5b0212d5ca8ce094f4438f60e424189bc0259e6a fixes the workflow: it passes --min-head-endpoints 2, syntax-checks the reconciliation source, and initializes optional shell status variables safely.
+- A fresh CI artifact from the corrected workflow is now required before the derived-control sub-gate can be marked VERIFIED.
+- Overall P2 remains IN PROGRESS; Polygon saturation remains OPEN; DEX/protocol discovery remains BLOCKED.
