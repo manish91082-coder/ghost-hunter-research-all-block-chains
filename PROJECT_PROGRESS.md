@@ -454,3 +454,25 @@ Scope: runtime-code verification of the four non-zero addresses discovered from 
 - Added optional deterministic fresh-head quorum to the shared verifier.
 - P1 default remains all-endpoint head agreement.
 - Derived-control sub-gate requires a two-endpoint fresh-head quorum and records the selected endpoints/span.
+
+## 2026-09-25 — Derived-control workflow wiring correction
+### Finding
+Run 36172904065 demonstrated that the verifier's deterministic two-endpoint head-quorum feature was not actually enabled in the workflow command. The workflow omitted --min-head-endpoints 2, so the run correctly failed the old all-endpoint head-span rule even though all four derived addresses had matching two-RPC code hashes.
+
+### Correction
+Commit 5b0212d5ca8ce094f4438f60e424189bc0259e6a updates .github/workflows/polygon-p2-derived-control-verification.yml to:
+- pass --min-head-endpoints 2;
+- preserve --stale-block-tolerance 2;
+- keep the two-independent-code-endpoint requirement;
+- syntax-check the reconciliation module;
+- safely initialize shell exit-status variables.
+
+### Gate state
+- P2 ERC-1967 storage consistency: PASSED.
+- P2 derived runtime-code verification: PENDING corrected CI evidence.
+- Overall P2: IN PROGRESS.
+- Polygon saturation: OPEN.
+- DEX/protocol discovery: BLOCKED.
+
+### Next atomic step
+Inspect the first corrected derived-control CI run and its artifact. Promote the four derived runtime identities only when the fresh-head quorum and two-endpoint code reconciliation both return VERIFIED.
