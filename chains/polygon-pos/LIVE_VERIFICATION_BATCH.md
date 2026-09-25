@@ -322,3 +322,14 @@ Acceptance:
 - no unresolved slot conflicts.
 
 Passing this slice advances P2 only for storage-slot consistency. Proxy implementation semantics, control roles, creation evidence and function/event identity remain separate P2 sub-gates.
+
+## P2 recovery hardening
+P2 storage verification now uses request-level adaptive rotation:
+- target/slot is the scheduling unit;
+- chain-137 identity determines storage eligibility;
+- fresh head quorum is checked separately;
+- 429/temporary failures trigger endpoint cooldown;
+- bounded recovery rounds retry incomplete target/slot pairs;
+- two distinct successful endpoint values remain mandatory.
+
+Run #2 showed this is necessary because one endpoint (Tatum) returned a mix of successful responses and HTTP 429 responses within the same 33-probe batch.
