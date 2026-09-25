@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "chains/polygon-pos/polygon_readonly_verifier.py"
+      - "chains/polygon-pos/verification_targets.txt"
       - ".github/workflows/polygon-readonly-verification.yml"
   workflow_dispatch:
 
