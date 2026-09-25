@@ -376,3 +376,19 @@ Evidence:
 - P2 provenance: pending corrected live replay.
 - Polygon saturation gate: OPEN.
 - DEX/protocol discovery remains shadow-only until P2 closes.
+
+## 2026-09-26 — P2 control-function recovery defect repaired
+- Main HEAD at this checkpoint: `b2fe8738b28ee77670edb7a72994fcd039c793bb`.
+- Run `36179352109` showed the control-function verifier failing with a four-block head span against a two-block tolerance.
+- Static live-code audit found the recovery loop exited merely because a candidate endpoint pair existed, not because the pair satisfied the freshness tolerance.
+- Commit `4f6391f80246c50812b7693177d0c11268b06269` introduced `head_quorum_ready()` and corrected the recovery stop condition.
+- Commit `b2fe8738b28ee77670edb7a72994fcd039c793bb` added executable regression coverage.
+- Dedicated control-function CI run `36180198453` is pending on this corrected HEAD.
+
+### Gate state
+- P1: PASSED.
+- P2 ERC-1967 storage: PASSED.
+- P2 derived runtime-code: VERIFIED.
+- P2 provenance: pending corrected live replay.
+- P2 control-function: pending corrected live replay.
+- Polygon saturation gate: OPEN.
