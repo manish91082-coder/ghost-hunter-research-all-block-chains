@@ -395,3 +395,22 @@ Run `36170466071` is **IN_PROGRESS**. P2 is not declared passed until the artifa
 - Added `eth_getStorageAt` to the shared read-only RPC allowlist.
 - This method is read-only and is required for ERC-1967 implementation/admin/beacon storage-slot inspection.
 - Corrected P2 run `36170624761` is executing against the fixed source.
+
+## 2026-09-25 — P2 Run #2 evidence and recovery hardening
+### Run #2
+- Workflow run `36170624761`
+- Artifact `10879519912`
+- Artifact digest: `sha256:575377544f0a9ebb17cf080fc3f4a0db0909812793ba9198e3bbe836a684bfd9`
+- 66 records = 33 expected target/slot combinations × 2 attempted endpoints.
+- QuickNode: 33/33 success.
+- Tatum: 16/33 success, 17/33 HTTP 429.
+- P2 reconciliation: PARTIAL.
+- No conflicts in the successful dual observations.
+
+### Correction
+- P2 now rotates at target/slot granularity instead of probing one entire endpoint serially.
+- Rate-limited endpoints receive cooldown and can re-enter through bounded recovery rounds.
+- Storage eligibility is based on fresh chain-137 identity; two fresh head endpoints are still required for the P2 gate.
+- Workflow now enables two recovery rounds.
+
+P2 remains NOT PASSED until every target/slot combination has two independent matching observations.
