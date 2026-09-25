@@ -68,18 +68,33 @@ def task_state(state,task):
     return state['tasks'].setdefault(task,{'attempts':0,'ok':False,'last_error':'','last_run':None,'cooldown_until':0})
 
 def stage_ready(stage):
-    checks={
-      'P3': Path('automation/evidence/P3_PROTOCOL_SNAPSHOT.json').exists(),
-      'P4': Path('automation/evidence/P4_TOKEN_SNAPSHOT.json').exists(),
-      'P5': Path('automation/evidence/P5_PAIR_SNAPSHOT.json').exists(),
-      'P6': Path('automation/evidence/P6_ROUTE_SNAPSHOT.json').exists(),
-      'P7': Path('automation/evidence/P7_STRATEGY_MATRIX.json').exists(),
-      'P8': Path('automation/evidence/P8_FEATURE_SNAPSHOT.json').exists(),
-      'P9': Path('automation/evidence/P9_ECONOMIC_SCREEN.json').exists(),
-      'P10': Path('automation/evidence/P10_SATURATION_AUDIT.json').exists(),
-      'P11': Path('automation/evidence/P11_CLOSURE_REPORT.json').exists(),
+    files={
+      'P3':Path('automation/evidence/P3_PROTOCOL_SNAPSHOT.json'),
+      'P4':Path('automation/evidence/P4_TOKEN_SNAPSHOT.json'),
+      'P5':Path('automation/evidence/P5_PAIR_SNAPSHOT.json'),
+      'P6':Path('automation/evidence/P6_ROUTE_SNAPSHOT.json'),
+      'P7':Path('automation/evidence/P7_STRATEGY_MATRIX.json'),
+      'P8':Path('automation/evidence/P8_FEATURE_SNAPSHOT.json'),
+      'P9':Path('automation/evidence/P9_ECONOMIC_SCREEN.json'),
+      'P10':Path('automation/evidence/P10_SATURATION_AUDIT.json'),
+      'P11':Path('automation/evidence/P11_CLOSURE_REPORT.json'),
     }
-    return bool(checks.get(stage,False))
+    p=files.get(stage)
+    if p is None or not p.exists(): return False
+    try:
+        data=json.loads(p.read_text(encoding='utf-8'))
+    except Exception:
+        return False
+    if stage=='P3': return bool(data.get('protocol_candidates') or data.get('dex_profile_candidates'))
+    if stage=='P4': return int(data.get('total_candidates',0))>0
+    if stage=='P5': return int(data.get('total_pair_records',0))>0
+    if stage=='P6': return int(data.get('pair_nodes',0))>0
+    if stage=='P7': return int(data.get('count',0))>=18
+    if stage=='P8': return int(data.get('pair_groups',0))>0
+    if stage=='P9': return p.exists()
+    if stage=='P10': return data.get('stage_gate')=='CLOSED'
+    if stage=='P11': return data.get('status')=='READY'
+    return False
 
 def p2_gate(state):
     conditions={
