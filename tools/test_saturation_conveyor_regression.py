@@ -54,6 +54,31 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         source = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn('all(x["independent_observations"]>=2 and x["matching"] for x in result["transactions"])', source)
 
+    def test_provenance_requires_complete_transaction_and_receipt(self):
+        import importlib.util
+        worker_path = ROOT / "tools" / "polygon_universe_worker.py"
+        spec = importlib.util.spec_from_file_location("polygon_universe_worker_complete", worker_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        ok_tx = {"ok": True, "body": {"result": {"hash": "0xabc"}}}
+        ok_receipt = {"ok": True, "body": {"result": {"status": "0x1"}}}
+        null_tx = {"ok": True, "body": {"result": None}}
+        rpc_error = {"ok": False, "body": {"error": {"code": -32000}}}
+
+        self.assertTrue(module.complete_provenance_observation(ok_tx, ok_receipt))
+        self.assertFalse(module.complete_provenance_observation(null_tx, ok_receipt))
+        self.assertFalse(module.complete_provenance_observation(ok_tx, rpc_error))
+
+
+    def test_provenance_replay_has_bounded_recovery(self):
+        source = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn("recovery_rounds=2", source)
+        self.assertIn("for recovery_round in range(1,recovery_rounds + 1):", source)
+        self.assertIn("cooldown_until", source)
+        self.assertIn('"endpoint_diagnostics"', source)
+
+
     def test_provenance_fingerprint_excludes_rpc_transport_metadata(self):
         import importlib.util
         worker_path = ROOT / "tools" / "polygon_universe_worker.py"
