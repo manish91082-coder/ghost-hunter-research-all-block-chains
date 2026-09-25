@@ -66,8 +66,9 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
 
     def test_shadow_dependency_override_backfills_empty_queues(self):
         source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
-        self.assertIn('if task=="P5" and not Path("automation/universe/tokens.jsonl").exists()', source)
-        self.assertIn('elif task=="P6":', source)
+        self.assertIn('if not checks[1][1]:', source)
+        self.assertIn('if not checks[2][1]:', source)
+        self.assertIn('if int(load_json(p6,{}).get("pair_nodes",0)) <= 0:', source)
         self.assertIn('for _ in range(8):', source)
 
     def test_pair_snapshot_deduplicates_pair_addresses(self):
