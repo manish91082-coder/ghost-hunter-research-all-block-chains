@@ -375,11 +375,13 @@ def extract_gecko_token_addresses(payload):
         if not isinstance(resource, dict):
             continue
         address = _extract_address(resource.get("id"))
-        attrs = resource.get("attributes")
-        if isinstance(attrs, dict):
-            address = address or _extract_address(attrs.get("address"))
         if address:
             found.add(address)
+        attrs = resource.get("attributes")
+        if isinstance(attrs, dict):
+            attribute_address = _extract_address(attrs.get("address"))
+            if attribute_address:
+                found.add(attribute_address)
 
         relationships = resource.get("relationships")
         if isinstance(relationships, dict):
