@@ -157,3 +157,11 @@ Boundary: runtime-code identity is verified, but proxy implementation/admin, own
 - `eth_getStorageAt` is now explicitly allowed.
 - No transaction, signing or mutation method was introduced.
 - P2 #1 failure is retained as an engineering evidence point and does not change the P1 gate.
+
+## 2026-09-25 — P2 storage rotation lock
+- Run #2 established that Tatum's anonymous RPC path can handle part of the ERC-1967 workload but returns 429 for a significant subset when the workload is endpoint-sequential.
+- P2 therefore adopts the same request-level adaptive rotation model proven in P1.
+- Each target/slot combination is independently routed across chain-137 eligible endpoints until two successful endpoint observations are obtained.
+- Endpoint cooldown and bounded recovery prevent both starvation and infinite retry loops.
+- Head quorum remains a separate freshness requirement and still needs at least two fresh chain-137 endpoints.
+- No P2 control field is promoted to VERIFIED until reconciliation closes the complete target×slot matrix.
