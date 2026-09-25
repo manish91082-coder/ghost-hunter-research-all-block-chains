@@ -25,9 +25,10 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("state['critical_stage']='P2'", self.source)
         self.assertIn("P2_OPEN", self.source)
 
-    def test_conveyor_is_scheduled_not_push_triggered(self):
-        self.assertIn("cron: '*/5 * * * *'", self.workflow)
-        self.assertNotIn("\n  push:", "\n" + self.workflow)
+    def test_conveyor_heartbeat_and_bootstrap_trigger_are_narrow(self):
+        self.assertIn("cron: '2-59/5 * * * *'", self.workflow)
+        self.assertIn("  push:\n    paths:\n      - 'automation/conveyor_bootstrap.trigger'", self.workflow)
+        self.assertNotIn("tools/saturation_conveyor.py", self.workflow.split("  push:", 1)[1])
 
     def test_checkpoint_and_actions_read_permission(self):
         self.assertIn("actions: read", self.workflow)
