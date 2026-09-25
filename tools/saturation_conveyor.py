@@ -12,7 +12,7 @@ EVID=Path('automation/evidence')
 REPORT=Path('automation/conveyor_report.json')
 
 CRITICAL_P2=['P2_REGRESSION','P2_DERIVED','P2_CONTROL_FUNCTION','P2_PROVENANCE']
-PROMOTION=['P3','P4','P5','P6','P7','P8','P9','P10']
+PROMOTION=['P3','P4','P5','P6','P7','P8','P9','P10','P11']
 SHADOW=['P3','P4','P5','P6','P7','P8','P9','P10']
 WORKER=Path('tools/polygon_universe_worker.py')
 
@@ -67,6 +67,20 @@ def execute(task):
 def task_state(state,task):
     return state['tasks'].setdefault(task,{'attempts':0,'ok':False,'last_error':'','last_run':None,'cooldown_until':0})
 
+def stage_ready(stage):
+    checks={
+      'P3': Path('automation/evidence/P3_PROTOCOL_SNAPSHOT.json').exists(),
+      'P4': Path('automation/evidence/P4_TOKEN_SNAPSHOT.json').exists(),
+      'P5': Path('automation/evidence/P5_PAIR_SNAPSHOT.json').exists(),
+      'P6': Path('automation/evidence/P6_ROUTE_SNAPSHOT.json').exists(),
+      'P7': Path('automation/evidence/P7_STRATEGY_MATRIX.json').exists(),
+      'P8': Path('automation/evidence/P8_FEATURE_SNAPSHOT.json').exists(),
+      'P9': Path('automation/evidence/P9_ECONOMIC_SCREEN.json').exists(),
+      'P10': Path('automation/evidence/P10_SATURATION_AUDIT.json').exists(),
+      'P11': Path('automation/evidence/P11_CLOSURE_REPORT.json').exists(),
+    }
+    return bool(checks.get(stage,False))
+
 def p2_gate(state):
     conditions={
       'storage_checkpoint': Path('chains/polygon-pos/P2_ERC1967_STORAGE_RUN_4.md').exists(),
@@ -116,7 +130,15 @@ def main():
     state.setdefault('cursors',{})['shadow']=shadow_cursor
     closed,conditions=p2_gate(state)
     state['research_gate']='P2_CLOSED' if closed else 'P2_OPEN'
-    state['critical_stage']='P3' if closed else 'P2'
+    if closed:
+        current=state.get('critical_stage','P2')
+        if current=='P2': state['critical_stage']='P3'
+        else:
+            idx=PROMOTION.index(current) if current in PROMOTION else 0
+            if stage_ready(current) and idx < len(PROMOTION)-1:
+                state['critical_stage']=PROMOTION[idx+1]
+    else:
+        state['critical_stage']='P2'
     state.setdefault('cursors',{'critical':0,'shadow':0})
     state['last_run']=now()
     state['commit_required']=(old_gate!=state['research_gate'] or old_stage!=state['critical_stage'])
