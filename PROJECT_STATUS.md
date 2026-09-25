@@ -73,3 +73,9 @@ P1 continuation: execute the read-only Polygon live-verification batch against i
 - A bounded Polygon-side critical-address target file is now canonical at `chains/polygon-pos/verification_targets.txt`.
 - GitHub Actions now syntax-checks the verifier and invokes it with that target file, so the next push-triggered/manual run can perform actual `eth_getCode` probes rather than only network capability probes.
 - This is execution wiring, not live evidence. P1 remains NOT PASSED until run artifacts/results are observed and reconciled.
+
+
+## Latest Verification Hardening
+- Verifier now rejects malformed/non-hex EVM target addresses before network access.
+- Target-file changes are included in the GitHub Actions trigger paths.
+- P1 remains NOT PASSED pending actual live execution evidence.
