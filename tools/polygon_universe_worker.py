@@ -65,7 +65,7 @@ def task_p2_provenance_replay():
                 obs.append({"rpc":eid,"tx":a["body"].get("result"),"receipt":b["body"].get("result")})
             if len(obs)>=2: break
         result["transactions"].append({"tx_hash":tx,"independent_observations":len(obs),"matching":len(obs)>=2 and len({json.dumps(x,sort_keys=True) for x in obs})==1,"observations":obs})
-    result["status"]="REPLAYED" if txs and all(x["independent_observations"]>=2 for x in result["transactions"]) else "PARTIAL"
+    result["status"]="REPLAYED" if txs and all(x["independent_observations"]>=2 and x["matching"] for x in result["transactions"]) else "PARTIAL"
     return write_json("P2_PROVENANCE_REPLAY.json",result)
 
 def task_p3_protocols():
@@ -108,9 +108,28 @@ def task_p5_pairs():
             for pair in pairs:
                 if str(pair.get("chainId","")).lower()=="polygon" and pair.get("pairAddress"):
                     pair["_snapshot_time"]=now(); pair["_source"]="dexscreener_token_pairs"; rows.append(pair)
-    append_jsonl(UNIV/"pairs.jsonl",rows)
-    cursor=min(len(tokens),cursor+len(batch)); write_json("P5_CURSOR.json",{"cursor":cursor,"total_tokens":len(tokens)})
-    return write_json("P5_PAIR_SNAPSHOT.json",{"task":"p5_pair_discovery","time":now(),"processed_tokens":len(batch),"new_pairs":len(rows),"cursor":cursor,"total_pair_records":len(load_jsonl(UNIV/"pairs.jsonl")),"evidence_class":"DISCOVERY"})
+    pair_path=UNIV/"pairs.jsonl"
+    existing_pairs=load_jsonl(pair_path)
+    by_address={str(x.get("pairAddress","")).lower():x for x in existing_pairs if x.get("pairAddress")}
+    before=len(by_address)
+    for row in rows:
+        address=str(row.get("pairAddress","")).lower()
+        if address:
+            by_address[address]=row
+    merged=list(by_address.values())
+    pair_path.write_text("".join(json.dumps(x,sort_keys=True)+"\\n" for x in merged),encoding="utf-8")
+    cursor=min(len(tokens),cursor+len(batch))
+    write_json("P5_CURSOR.json",{"cursor":cursor,"total_tokens":len(tokens)})
+    return write_json("P5_PAIR_SNAPSHOT.json",{
+        "task":"p5_pair_discovery",
+        "time":now(),
+        "processed_tokens":len(batch),
+        "observed_pair_rows":len(rows),
+        "new_unique_pairs":max(0,len(merged)-before),
+        "cursor":cursor,
+        "total_pair_records":len(merged),
+        "evidence_class":"DISCOVERY"
+    })
 
 def task_p6_routes():
     pairs=load_jsonl(UNIV/"pairs.jsonl"); adj=defaultdict(list); seen=set()
