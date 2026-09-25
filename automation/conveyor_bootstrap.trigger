@@ -17,3 +17,4 @@ purpose=one-shot live validation of optimized critical lane and repaired P2 evid
 2026-09-26T01:44:00+05:30 P4-token-helper-regression-retry
 2026-09-26T02:06:00+05:30 P4-two-rpc-quorum-optimization-bootstrap
 2026-09-26T02:12:00+05:30 P4-resumable-verification-v2-bootstrap
+2026-09-26T02:16:00+05:30 P4-regression-source-fix-bootstrap
