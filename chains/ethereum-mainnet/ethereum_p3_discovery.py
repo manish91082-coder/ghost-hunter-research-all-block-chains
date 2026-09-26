@@ -23,7 +23,7 @@ def sha(v): return hashlib.sha256(json.dumps(v,sort_keys=True,separators=(",",":
 def normalize(s):
     s=str(s or "").strip().lower()
     s=re.sub(r"[^a-z0-9]+"," ",s)
-    return re.sub(r"s+"," ",s).strip()
+    return re.sub(r"\\s+"," ",s).strip()
 
 def fetch(url, timeout=25, retries=2):
     last=None
