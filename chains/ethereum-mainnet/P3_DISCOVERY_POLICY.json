@@ -1,0 +1,9 @@
+{
+  "schema_version": "ethereum-p3-discovery-policy-v1",
+  "chain_id": 1,
+  "min_cross_source_dex_overlap": 3,
+  "required_sources": 3,
+  "required_stable_samples": 2,
+  "discovery_only": true,
+  "promotion_requires_onchain_verification": true
+}
