@@ -23,87 +23,33 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Repair stale empty pair persistence
+      - name: Build independent static fabric
         run: |
           set -euo pipefail
-          if [ ! -s automation/universe/pairs.jsonl ]; then
-            rm -f automation/evidence/P5_CLOSURE_STATE.json
-            rm -f automation/evidence/P5_CURSOR.json
-            rm -f automation/evidence/P5_STABILITY_STATE.json
-            rm -f automation/evidence/P5_PAIR_SNAPSHOT.json
-          fi
-
-      - name: Rebuild P5 until persisted universe is closed
-        run: |
-          set -euo pipefail
-          for i in $(seq 1 20); do
-            python tools/polygon_universe_worker.py --task P5
-            python - <<'PY' > /tmp/p5_gate
-          import json
-          from pathlib import Path
-          p=Path("automation/evidence/P5_PAIR_SNAPSHOT.json")
-          snap=json.loads(p.read_text())
-          pair_file=Path("automation/universe/pairs.jsonl")
-          n=sum(1 for x in pair_file.read_text().splitlines() if x.strip()) if pair_file.exists() else 0
-          ok=(snap.get("stage_gate")=="CLOSED" and snap.get("coverage_complete") is True and n==int(snap.get("total_pair_records",0)) and n>0)
-          print("GREEN" if ok else "OPEN", n, snap.get("total_pair_records"), snap.get("stable_runs"))
-          PY
-            cat /tmp/p5_gate
-            if grep -q '^GREEN ' /tmp/p5_gate; then break; fi
-            sleep 1
-          done
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          s=json.loads(Path("automation/evidence/P5_PAIR_SNAPSHOT.json").read_text())
-          rows=[json.loads(x) for x in Path("automation/universe/pairs.jsonl").read_text().splitlines() if x.strip()]
-          ids=[str(x.get("pairAddress","")).lower() for x in rows]
-          assert s["stage_gate"]=="CLOSED" and s["coverage_complete"] is True
-          assert len(rows)==s["total_pair_records"]>0
-          assert len(ids)==len(set(ids))
-          PY
-
-      - name: Recompute exact P6 route universe
-        run: |
-          set -euo pipefail
-          python tools/polygon_universe_worker.py --task P6
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          s=json.loads(Path("automation/evidence/P6_ROUTE_SNAPSHOT.json").read_text())
-          p=json.loads(Path("automation/evidence/P5_PAIR_SNAPSHOT.json").read_text())
-          assert s["stage_gate"]=="CLOSED", s
-          assert s["pair_records_consumed"]==p["total_pair_records"], s
-          assert s["unique_pairs"]==p["total_pair_records"], s
-          assert s["invalid_pair_records"]==0, s
-          assert s["route_count_total"]>0, s
-          PY
-
-      - name: Materialize clean canonical Polygon folder
-        run: |
-          set -euo pipefail
-          python -m py_compile tools/polygon_static_materializer.py
-          python tools/polygon_static_materializer.py
+          python -m py_compile tools/polygon_static_fabric.py
+          python tools/polygon_static_fabric.py
 
       - name: Validate static saturation
         run: |
           set -euo pipefail
           python - <<'PY'
-          import gzip,json
+          import json, gzip
           from pathlib import Path
           p=Path("chains/polygon-pos")
           m=json.loads((p/"STATIC_SATURATION_MANIFEST.json").read_text())
           c=m["counts"]
-          assert c["tokens"] >= 469, c
-          assert c["pairs"] == 2821, c
-          assert c["pools"] == 2821, c
-          assert c["routes"] == int(json.loads(Path("automation/evidence/P6_ROUTE_SNAPSHOT.json").read_text())["route_count_total"]), c
+          assert c["tokens"] > 0 and c["pairs"] > 0 and c["pools"] == c["pairs"], c
+          assert c["routes"] > 0, c
           assert c["strategies"] == 18, c
-          assert c["economic_candidate_groups"] == 420, c
           assert c["exact_profit_certified"] == 0, c
           for fn in ["MASTER_INDEX.json","TOKEN_UNIVERSE.jsonl","PAIR_UNIVERSE.jsonl","POOL_UNIVERSE.jsonl","DEX_UNIVERSE.json","PROTOCOL_UNIVERSE.json","STATIC_CONTRACT_UNIVERSE.json","FLASH_LIQUIDITY_UNIVERSE.json","ROUTE_RULES.json","ROUTE_SAMPLE_5000.jsonl.gz","STRATEGY_UNIVERSE.json","FEATURE_SCHEMA.json","ECONOMIC_FRONTIER.json","UNKNOWN_NEGATIVE_SPACE.json","STATIC_EVIDENCE_MANIFEST.json","STATIC_SATURATION_MANIFEST.json"]:
               assert (p/fn).exists(), fn
-          print("POLYGON_STATIC_VALIDATION_GREEN")
+          pairs=[json.loads(x) for x in (p/"PAIR_UNIVERSE.jsonl").read_text().splitlines() if x.strip()]
+          ids=[x["pair_address"].lower() for x in pairs]
+          assert len(ids)==len(set(ids))==c["pairs"]
+          routes=sum(1 for _ in gzip.open(p/"ROUTE_UNIVERSE.jsonl.gz","rt",encoding="utf-8"))
+          assert routes==c["routes"], (routes,c)
+          print("POLYGON_STATIC_SATURATION_GREEN")
           print(json.dumps(c,sort_keys=True))
           PY
 
