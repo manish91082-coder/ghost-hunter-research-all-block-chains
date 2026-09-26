@@ -2481,8 +2481,10 @@ P10_SCHEMA_VERSION = "p10-polygon-saturation-audit-v2"
 
 def task_p10_audit():
     conveyor_state = load_json(Path("automation/saturation_state.json"), {})
+    conveyor_state = load_json(Path("automation/saturation_state.json"), {})
     p2 = load_json(EVID / "P2_CONTROL_FUNCTION_LATEST.json", {})
     p2p = load_json(EVID / "P2_PROVENANCE_REPLAY.json", {})
+    p9_cert = load_json(EVID / "P9_ECONOMIC_CERTIFICATION.json", {})
     p3 = load_json(EVID / "P3_CLOSURE_STATE.json", {})
     p4 = load_json(EVID / "P4_CLOSURE_STATE.json", {})
     p5 = load_json(EVID / "P5_CLOSURE_STATE.json", {})
@@ -2513,7 +2515,7 @@ def task_p10_audit():
         "p8_closed": p8.get("stage_gate") == "CLOSED" and int(p8.get("stable_runs", 0)) >= 2,
         "p9_readiness_closed": p9.get("stage_gate") == "CLOSED",
         "p9_capability_complete": bool(p9.get("ledger_complete")) and int(p9.get("processed_pairs_count", 0)) >= int(p9.get("pair_addresses_total", 0)),
-        "p9_status_explicit": p9.get("economic_certification_status") in {"READINESS_CLOSED_NOT_PROFIT_CERTIFIED", "IN_PROGRESS"},
+        "p9_status_explicit": p9_cert.get("economic_certification_status") in {"READINESS_CLOSED_NOT_PROFIT_CERTIFIED", "IN_PROGRESS"},
         "no_live_signing": True,
     }
     residuals = {

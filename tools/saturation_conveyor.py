@@ -118,7 +118,7 @@ def stage_ready(stage):
       'P6':Path('automation/evidence/P6_ROUTE_SNAPSHOT.json'),
       'P7':Path('automation/evidence/P7_STRATEGY_MATRIX.json'),
       'P8':Path('automation/evidence/P8_FEATURE_SNAPSHOT.json'),
-      'P9':Path('automation/evidence/P9_ECONOMIC_SCREEN.json'),
+      'P9':Path('automation/evidence/P9_CLOSURE_STATE.json'),
       'P10':Path('automation/evidence/P10_SATURATION_AUDIT.json'),
       'P11':Path('automation/evidence/P11_CLOSURE_REPORT.json'),
     }

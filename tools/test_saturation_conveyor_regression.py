@@ -19,7 +19,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
 
     def test_stage_promotion_requires_explicit_closed_marker(self):
         self.assertIn("return data.get('stage_gate') == 'CLOSED'", self.source)
-        self.assertNotIn("if stage=='P9': return p.exists()", self.source)
+        self.assertIn("P9_CLOSURE_STATE.json", self.source)
 
     def test_critical_lane_skips_already_closed_tasks_and_runs_two(self):
         source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
