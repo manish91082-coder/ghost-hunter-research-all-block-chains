@@ -14,6 +14,7 @@ EVID = ROOT / "automation" / "evidence"
 CHAIN_ID = 1
 HEAD_TOLERANCE = 2
 BATCH_SIZE = 100
+SINGLE_RPC_PACE_SECONDS = 0.05
 MIN_RPC = 2
 PREFERRED_RPC_IDS = ["1rpc", "blastapi", "drpc"]
 
@@ -210,6 +211,42 @@ def probe_head(endpoint):
             block = None
     return {"endpoint_id": endpoint["id"], "url": endpoint["url"], "result": result, "block": block}
 
+def _code_observation(address, result):
+    body = result.get("body") if isinstance(result, dict) else None
+    code = body.get("result") if isinstance(body, dict) else None
+    error = body.get("error") if isinstance(body, dict) else result.get("error")
+    if isinstance(code, str) and code.startswith("0x"):
+        return {
+            "address": address,
+            "status": result.get("http_status") or result.get("status"),
+            "ok": True,
+            "code_nonempty": code != "0x",
+            "code_hash": hashlib.sha256(code.encode()).hexdigest(),
+        }
+    return {
+        "address": address,
+        "status": result.get("http_status") or result.get("status"),
+        "ok": False,
+        "code_nonempty": False,
+        "code_hash": None,
+        "error": error,
+    }
+
+def _single_get_code(endpoint, addresses, block_tag):
+    observations = []
+    for index, address in enumerate(addresses):
+        if index:
+            time.sleep(SINGLE_RPC_PACE_SECONDS)
+        result = rpc_call(
+            endpoint["url"],
+            "eth_getCode",
+            [address, hex(block_tag)],
+            f"{endpoint['id']}:single:{index}",
+            timeout=20,
+        )
+        observations.append(_code_observation(address, result))
+    return observations
+
 def batch_get_code(endpoint, addresses, block_tag):
     payload = []
     for index, address in enumerate(addresses):
@@ -225,41 +262,28 @@ def batch_get_code(endpoint, addresses, block_tag):
         headers={"Accept": "application/json", "Content-Type": "application/json", "User-Agent": "ghost-hunter-ethereum-p4-runtime/1.0"},
         method="POST",
     )
-    started = time.perf_counter()
     try:
         with urlopen(req, timeout=30) as resp:
             body = json.loads(resp.read())
             if not isinstance(body, list):
-                raise ValueError("batch JSON-RPC response is not a list")
+                # Some public RPCs do not support JSON-RPC batch requests.
+                # Preserve the same block tag and fall back to individual read-only calls.
+                return _single_get_code(endpoint, addresses, block_tag)
             by_id = {item.get("id"): item for item in body if isinstance(item, dict)}
             observations = []
             for index, address in enumerate(addresses):
                 item = by_id.get(f"{endpoint['id']}:{index}", {})
-                code = item.get("result") if isinstance(item, dict) else None
-                if isinstance(code, str) and code.startswith("0x"):
-                    observations.append({
-                        "address": address,
-                        "status": resp.status,
-                        "ok": True,
-                        "code_nonempty": code != "0x",
-                        "code_hash": hashlib.sha256(code.encode()).hexdigest(),
-                    })
-                else:
-                    observations.append({
-                        "address": address,
-                        "status": resp.status,
-                        "ok": False,
-                        "code_nonempty": False,
-                        "code_hash": None,
-                        "error": item.get("error") if isinstance(item, dict) else "missing result",
-                    })
+                code_result = {
+                    "http_status": resp.status,
+                    "status": resp.status,
+                    "body": item,
+                }
+                observations.append(_code_observation(address, code_result))
             return observations
     except HTTPError as exc:
         return [{"address": a, "status": exc.code, "ok": False, "code_nonempty": False, "code_hash": None, "error": f"HTTP {exc.code}: {exc}"} for a in addresses]
     except (URLError, TimeoutError, ValueError, json.JSONDecodeError) as exc:
         return [{"address": a, "status": None, "ok": False, "code_nonempty": False, "code_hash": None, "error": f"{type(exc).__name__}: {exc}"} for a in addresses]
-    finally:
-        _ = started
 
 def classify_token(state):
     if state.get("observations", 0) < MIN_RPC or state.get("successful_observations", 0) < MIN_RPC:
