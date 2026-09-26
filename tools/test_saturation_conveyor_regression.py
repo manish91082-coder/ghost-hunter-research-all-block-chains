@@ -126,10 +126,10 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("P3_CLOSURE_STATE.json", worker)
 
 
-    def test_critical_stage_pauses_shadow_lane(self):
+    def test_p9_keeps_p10_shadow_lane_warm_without_bypass(self):
         source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
-        self.assertIn("warm_shadow", source)
-        self.assertIn("resume-safe and will automatically resume once the critical gate closes", source)
+        self.assertIn('current_critical == "P9"', source)
+        self.assertIn("effective_shadow_limit = args.max_shadow", source)
 
     def test_p4_parallel_rpc_and_larger_batch_are_locked(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
