@@ -1315,11 +1315,6 @@ def task_p5_pairs():
             and baseline_eligibility_fp == eligibility_fp
         ):
             stable_runs = int(stability_state.get("stable_runs", 0) or 0) + 1
-            stage_gate = "CLOSED" if p5_closure_ready(snapshot, {
-                "fingerprint": baseline_fp,
-                "stable_runs": 0,
-                "coverage_complete": True,
-            }) else "OPEN"
         else:
             # Universe changed during recheck. Promote the new fingerprint to
             # the next immutable baseline and require another complete pass.
@@ -1327,13 +1322,11 @@ def task_p5_pairs():
             baseline_eligibility_fp = eligibility_fp
             stability_processed_addresses = set()
             stable_runs = 0
-            stage_gate = "OPEN"
     elif not recheck_mode and coverage_complete:
         if not baseline_fp:
             baseline_fp = universe_fingerprint
             baseline_eligibility_fp = eligibility_fp
         stable_runs = 1
-        stage_gate = "OPEN"
 
     snapshot = {
         "task": "p5_pair_discovery",
@@ -1366,6 +1359,20 @@ def task_p5_pairs():
         },
         "evidence_class": "DISCOVERY",
     }
+
+    if (
+        recheck_mode
+        and coverage_complete
+        and stable_runs >= 1
+        and universe_fingerprint == baseline_fp
+        and baseline_eligibility_fp == eligibility_fp
+    ):
+        stage_gate = "CLOSED" if p5_closure_ready(snapshot, {
+            "fingerprint": baseline_fp,
+            "stable_runs": 0,
+            "coverage_complete": True,
+        }) else "OPEN"
+
     snapshot["stage_gate"] = stage_gate
 
     write_json("P5_CLOSURE_STATE.json", {
