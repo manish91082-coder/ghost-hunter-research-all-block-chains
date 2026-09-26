@@ -14,6 +14,8 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+
+# Canonical static-universe audit trigger
 jobs:
   audit:
     runs-on: ubuntu-latest
