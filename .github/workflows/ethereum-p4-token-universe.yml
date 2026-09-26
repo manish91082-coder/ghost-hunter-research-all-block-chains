@@ -1,0 +1,43 @@
+name: Ethereum P4 Token Universe
+concurrency:
+  group: ethereum-p4-token-universe-main
+  cancel-in-progress: true
+on:
+  push:
+    paths:
+      - "chains/ethereum-mainnet/ethereum_p4_token_universe.py"
+      - "chains/ethereum-mainnet/P4_TOKEN_UNIVERSE_POLICY.json"
+      - "chains/ethereum-mainnet/rpc_pool.txt"
+      - "tools/test_ethereum_p4_token_universe.py"
+      - ".github/workflows/ethereum-p4-token-universe.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  discover-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate
+        run: |
+          set -euo pipefail
+          python -m py_compile chains/ethereum-mainnet/ethereum_p4_token_universe.py
+          python tools/test_ethereum_p4_token_universe.py
+      - name: Run token discovery and verification
+        run: |
+          set -euo pipefail
+          python chains/ethereum-mainnet/ethereum_p4_token_universe.py
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ethereum-p4-token-universe
+          path: |
+            automation/evidence/ETHEREUM_P4_TOKEN_SNAPSHOT.json
+            automation/evidence/ETHEREUM_P4_CLOSURE_STATE.json
+            automation/evidence/ETHEREUM_P4_TOKEN_RECORDS.json
+          if-no-files-found: warn
