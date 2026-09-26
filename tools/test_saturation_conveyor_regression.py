@@ -387,6 +387,31 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("successful_addresses", worker)
         self.assertIn("recheck_mode", worker)
 
+
+    def test_p5_closure_uses_current_snapshot_stability(self):
+        import importlib.util
+        worker_path = ROOT / "tools" / "polygon_universe_worker.py"
+        spec = importlib.util.spec_from_file_location("polygon_universe_worker_p5_gate", worker_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        snapshot = {
+            "coverage_complete": True,
+            "stable_runs": 1,
+            "duplicate_pair_observation_count": 0,
+            "pair_identity_conflict_count": 0,
+            "total_pair_records": 10,
+            "universe_fingerprint": "abc",
+            "checks": {
+                "source_requests_complete": True,
+                "eligible_token_universe_nonempty": True,
+            },
+        }
+        self.assertTrue(module.p5_closure_ready(
+            snapshot,
+            {"fingerprint": "abc", "coverage_complete": True, "stable_runs": 0},
+        ))
+
     def test_p5_closure_requires_complete_stable_pair_universe(self):
         import importlib.util
         worker_path = ROOT / "tools" / "polygon_universe_worker.py"
