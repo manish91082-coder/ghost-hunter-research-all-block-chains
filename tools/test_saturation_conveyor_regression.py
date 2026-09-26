@@ -1016,7 +1016,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
     def test_p10_reads_authoritative_p9_economic_status(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn('p9_econ = load_json(EVID / "P9_ECONOMIC_CERTIFICATION.json", {})', worker)
-        self.assertIn('p9_econ.get("economic_certification_status")', worker)
+        self.assertIn('p9_econ.get("economic_certification_status") in', worker)
         self.assertIn('p9_econ.get("non_evm_pool_refs_total"', worker)
 
 
