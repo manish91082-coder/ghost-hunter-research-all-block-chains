@@ -1,0 +1,128 @@
+name: Polygon Static Saturation Fast
+on:
+  push:
+    paths:
+      - ".github/workflows/polygon-static-saturation-fast.yml"
+      - "tools/polygon_universe_worker.py"
+      - "tools/polygon_static_materializer_fast.py"
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: polygon-static-saturation-fast
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Repair stale P5 persistence and establish independent stability
+        run: |
+          set -euo pipefail
+          if [ ! -s automation/universe/pairs.jsonl ]; then
+            rm -f automation/evidence/P5_CLOSURE_STATE.json automation/evidence/P5_CURSOR.json automation/evidence/P5_STABILITY_STATE.json automation/evidence/P5_PAIR_SNAPSHOT.json
+          fi
+          prev=""
+          stable=0
+          for i in $(seq 1 24); do
+            python tools/polygon_universe_worker.py --task P5
+            python - <<'PY' > /tmp/p5_state
+          import json
+          from pathlib import Path
+          s=json.loads(Path("automation/evidence/P5_PAIR_SNAPSHOT.json").read_text())
+          rows=[json.loads(x) for x in Path("automation/universe/pairs.jsonl").read_text().splitlines() if x.strip()]
+          fp=s.get("universe_fingerprint","")
+          ok=(len(rows)>0 and len(rows)==int(s.get("total_pair_records",0)) and int(s.get("pair_identity_conflict_count",0))==0 and len(s.get("request_errors",[]))==0)
+          print(fp, s.get("rechecked_eligible_count"), s.get("eligible_token_count"), len(rows), "OK" if ok else "OPEN")
+          PY
+            cat /tmp/p5_state
+            read fp rechecked eligible pairs ok < /tmp/p5_state
+            if [ "$ok" = "OK" ] && [ "$rechecked" = "$eligible" ] && [ "$fp" = "$prev" ]; then
+              stable=$((stable+1))
+            else
+              stable=0
+            fi
+            prev="$fp"
+            if [ "$stable" -ge 2 ]; then
+              echo "P5_INDEPENDENT_STABILITY_GREEN"
+              break
+            fi
+            sleep 1
+          done
+          test "$stable" -ge 2
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          s=json.loads(Path("automation/evidence/P5_PAIR_SNAPSHOT.json").read_text())
+          rows=[json.loads(x) for x in Path("automation/universe/pairs.jsonl").read_text().splitlines() if x.strip()]
+          assert len(rows)>0 and len(rows)==int(s["total_pair_records"])
+          ids=[str(x["pairAddress"]).lower() for x in rows]
+          assert len(ids)==len(set(ids))
+          print("PAIR_PERSISTENCE_GREEN",len(rows))
+          PY
+
+      - name: Compute exact bounded route topology twice
+        run: |
+          set -euo pipefail
+          python tools/polygon_universe_worker.py --task P6
+          cp automation/evidence/P6_ROUTE_SNAPSHOT.json /tmp/p6a.json
+          python tools/polygon_universe_worker.py --task P6
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          a=json.loads(Path("/tmp/p6a.json").read_text())
+          b=json.loads(Path("automation/evidence/P6_ROUTE_SNAPSHOT.json").read_text())
+          assert a["unique_pairs"] == b["unique_pairs"]
+          assert a["graph_fingerprint"] == b["graph_fingerprint"]
+          assert a["route_count_total"] == b["route_count_total"]
+          assert b["route_enumeration_complete"] is True
+          assert b["invalid_pair_records"] == 0
+          print("ROUTE_TOPOLOGY_GREEN",b["route_count_total"])
+          PY
+
+      - name: Materialize clean canonical Polygon folder
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/polygon_static_materializer_fast.py
+          python tools/polygon_static_materializer_fast.py
+
+      - name: Validate canonical static layer
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import gzip,json
+          from pathlib import Path
+          p=Path("chains/polygon-pos")
+          m=json.loads((p/"STATIC_SATURATION_MANIFEST.json").read_text())
+          c=m["counts"]
+          assert c["tokens"]>0 and c["pairs"]>0 and c["pairs"]==c["pools"],c
+          assert c["routes"]>0 and c["route_sample"]>0,c
+          assert c["strategies"]==18,c
+          assert c["economic_candidate_groups"]==420,c
+          assert c["exact_profit_certified"]==0,c
+          for fn in ["MASTER_INDEX.json","TOKEN_UNIVERSE.jsonl","PAIR_UNIVERSE.jsonl","POOL_UNIVERSE.jsonl","DEX_UNIVERSE.json","PROTOCOL_UNIVERSE.json","STATIC_CONTRACT_UNIVERSE.json","FLASH_LIQUIDITY_UNIVERSE.json","ROUTE_RULES.json","ROUTE_SAMPLE_5000.jsonl.gz","STRATEGY_UNIVERSE.json","FEATURE_SCHEMA.json","ECONOMIC_FRONTIER.json","UNKNOWN_NEGATIVE_SPACE.json","STATIC_EVIDENCE_MANIFEST.json","STATIC_SATURATION_MANIFEST.json"]:
+              assert (p/fn).exists(),fn
+          print("POLYGON_STATIC_FAST_GREEN")
+          print(json.dumps(c,sort_keys=True))
+          PY
+
+      - name: Commit canonical static layer
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git rebase origin/main
+          git config user.name "ghost-hunter-static-bot"
+          git config user.email "ghost-hunter-static-bot@users.noreply.github.com"
+          git add -A chains/polygon-pos automation/universe automation/evidence/P5_PAIR_SNAPSHOT.json automation/evidence/P5_CLOSURE_STATE.json automation/evidence/P5_CURSOR.json automation/evidence/P5_STABILITY_STATE.json automation/evidence/P6_ROUTE_SNAPSHOT.json automation/evidence/P6_CLOSURE_STATE.json
+          if git diff --cached --quiet; then
+            echo "NO_CHANGES"
+          else
+            git commit -m "feat: persist Polygon static hunting universe"
+            git push origin HEAD:main
+          fi
