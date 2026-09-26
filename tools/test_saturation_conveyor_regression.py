@@ -142,6 +142,13 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("except ValueError:", worker)
         self.assertIn("rows = _p4_rpc_single_calls(pool, endpoint_id, calls, timeout=30)", worker)
 
+    def test_p4_identity_fingerprint_excludes_dynamic_total_supply(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn('semantic_fingerprints = {(x["code_hash"], x["decimals"]) for x in observations}', worker)
+        self.assertIn('"semantic_fingerprint_fields": ["code_hash", "decimals"]', worker)
+        self.assertIn('"dynamic_state_note": "totalSupply is dynamic state and is not an identity conflict"', worker)
+        self.assertIn('"total_supply_equal": len(total_supply_values) <= 1', worker)
+
     def test_p4_has_adaptive_429_chunk_backoff(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn("class P4RateLimitedError", worker)

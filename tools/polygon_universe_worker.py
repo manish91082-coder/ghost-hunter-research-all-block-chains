@@ -789,16 +789,20 @@ def _p4_rpc_token_verification(candidates, verification_state):
                 "total_supply": row["total_supply"].lower(),
             })
 
-        fingerprints = {(x["code_hash"], x["decimals"], x["total_supply"]) for x in observations}
-        matching = len(observations) >= 2 and len(fingerprints) == 1
-        conflict = len(observations) >= 2 and len(fingerprints) > 1
+        semantic_fingerprints = {(x["code_hash"], x["decimals"]) for x in observations}
+        total_supply_values = {x["total_supply"] for x in observations}
+        matching = len(observations) >= 2 and len(semantic_fingerprints) == 1
+        conflict = len(observations) >= 2 and len(semantic_fingerprints) > 1
 
         verification_state[address] = {
             "chain_id": 137 if chain_ok else None,
             "rpc_endpoints": [x["rpc"] for x in observations],
             "observations": observations,
+            "semantic_fingerprint_fields": ["code_hash", "decimals"],
             "matching": matching,
             "conflict": conflict,
+            "total_supply_equal": len(total_supply_values) <= 1,
+            "dynamic_state_note": "totalSupply is dynamic state and is not an identity conflict",
             "last_verified_at": now(),
             "transport": "json_rpc_batch",
         }
