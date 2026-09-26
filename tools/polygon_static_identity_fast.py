@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import hashlib,json,re,time
+import hashlib,json,re,time,os
 from concurrent.futures import ThreadPoolExecutor,as_completed
 from pathlib import Path
 from urllib.request import Request,urlopen
@@ -11,9 +11,9 @@ PAIR_FILE=P/"PAIR_UNIVERSE.jsonl"
 POOL_FILE=P/"POOL_UNIVERSE.jsonl"
 DEX_FILE=P/"DEX_UNIVERSE.json"
 RPC_FILE=P/"rpc_pool.txt"
-TOKEN_CHUNK=25
-PAIR_CHUNK=30
-CROSS_PAIR_CHUNK=20
+TOKEN_CHUNK=10
+PAIR_CHUNK=10
+CROSS_PAIR_CHUNK=10
 CROSS_TOKEN_CHUNK=20
 TIMEOUT=25
 GLOBAL_ENDPOINTS=[]
@@ -32,7 +32,10 @@ def rpcs():
     return out
 def rpc(url,calls):
     payload=[{"jsonrpc":"2.0","id":i,"method":m,"params":p} for i,(m,p) in enumerate(calls)]
-    req=Request(url,data=json.dumps(payload).encode(),headers={"Content-Type":"application/json"},method="POST")
+    headers={"Content-Type":"application/json","User-Agent":"ghost-hunter-static/1.0"}
+    if "tatum.io" in url and os.environ.get("TATUM_API_KEY"):
+        headers["X-API-Key"]=os.environ["TATUM_API_KEY"]
+    req=Request(url,data=json.dumps(payload).encode(),headers=headers,method="POST")
     with urlopen(req,timeout=TIMEOUT) as res: body=json.loads(res.read())
     if isinstance(body,list): return {int(x["id"]):x for x in body if isinstance(x,dict) and isinstance(x.get("id"),int)}
     if len(calls)==1 and isinstance(body,dict): return {0:body}
@@ -82,7 +85,7 @@ def select(tokens,pairs):
     capable=[x for x in probes if x.get("chain_ok") and x.get("token_code_ok") and x.get("pair_code_ok")]
     if len(capable)<3:
         raise SystemExit("NEED_3_SEMANTIC_RPC "+json.dumps(probes,sort_keys=True))
-    return capable[:3],probes
+    return capable[:4],probes
 
 def run_token_batch(url,chunk):
     calls=[];meta=[]
@@ -135,7 +138,6 @@ def main():
             "rpc_endpoint": next((e["name"] for e in endpoints),None),
             "code_sha256":code_sha(o.get("code")),
             "code_bytes":(len(o.get("code",""))-2)//2 if code_ok(o.get("code")) else None,
-            "decimals":uint(o.get("decimals")),
             "error":o.get("_error")
         }
 
