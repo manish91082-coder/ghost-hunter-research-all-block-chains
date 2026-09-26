@@ -1,0 +1,12 @@
+{
+  "candidate_count": 420,
+  "exactly_certified_count": 0,
+  "fingerprint": "24a3079d43740aff45882de823f58ce3e9cbae3aa71787afec541a13ce841243",
+  "ledger_complete": true,
+  "non_evm_pool_refs_total": 112,
+  "pair_addresses_total": 1233,
+  "processed_pairs_count": 1233,
+  "stable_runs": 3,
+  "stage_gate": "CLOSED",
+  "updated_at": "2026-09-26T14:53:59Z"
+}

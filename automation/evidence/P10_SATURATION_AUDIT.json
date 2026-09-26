@@ -1,38 +1,49 @@
 {
-  "evidence_class": "AUDIT",
-  "evidence_files": {
-    "P10_SATURATION_AUDIT.json": 972,
-    "P2_CONTROL_FUNCTION_LATEST.json": 27448,
-    "P2_DERIVED_LATEST.json": 1994,
-    "P2_PROVENANCE_LATEST.json": 85714,
-    "P2_PROVENANCE_REPLAY.json": 85714,
-    "P3_CLOSURE_STATE.json": 174,
-    "P3_PROTOCOL_SNAPSHOT.json": 1330,
-    "P4_CLOSURE_STATE.json": 268,
-    "P4_TOKEN_SNAPSHOT.json": 3024,
-    "P4_VERIFICATION_STATE.json": 22246,
-    "P5_CLOSURE_STATE.json": 335,
-    "P5_CURSOR.json": 23047,
-    "P5_PAIR_SNAPSHOT.json": 1053,
-    "P5_STABILITY_STATE.json": 21353,
-    "P6_CLOSURE_STATE.json": 288,
-    "P6_ROUTE_SNAPSHOT.json": 2457195,
-    "P7_CLOSURE_STATE.json": 256,
-    "P7_STRATEGY_MATRIX.json": 39647,
-    "P8_CLOSURE_STATE.json": 256,
-    "P8_FEATURE_SNAPSHOT.json": 4873419,
-    "P9_ECONOMIC_SCREEN.json": 130337
-  },
-  "open_reason": [
-    "P2 live control/provenance gates pending",
-    "P3-P6 are incremental discovery snapshots",
-    "P9 exact simulation not complete"
+  "audit_domains": [
+    "independent_source_reconciliation",
+    "address_census_reconciliation",
+    "pair_pool_census_reconciliation",
+    "strategy_coverage",
+    "unknown_negative_space_audit",
+    "stale_data_audit",
+    "economic_viability_audit",
+    "security_audit",
+    "reproducibility_audit"
   ],
-  "stage_gate": "OPEN",
-  "task": "p10_saturation_audit",
-  "time": "2026-09-26T09:03:51Z",
-  "universe_counts": {
+  "checks": {
+    "no_live_signing": true,
+    "p2_closed": true,
+    "p3_closed": true,
+    "p4_closed": true,
+    "p5_closed": true,
+    "p6_closed": true,
+    "p7_closed": true,
+    "p8_closed": true,
+    "p9_capability_complete": true,
+    "p9_readiness_closed": true,
+    "p9_status_explicit": true
+  },
+  "counts": {
+    "p6_routes": 617622,
+    "p7_strategies": 18,
+    "p8_pair_groups": 1891,
+    "p9_candidate_groups": 420,
+    "p9_exact_certified": 0,
+    "p9_pair_addresses": 1233,
+    "p9_processed_pair_addresses": 1233,
     "pairs": 2821,
     "tokens": 469
-  }
+  },
+  "economic_boundary": "P9 capability readiness does not equal profit certification; exact economics remain explicitly quantified residual work.",
+  "evidence_class": "SATURATION_AUDIT",
+  "polygon_universe_status": "CENSUS_COMPLETE_FOR_AUDIT",
+  "residuals": {
+    "economic_adapter_work": 420,
+    "exact_profit_certification": true,
+    "non_evm_adapter_required": 112
+  },
+  "schema": "p10-polygon-saturation-audit-v2",
+  "stage_gate": "CLOSED",
+  "task": "p10_saturation_audit",
+  "time": "2026-09-26T14:53:59Z"
 }
