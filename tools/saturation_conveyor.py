@@ -275,7 +275,19 @@ def main():
     shadow_run=0
     shadow_cursor=int(state.get('cursors',{}).get('shadow',0))
     attempts=0
-    while attempts < len(SHADOW) and shadow_run < args.max_shadow and time.time()-started <= args.time_budget:
+
+    # Critical-stage acceleration mode: while an active promotion gate is open,
+    # spend the bounded execution budget on the critical stage only. Shadow work
+    # is resume-safe and will automatically resume once the critical gate closes.
+    current_critical = state.get('critical_stage')
+    critical_open = (
+        state.get('research_gate') == 'P2_CLOSED'
+        and current_critical in PROMOTION
+        and not stage_ready(current_critical)
+    )
+    effective_shadow_limit = 0 if critical_open else args.max_shadow
+
+    while attempts < len(SHADOW) and shadow_run < effective_shadow_limit and time.time()-started <= args.time_budget:
         task=SHADOW[shadow_cursor % len(SHADOW)]
         shadow_cursor=(shadow_cursor+1) % len(SHADOW)
         task=shadow_dependency_override(task)
