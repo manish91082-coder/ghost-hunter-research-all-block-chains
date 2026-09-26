@@ -1010,8 +1010,10 @@ def task_p4_tokens():
 
 P5_PAIR_BATCH_SIZE = 120
 P5_PAIR_WORKERS = 12
+P5_STABILITY_WORKERS = 4
 P5_CURSOR_STATE = EVID / "P5_CURSOR.json"
 P5_STABILITY_RECHECK = True
+P5_REQUEST_RETRIES = 3
 
 
 def p5_token_eligible(row):
@@ -1070,27 +1072,38 @@ def task_p5_pairs():
         for x in cursor_payload.get("processed_addresses", [])
         if isinstance(x, str)
     }
-    previous_eligibility_fp = cursor_payload.get("eligibility_fingerprint")
+    stability_processed_addresses = {
+        str(x).lower()
+        for x in cursor_payload.get("stability_processed_addresses", [])
+        if isinstance(x, str)
+    }
+
     eligibility_addresses = [str(row.get("address", "")).lower() for row in eligible]
     eligibility_fp = sha(eligibility_addresses)
-
-    # New eligible tokens are merged into the universe without losing progress
-    # already made on older addresses. The processed-address set is therefore
-    # safer than an integer cursor when discovery expands mid-run.
-    if previous_eligibility_fp and previous_eligibility_fp == eligibility_fp:
-        pass
 
     previous_closure = load_json(EVID / "P5_CLOSURE_STATE.json", {})
     previous_complete = bool(previous_closure.get("coverage_complete"))
     recheck_mode = bool(P5_STABILITY_RECHECK and previous_complete)
 
+    # A completed recheck belongs to exactly one fingerprint. If the eligible
+    # token universe changes, discard the old recheck cursor and start the
+    # stability pass again from the beginning.
+    previous_recheck_fp = cursor_payload.get("stability_eligibility_fingerprint")
+    if not recheck_mode or previous_recheck_fp != eligibility_fp:
+        stability_processed_addresses = set()
+
     if recheck_mode:
-        batch = eligible[:]
+        batch = [
+            row for row in eligible
+            if str(row.get("address", "")).lower() not in stability_processed_addresses
+        ][:P5_PAIR_BATCH_SIZE]
+        worker_limit = P5_STABILITY_WORKERS
     else:
         batch = [
             row for row in eligible
             if str(row.get("address", "")).lower() not in processed_addresses
         ][:P5_PAIR_BATCH_SIZE]
+        worker_limit = P5_PAIR_WORKERS
 
     pair_results = []
     request_errors = []
@@ -1098,19 +1111,47 @@ def task_p5_pairs():
     def fetch_pairs(row):
         address = str(row.get("address", "")).lower()
         started = time.monotonic()
-        st, pairs, err = http_json(
-            f"https://api.dexscreener.com/token-pairs/v1/polygon/{address}",
-            timeout=20,
-        )
+        last_error = None
+
+        for attempt in range(1, P5_REQUEST_RETRIES + 1):
+            st, pairs, err = http_json(
+                f"https://api.dexscreener.com/token-pairs/v1/polygon/{address}",
+                timeout=20,
+            )
+            last_error = err
+            if st == 200 and isinstance(pairs, list):
+                return {
+                    "address": address,
+                    "status": st,
+                    "pairs": pairs,
+                    "error": None,
+                    "attempts": attempt,
+                    "elapsed_sec": round(time.monotonic() - started, 3),
+                }
+
+            if err and "429" in str(err) and attempt < P5_REQUEST_RETRIES:
+                time.sleep(min(8, 2 ** attempt))
+                continue
+
+            return {
+                "address": address,
+                "status": st,
+                "pairs": pairs,
+                "error": last_error,
+                "attempts": attempt,
+                "elapsed_sec": round(time.monotonic() - started, 3),
+            }
+
         return {
             "address": address,
-            "status": st,
-            "pairs": pairs,
-            "error": err,
+            "status": None,
+            "pairs": None,
+            "error": last_error,
+            "attempts": P5_REQUEST_RETRIES,
             "elapsed_sec": round(time.monotonic() - started, 3),
         }
 
-    with ThreadPoolExecutor(max_workers=min(P5_PAIR_WORKERS, max(1, len(batch)))) as executor:
+    with ThreadPoolExecutor(max_workers=min(worker_limit, max(1, len(batch)))) as executor:
         futures = [executor.submit(fetch_pairs, row) for row in batch]
         for future in as_completed(futures):
             result = future.result()
@@ -1120,6 +1161,7 @@ def task_p5_pairs():
                     "address": result.get("address"),
                     "status": result.get("status"),
                     "error": result.get("error"),
+                    "attempts": result.get("attempts"),
                 })
 
     rows = []
@@ -1192,22 +1234,39 @@ def task_p5_pairs():
     )
 
     new_unique_tokens = max(0, len(tokens_by_address) - tokens_before)
-    processed_addresses.update(successful_addresses)
+    if recheck_mode:
+        stability_processed_addresses.update(successful_addresses)
+    else:
+        processed_addresses.update(successful_addresses)
 
     eligible_after_merge = sorted(
         [row for row in tokens_by_address.values() if p5_token_eligible(row)],
         key=lambda row: str(row.get("address", "")).lower(),
     )
+
     processed_eligible_count = sum(
         1 for row in eligible_after_merge
         if str(row.get("address", "")).lower() in processed_addresses
     )
-    coverage_complete = (
-        len(eligible_after_merge) > 0
-        and processed_eligible_count == len(eligible_after_merge)
-        and len(request_errors) == 0
-        and new_unique_tokens == 0
+    rechecked_eligible_count = sum(
+        1 for row in eligible_after_merge
+        if str(row.get("address", "")).lower() in stability_processed_addresses
     )
+
+    if recheck_mode:
+        coverage_complete = (
+            len(eligible_after_merge) > 0
+            and rechecked_eligible_count == len(eligible_after_merge)
+            and len(request_errors) == 0
+            and new_unique_tokens == 0
+        )
+    else:
+        coverage_complete = (
+            len(eligible_after_merge) > 0
+            and processed_eligible_count == len(eligible_after_merge)
+            and len(request_errors) == 0
+            and new_unique_tokens == 0
+        )
 
     universe_fingerprint = sha({
         "eligible_tokens": [str(row.get("address", "")).lower() for row in eligible_after_merge],
@@ -1231,6 +1290,7 @@ def task_p5_pairs():
         "time": now(),
         "processed_tokens": len(batch),
         "processed_eligible_count": processed_eligible_count,
+        "rechecked_eligible_count": rechecked_eligible_count,
         "eligible_token_count": len(eligible_after_merge),
         "observed_pair_rows": len(rows),
         "new_unique_pairs": max(0, len(merged_pairs) - before_pairs),
@@ -1242,12 +1302,13 @@ def task_p5_pairs():
         "stable_runs": stable_runs,
         "universe_fingerprint": universe_fingerprint,
         "request_errors": request_errors[-50:],
-        "pair_workers": P5_PAIR_WORKERS,
+        "pair_workers": worker_limit,
         "pair_batch_size": P5_PAIR_BATCH_SIZE,
         "recheck_mode": recheck_mode,
+        "stability_eligibility_fingerprint": eligibility_fp,
         "checks": {
-            "source_requests_complete": (len(batch) == 0 and recheck_mode) or (
-                len(batch) > 0 and len(request_errors) == 0
+            "source_requests_complete": (len(batch) > 0 and len(request_errors) == 0) or (
+                len(batch) == 0 and recheck_mode and coverage_complete
             ),
             "eligible_token_universe_nonempty": len(eligible_after_merge) > 0,
         },
@@ -1268,12 +1329,15 @@ def task_p5_pairs():
         "coverage_complete": coverage_complete,
         "eligible_token_count": len(eligible_after_merge),
         "processed_eligible_count": processed_eligible_count,
+        "rechecked_eligible_count": rechecked_eligible_count,
         "total_pair_records": len(merged_pairs),
     })
     write_json("P5_CURSOR.json", {
         "processed_addresses": sorted(processed_addresses),
+        "stability_processed_addresses": sorted(stability_processed_addresses),
         "total_eligible_tokens": len(eligible_after_merge),
         "eligibility_fingerprint": eligibility_fp,
+        "stability_eligibility_fingerprint": eligibility_fp,
         "last_coverage_complete": coverage_complete,
     })
     return write_json("P5_PAIR_SNAPSHOT.json", snapshot)
