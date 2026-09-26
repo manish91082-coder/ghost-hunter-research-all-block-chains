@@ -63,6 +63,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
                 "defillama_protocols_ok": True,
                 "geckoterminal_dexes_ok": True,
             },
+            "stable_runs": 1,
             "polygon_protocol_count": 10,
             "polygon_dex_protocol_count": 4,
             "geckoterminal_dex_count": 5,
