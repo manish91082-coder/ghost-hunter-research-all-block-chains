@@ -422,6 +422,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
 
         snapshot = {
             "coverage_complete": True,
+            "stable_runs": 1,
             "duplicate_pair_count": 0,
             "total_pair_records": 10,
             "universe_fingerprint": "abc",
@@ -603,7 +604,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
         self.assertIn('"P3":"p3-multisource-closure-v1"', source)
         self.assertIn('"P4":"p4-parallel-endpoint-discovery-v3"', source)
-        self.assertIn('"P5":"p5-closure-stability-v3"', source)
+        self.assertIn('"P5":"p5-closure-contract-v4"', source)
         self.assertIn("or (revision and ts.get('revision') != revision)", source)
         self.assertIn("ts['revision']=revision", source)
 
