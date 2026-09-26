@@ -543,3 +543,9 @@ P7 closure certifies strategy-family coverage and matrix schema completeness, no
 - Added `.github/workflows/ethereum-p2-bootstrap.yml`; push/manual execution is observational and artifact-producing only.
 - This is an Ethereum P2 infrastructure sub-gate. It does not close Ethereum P2, P3-P11, certify pools/routes, or certify profitability.
 - Next verification rule: inspect the exact new main HEAD Actions run and its raw evidence artifact before any promotion.
+## 2026-09-26 — Polygon post-closure saturation v2
+- Historical Polygon P11 seal remains READY.
+- Added canonical v2 saturation boundary, pool-identity model, opportunity-surface manifest, dynamic-state model and explicit route policy.
+- Added sealed-universe rehydration from successful conveyor Run 36250240579 / Artifact 10908519045.
+- Added independent post-closure audit workflow. It is the sole authority for the Polygon research-universe GREEN signal.
+- Exact profit certification remains distinct from census saturation: historical P9 count remains 0/420.
