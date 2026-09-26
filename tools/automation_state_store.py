@@ -19,22 +19,23 @@ def safe_member(path: Path) -> bool:
 def latest_completed_run(repo: str):
     import json
     completed = []
-    for workflow in ("saturation-conveyor.yml", "p4-rpc-fanout.yml"):
-        cmd = [
-            "gh", "run", "list",
-            "--repo", repo,
-            "--workflow", workflow,
-            "--limit", "30",
-            "--json", "databaseId,status,conclusion,createdAt",
-        ]
-        p = run(cmd)
-        if p.returncode != 0:
-            raise RuntimeError(f"gh run list failed for {workflow}: {p.stderr.strip()}")
-        rows = json.loads(p.stdout or "[]")
-        completed.extend(
+    workflow = "saturation-conveyor.yml"
+    cmd = [
+        "gh", "run", "list",
+        "--repo", repo,
+        "--workflow", workflow,
+        "--limit", "30",
+        "--json", "databaseId,status,conclusion,createdAt",
+    ]
+    p = run(cmd)
+    if p.returncode != 0:
+        raise RuntimeError(f"gh run list failed for {workflow}: {p.stderr.strip()}")
+    rows = json.loads(p.stdout or "[]")
+    completed.extend(
         r for r in rows
         if r.get("status") == "completed" and r.get("conclusion") == "success"
     )
+
     completed.sort(key=lambda r: r.get("createdAt", ""), reverse=True)
     return completed[0] if completed else None
 

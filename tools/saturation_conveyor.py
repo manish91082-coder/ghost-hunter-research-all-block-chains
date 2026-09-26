@@ -285,7 +285,7 @@ def main():
         and current_critical in PROMOTION
         and not stage_ready(current_critical)
     )
-    effective_shadow_limit = 0 if critical_open else args.max_shadow
+    # Keep P10 audit preparation warm while P9 remains critical; promotion order remains fail-closed.\n    effective_shadow_limit = args.max_shadow if (not critical_open or current_critical == "P9") else 0
 
     while attempts < len(SHADOW) and shadow_run < effective_shadow_limit and time.time()-started <= args.time_budget:
         task=SHADOW[shadow_cursor % len(SHADOW)]

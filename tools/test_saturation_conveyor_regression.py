@@ -983,5 +983,21 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("ARTIFACT_RESTORE_FALLBACK=", source)
 
 
+
+
+
+    def test_restore_uses_saturation_workflow_only(self):
+        source = (ROOT / "tools" / "automation_state_store.py").read_text(encoding="utf-8")
+        self.assertIn('workflow = "saturation-conveyor.yml"', source)
+        self.assertNotIn('"p4-rpc-fanout.yml"', source)
+
+
+    def test_stale_runs_are_cancelled_and_p10_shadow_warms_during_p9(self):
+        workflow = (ROOT / ".github" / "workflows" / "saturation-conveyor.yml").read_text(encoding="utf-8")
+        conveyor = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
+        self.assertIn("cancel-in-progress: true", workflow)
+        self.assertIn('current_critical == "P9"', conveyor)
+
+
 if __name__ == "__main__":
     unittest.main()
