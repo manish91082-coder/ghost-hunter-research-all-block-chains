@@ -998,6 +998,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         conveyor = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
         self.assertIn("cancel-in-progress: true", workflow)
         self.assertIn('current_critical == "P9"', conveyor)
+        self.assertIn('shadow_plan = ["P10"] if current_critical == "P9" else SHADOW', conveyor)
 
 
 if __name__ == "__main__":

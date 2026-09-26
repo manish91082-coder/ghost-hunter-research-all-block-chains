@@ -285,10 +285,12 @@ def main():
         and current_critical in PROMOTION
         and not stage_ready(current_critical)
     )
-    # Keep P10 audit preparation warm while P9 remains critical; promotion order remains fail-closed.\n    effective_shadow_limit = args.max_shadow if (not critical_open or current_critical == "P9") else 0
+    # Keep P10 audit preparation warm while P9 remains critical; promotion order remains fail-closed.
+    effective_shadow_limit = args.max_shadow if (not critical_open or current_critical == "P9") else 0
+    shadow_plan = ["P10"] if current_critical == "P9" else SHADOW
 
-    while attempts < len(SHADOW) and shadow_run < effective_shadow_limit and time.time()-started <= args.time_budget:
-        task=SHADOW[shadow_cursor % len(SHADOW)]
+    while attempts < len(shadow_plan) and shadow_run < effective_shadow_limit and time.time()-started <= args.time_budget:
+        task=shadow_plan[shadow_cursor % len(shadow_plan)]
         shadow_cursor=(shadow_cursor+1) % len(SHADOW)
         task=shadow_dependency_override(task)
         attempts += 1
