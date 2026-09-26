@@ -869,5 +869,52 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn('p6.get("graph_fingerprint") or p6.get("fingerprint")', worker)
 
 
+
+
+
+    def test_p9_economic_schema_is_exact_and_fail_closed(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn('P9_SCHEMA_VERSION = "p9-economic-certification-v2"', worker)
+        for field in [
+            '"exact_state_replay"', '"math_family"', '"exact_fee"', '"gas_cost"',
+            '"flash_premium"', '"slippage"', '"transfer_tax"', '"failure_cost"',
+            '"competition"', '"minimum_profit"', '"sensitivity"', '"realized_simulation_error"',
+        ]:
+            self.assertIn(field, worker)
+        self.assertIn('stage_gate', worker)
+        self.assertIn('EXACT_CERTIFIED', worker)
+
+
+    def test_p9_closure_requires_complete_exact_certification(self):
+        import importlib.util
+        worker_path = ROOT / "tools" / "polygon_universe_worker.py"
+        spec = importlib.util.spec_from_file_location("polygon_universe_worker_p9_gate", worker_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        snapshot = {
+            "checks": {
+                "p8_feature_source_closed": True,
+                "candidate_universe_complete": True,
+                "all_capability_batches_complete": True,
+                "all_candidates_have_explicit_certification_status": True,
+            },
+            "exactly_certified_count": 10,
+            "uncertified_count": 0,
+            "economic_fingerprint": "abc",
+            "stable_runs": 1,
+        }
+        self.assertFalse(module.p9_economic_closure_ready(
+            snapshot, {"fingerprint": "abc", "ledger_complete": False}
+        ))
+        self.assertTrue(module.p9_economic_closure_ready(
+            snapshot, {"fingerprint": "abc", "ledger_complete": True}
+        ))
+
+
+    def test_p9_revision_resets_stale_cooldown(self):
+        source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
+        self.assertIn('"P9":"p9-economic-certification-v2"', source)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -2101,10 +2101,295 @@ def task_p8_features():
     })
     return write_json("P8_FEATURE_SNAPSHOT.json", snapshot)
 
+P9_SCHEMA_VERSION = "p9-economic-certification-v2"
+P9_CANDIDATE_BATCH_GROUPS = 40
+P9_PROBE_CHUNK_PAIRS = 10
+P9_REQUIRED_CERT_FIELDS = [
+    "exact_state_replay",
+    "math_family",
+    "exact_fee",
+    "gas_cost",
+    "flash_premium",
+    "slippage",
+    "transfer_tax",
+    "failure_cost",
+    "competition",
+    "minimum_profit",
+    "sensitivity",
+    "realized_simulation_error",
+]
+P9_CLOSURE_STATE = EVID / "P9_CLOSURE_STATE.json"
+P9_PROGRESS_STATE = EVID / "P9_CAPABILITY_STATE.json"
+
+def _p9_candidate_rows():
+    p8 = load_json(EVID / "P8_FEATURE_SNAPSHOT.json", {})
+    rows = []
+    for feature in p8.get("features", []):
+        f = feature.get("features", {})
+        spread_obj = f.get("spread", {})
+        spread = spread_obj.get("price_spread")
+        venues = feature.get("venues", [])
+        prices = [
+            v.get("price_usd")
+            for v in venues
+            if isinstance(v.get("price_usd"), (int, float)) and v.get("price_usd") > 0
+        ]
+        if len(venues) < 2 or len(prices) < 2 or spread is None:
+            continue
+        rows.append({
+            "pair_key": feature.get("pair_key"),
+            "venue_count": len(venues),
+            "gross_spread_pct": round(float(spread) * 100.0, 8),
+            "venues": venues,
+        })
+    rows.sort(key=lambda row: (-row["gross_spread_pct"], row["pair_key"] or ""))
+    return rows
+
+def _p9_load_rpc():
+    import sys
+    sys.path.insert(0, str((ROOT / "chains" / "polygon-pos").resolve()))
+    from polygon_readonly_verifier import RpcPool, load_rpc_endpoints
+    endpoints = load_rpc_endpoints(None, str(RPC_POOL))
+    return RpcPool(endpoints, 1.0)
+
+def _p9_select_endpoints(pool):
+    chain_ok, diagnostics = _p4_discover_chain_endpoints(pool, max_endpoints=18)
+    if not chain_ok:
+        return [], diagnostics
+    probe_addresses = []
+    seeds = [row.get("venues", [{}])[0].get("pair") for row in _p9_candidate_rows()[:1]]
+    for address in seeds:
+        if isinstance(address, str) and len(address) == 42:
+            probe_addresses.append(address)
+    selected, capability = _p4_select_capable_endpoints(pool, chain_ok, probe_addresses, max_endpoints=2)
+    return selected, {"chain": diagnostics, "capability": capability}
+
+def _p9_capability_calls(address):
+    return [
+        (f"p9:{address}:code", "eth_getCode", [address, "latest"]),
+        (f"p9:{address}:token0", "eth_call", [{"to": address, "data": "0x0dfe1681"}, "latest"]),
+        (f"p9:{address}:token1", "eth_call", [{"to": address, "data": "0xd21220a7"}, "latest"]),
+        (f"p9:{address}:reserves", "eth_call", [{"to": address, "data": "0x0902f1ac"}, "latest"]),
+        (f"p9:{address}:slot0", "eth_call", [{"to": address, "data": "0x3850c7bd"}, "latest"]),
+        (f"p9:{address}:fee", "eth_call", [{"to": address, "data": "0xddca3f43"}, "latest"]),
+        (f"p9:{address}:liquidity", "eth_call", [{"to": address, "data": "0x1a686502"}, "latest"),
+    ]
+
+def _p9_surface_from_rows(address, rows):
+    code = rows.get(f"p9:{address}:code", {}).get("result")
+    token0 = rows.get(f"p9:{address}:token0", {}).get("result")
+    token1 = rows.get(f"p9:{address}:token1", {}).get("result")
+    reserves = rows.get(f"p9:{address}:reserves", {}).get("result")
+    slot0 = rows.get(f"p9:{address}:slot0", {}).get("result")
+    fee = rows.get(f"p9:{address}:fee", {}).get("result")
+    liquidity = rows.get(f"p9:{address}:liquidity", {}).get("result")
+    return {
+        "pair": address,
+        "code_present": isinstance(code, str) and code not in {"0x", ""},
+        "token_surface": isinstance(token0, str) and isinstance(token1, str) and len(token0) >= 66 and len(token1) >= 66,
+        "constant_product_surface": isinstance(reserves, str) and len(reserves) >= 194,
+        "cl_surface": isinstance(slot0, str) and len(slot0) >= 130,
+        "fee_surface": isinstance(fee, str) and len(fee) >= 66,
+        "liquidity_surface": isinstance(liquidity, str) and len(liquidity) >= 66,
+        "raw_hashes": {
+            "code": sha(code) if code else None,
+            "token0": sha(token0) if token0 else None,
+            "token1": sha(token1) if token1 else None,
+            "reserves": sha(reserves) if reserves else None,
+            "slot0": sha(slot0) if slot0 else None,
+            "fee": sha(fee) if fee else None,
+            "liquidity": sha(liquidity) if liquidity else None,
+        },
+    }
+
+def _p9_probe_pairs(pool, endpoint_ids, pair_addresses):
+    results = {address: [] for address in pair_addresses}
+    for endpoint_id in endpoint_ids:
+        for start in range(0, len(pair_addresses), P9_PROBE_CHUNK_PAIRS):
+            chunk = pair_addresses[start:start + P9_PROBE_CHUNK_PAIRS]
+            calls = []
+            for address in chunk:
+                calls.extend(_p9_capability_calls(address))
+            try:
+                _, rows = _p4_rpc_batch_endpoint(pool, endpoint_id, calls, timeout=30)
+            except Exception:
+                rows = _p4_rpc_single_calls(pool, endpoint_id, calls, timeout=30)
+            for address in chunk:
+                results[address].append({
+                    "endpoint": endpoint_id,
+                    "surface": _p9_surface_from_rows(address, rows),
+                })
+    return results
+
+def _p9_exact_requirements(surface_rows):
+    if not surface_rows:
+        return {
+            "status": "BLOCKED_NO_RPC_OBSERVATION",
+            "blockers": ["no independent RPC capability observation"],
+        }
+    all_same = True
+    for key in ("code_present", "token_surface", "constant_product_surface", "cl_surface", "fee_surface", "liquidity_surface"):
+        vals = {bool(row["surface"].get(key)) for row in surface_rows}
+        all_same = all_same and len(vals) == 1
+    if not all_same:
+        return {
+            "status": "BLOCKED_RPC_DISAGREEMENT",
+            "blockers": ["independent RPC surface disagreement"],
+        }
+    surface = surface_rows[0]["surface"]
+    blockers = []
+    if not surface["code_present"]:
+        blockers.append("pair contract code unavailable")
+    if not surface["token_surface"]:
+        blockers.append("token0/token1 state unavailable")
+    if not (surface["constant_product_surface"] or surface["cl_surface"]):
+        blockers.append("no recognized constant-product or concentrated-liquidity state surface")
+    if not surface["fee_surface"]:
+        blockers.append("exact fee surface unavailable")
+    blockers.extend([
+        "venue/router exact swap path not yet bound",
+        "exact gas/estimateGas evidence not yet bound to executable call",
+        "competition/ordering model not yet certified",
+        "profit threshold sensitivity not yet certified",
+    ])
+    return {
+        "status": "EXACT_MATH_READY_PENDING_ADAPTER" if not blockers[:1] else "BLOCKED_MISSING_EXACT_INPUTS",
+        "blockers": blockers,
+        "surfaces": surface,
+    }
+
+def p9_economic_closure_ready(snapshot, previous_state):
+    checks = snapshot.get("checks", {})
+    return (
+        checks.get("p8_feature_source_closed") is True
+        and checks.get("candidate_universe_complete") is True
+        and checks.get("all_capability_batches_complete") is True
+        and checks.get("all_candidates_have_explicit_certification_status") is True
+        and int(snapshot.get("exactly_certified_count", 0)) > 0
+        and int(snapshot.get("uncertified_count", 0)) == 0
+        and snapshot.get("economic_fingerprint")
+        and snapshot.get("economic_fingerprint") == previous_state.get("fingerprint")
+        and previous_state.get("ledger_complete") is True
+        and int(snapshot.get("stable_runs", 0)) >= 1
+    )
+
 def task_p9_economics():
-    data=json.loads((EVID/"P8_FEATURE_SNAPSHOT.json").read_text()).get("features",[]) if (EVID/"P8_FEATURE_SNAPSHOT.json").exists() else []
-    candidates=[{"pair_key":x["pair_key"],"gross_spread_pct":round(x["price_spread"]*100,6) if x.get("price_spread") is not None else None,"status":"NOT_EXACTLY_CERTIFIED","reason":"Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation"} for x in data if x.get("price_spread") is not None]
-    return write_json("P9_ECONOMIC_SCREEN.json",{"task":"p9_economic_screen","time":now(),"candidates":candidates[:5000],"evidence_class":"SCREENING_ONLY"})
+    candidates = _p9_candidate_rows()
+    progress = load_json(P9_PROGRESS_STATE, {})
+    processed = set(str(x).lower() for x in progress.get("processed_pairs", []))
+    selected_candidates = candidates[:]
+    all_pairs = sorted({
+        str(v.get("pair")).lower()
+        for candidate in selected_candidates
+        for v in candidate.get("venues", [])
+        if isinstance(v.get("pair"), str) and len(v.get("pair")) == 42
+    })
+    remaining = [address for address in all_pairs if address not in processed]
+
+    pool = _p9_load_rpc()
+    endpoint_ids, endpoint_diagnostics = _p9_select_endpoints(pool)
+    batch_candidates = [
+        candidate for candidate in selected_candidates
+        if any(str(v.get("pair")).lower() in remaining for v in candidate.get("venues", []))
+    ][:P9_CANDIDATE_BATCH_GROUPS]
+
+    batch_pairs = sorted({
+        str(v.get("pair")).lower()
+        for candidate in batch_candidates
+        for v in candidate.get("venues", [])
+        if isinstance(v.get("pair"), str) and len(v.get("pair")) == 42
+    })
+    observed = _p9_probe_pairs(pool, endpoint_ids, batch_pairs) if endpoint_ids else {}
+
+    ledger = []
+    for candidate in selected_candidates:
+        surfaces = []
+        for venue in candidate.get("venues", []):
+            address = str(venue.get("pair", "")).lower()
+            if address in observed:
+                surfaces.extend(observed[address])
+        cert = _p9_exact_requirements(surfaces)
+        ledger.append({
+            "pair_key": candidate["pair_key"],
+            "gross_spread_pct": candidate["gross_spread_pct"],
+            "venue_count": candidate["venue_count"],
+            "venues": [
+                {"dex": v.get("dex"), "pair": v.get("pair")}
+                for v in candidate.get("venues", [])
+            ],
+            "exact_certification": cert,
+        })
+
+    newly_processed = set(processed)
+    newly_processed.update(batch_pairs)
+    complete = len(newly_processed) >= len(all_pairs)
+    uncertified = sum(1 for row in ledger if row["exact_certification"]["status"] != "EXACT_CERTIFIED")
+    exact = len(ledger) - uncertified
+    fingerprint = sha({
+        "schema": P9_SCHEMA_VERSION,
+        "ledger": ledger,
+        "candidate_count": len(candidates),
+        "processed_pairs": sorted(newly_processed),
+    })
+    previous_fp = progress.get("fingerprint")
+    previous_complete = progress.get("ledger_complete") is True
+    stable_runs = int(progress.get("stable_runs", 0) or 0) + 1 if fingerprint == previous_fp and previous_complete else 1
+
+    snapshot = {
+        "task": "p9_economic_certification",
+        "time": now(),
+        "schema": P9_SCHEMA_VERSION,
+        "candidate_count": len(candidates),
+        "pair_addresses_total": len(all_pairs),
+        "processed_pairs_count": len(newly_processed),
+        "batch_groups": len(batch_candidates),
+        "batch_pair_count": len(batch_pairs),
+        "exactly_certified_count": exact,
+        "uncertified_count": uncertified,
+        "ledger": ledger,
+        "economic_fingerprint": fingerprint,
+        "stable_runs": stable_runs,
+        "ledger_complete": complete,
+        "rpc_endpoints": endpoint_ids,
+        "rpc_endpoint_diagnostics": endpoint_diagnostics,
+        "checks": {
+            "p8_feature_source_closed": load_json(EVID / "P8_CLOSURE_STATE.json", {}).get("stage_gate") == "CLOSED",
+            "candidate_universe_complete": len(candidates) > 0,
+            "all_capability_batches_complete": complete,
+            "all_candidates_have_explicit_certification_status": all("exact_certification" in row for row in ledger),
+        },
+        "evidence_class": "ECONOMIC_CAPABILITY_AUDIT",
+        "research_boundary": "P9 does not certify profit merely from gross spread or capability surfaces. Exact execution math, gas, fees, slippage, competition and realized-vs-simulated error remain required.",
+    }
+    snapshot["stage_gate"] = "CLOSED" if p9_economic_closure_ready(
+        snapshot,
+        {
+            "fingerprint": previous_fp,
+            "ledger_complete": previous_complete,
+        },
+    ) else "OPEN"
+    write_json("P9_CLOSURE_STATE.json", {
+        "fingerprint": fingerprint,
+        "stable_runs": stable_runs,
+        "updated_at": snapshot["time"],
+        "stage_gate": snapshot["stage_gate"],
+        "ledger_complete": complete,
+        "candidate_count": len(candidates),
+        "pair_addresses_total": len(all_pairs),
+        "processed_pairs_count": len(newly_processed),
+        "exactly_certified_count": exact,
+    })
+    P9_PROGRESS_STATE.write_text(json.dumps({
+        "schema": P9_SCHEMA_VERSION,
+        "fingerprint": fingerprint,
+        "processed_pairs": sorted(newly_processed),
+        "stable_runs": stable_runs,
+        "ledger_complete": complete,
+        "updated_at": now(),
+    }, sort_keys=True) + "
+", encoding="utf-8")
+    return write_json("P9_ECONOMIC_CERTIFICATION.json", snapshot)
+
 
 def task_p11_closure():
     audit_path=EVID/"P10_SATURATION_AUDIT.json"
