@@ -334,6 +334,14 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("P5_PAIR_BATCH_SIZE = 120", worker)
         self.assertIn("P5_PAIR_WORKERS = 12", worker)
 
+
+    def test_p5_stability_baseline_persists_across_partial_runs(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn("P5_STABILITY_STATE = EVID / \"P5_STABILITY_STATE.json\"", worker)
+        self.assertIn("baseline_fingerprint", worker)
+        self.assertIn("if not baseline_fp", worker)
+        self.assertIn("stability_processed_addresses", worker)
+
     def test_p5_stability_recheck_is_chunked_and_rate_limit_aware(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn("P5_STABILITY_WORKERS = 4", worker)
@@ -537,7 +545,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
         self.assertIn('"P3":"p3-multisource-closure-v1"', source)
         self.assertIn('"P4":"p4-parallel-endpoint-discovery-v3"', source)
-        self.assertIn('"P5":"p5-stability-chunked-v3"', source)
+        self.assertIn('"P5":"p5-stability-baseline-v4"', source)
         self.assertIn("or (revision and ts.get('revision') != revision)", source)
         self.assertIn("ts['revision']=revision", source)
 
@@ -556,7 +564,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
 
     def test_p5_parallel_closure_revision_is_registered(self):
         source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
-        self.assertIn('"P5":"p5-stability-chunked-v3"', source)
+        self.assertIn('"P5":"p5-stability-baseline-v4"', source)
 
     def test_pair_snapshot_deduplicates_pair_addresses(self):
         source = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")

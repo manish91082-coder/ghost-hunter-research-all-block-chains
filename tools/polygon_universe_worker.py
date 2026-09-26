@@ -1012,6 +1012,7 @@ P5_PAIR_BATCH_SIZE = 120
 P5_PAIR_WORKERS = 12
 P5_STABILITY_WORKERS = 4
 P5_CURSOR_STATE = EVID / "P5_CURSOR.json"
+P5_STABILITY_STATE = EVID / "P5_STABILITY_STATE.json"
 P5_STABILITY_RECHECK = True
 P5_REQUEST_RETRIES = 3
 
@@ -1067,6 +1068,8 @@ def task_p5_pairs():
     eligible.sort(key=lambda row: str(row.get("address", "")).lower())
 
     cursor_payload = load_json(P5_CURSOR_STATE, {})
+    stability_state = load_json(P5_STABILITY_STATE, {})
+
     processed_addresses = {
         str(x).lower()
         for x in cursor_payload.get("processed_addresses", [])
@@ -1074,7 +1077,7 @@ def task_p5_pairs():
     }
     stability_processed_addresses = {
         str(x).lower()
-        for x in cursor_payload.get("stability_processed_addresses", [])
+        for x in stability_state.get("processed_addresses", [])
         if isinstance(x, str)
     }
 
@@ -1083,25 +1086,44 @@ def task_p5_pairs():
 
     previous_closure = load_json(EVID / "P5_CLOSURE_STATE.json", {})
     previous_complete = bool(previous_closure.get("coverage_complete"))
-    recheck_mode = bool(P5_STABILITY_RECHECK and previous_complete)
 
-    # A completed recheck belongs to exactly one fingerprint. If the eligible
-    # token universe changes, discard the old recheck cursor and start the
-    # stability pass again from the beginning.
-    previous_recheck_fp = cursor_payload.get("stability_eligibility_fingerprint")
-    if not recheck_mode or previous_recheck_fp != eligibility_fp:
+    baseline_fp = stability_state.get("baseline_fingerprint")
+    baseline_eligibility_fp = stability_state.get("baseline_eligibility_fingerprint")
+
+    # Recovery bootstrap: if the prior run had a complete primary coverage
+    # result but no stability state yet, preserve that complete result as the
+    # immutable baseline for the next full stability pass.
+    if (
+        not baseline_fp
+        and previous_complete
+        and previous_closure.get("fingerprint")
+    ):
+        baseline_fp = previous_closure.get("fingerprint")
+        baseline_eligibility_fp = (
+            stability_state.get("baseline_eligibility_fingerprint")
+            or cursor_payload.get("eligibility_fingerprint")
+            or eligibility_fp
+        )
         stability_processed_addresses = set()
+
+    recheck_mode = bool(
+        P5_STABILITY_RECHECK
+        and baseline_fp
+        and baseline_eligibility_fp == eligibility_fp
+    )
 
     if recheck_mode:
         batch = [
             row for row in eligible
-            if str(row.get("address", "")).lower() not in stability_processed_addresses
+            if str(row.get("address", "")).lower()
+            not in stability_processed_addresses
         ][:P5_PAIR_BATCH_SIZE]
         worker_limit = P5_STABILITY_WORKERS
     else:
         batch = [
             row for row in eligible
-            if str(row.get("address", "")).lower() not in processed_addresses
+            if str(row.get("address", "")).lower()
+            not in processed_addresses
         ][:P5_PAIR_BATCH_SIZE]
         worker_limit = P5_PAIR_WORKERS
 
@@ -1216,7 +1238,10 @@ def task_p5_pairs():
     )
     duplicate_pair_observation_count = max(
         0,
-        len(rows) - len({str(x.get("pairAddress", "")).lower() for x in rows if x.get("pairAddress")}),
+        len(rows) - len({
+            str(x.get("pairAddress", "")).lower()
+            for x in rows if x.get("pairAddress")
+        }),
     )
 
     merged_pairs = list(by_address.values())
@@ -1234,6 +1259,7 @@ def task_p5_pairs():
     )
 
     new_unique_tokens = max(0, len(tokens_by_address) - tokens_before)
+
     if recheck_mode:
         stability_processed_addresses.update(successful_addresses)
     else:
@@ -1269,7 +1295,10 @@ def task_p5_pairs():
         )
 
     universe_fingerprint = sha({
-        "eligible_tokens": [str(row.get("address", "")).lower() for row in eligible_after_merge],
+        "eligible_tokens": [
+            str(row.get("address", "")).lower()
+            for row in eligible_after_merge
+        ],
         "pair_addresses": sorted(by_address),
         "pair_identities": {
             address: sorted(values)
@@ -1277,13 +1306,34 @@ def task_p5_pairs():
         },
     })
 
-    if coverage_complete:
-        if universe_fingerprint == previous_closure.get("fingerprint") and previous_complete:
-            stable_runs = int(previous_closure.get("stable_runs", 0) or 0) + 1
+    stable_runs = 0
+    stage_gate = "OPEN"
+
+    if recheck_mode and coverage_complete:
+        if (
+            universe_fingerprint == baseline_fp
+            and baseline_eligibility_fp == eligibility_fp
+        ):
+            stable_runs = int(stability_state.get("stable_runs", 0) or 0) + 1
+            stage_gate = "CLOSED" if p5_closure_ready(snapshot, {
+                "fingerprint": baseline_fp,
+                "stable_runs": 0,
+                "coverage_complete": True,
+            }) else "OPEN"
         else:
-            stable_runs = 1
-    else:
-        stable_runs = 0
+            # Universe changed during recheck. Promote the new fingerprint to
+            # the next immutable baseline and require another complete pass.
+            baseline_fp = universe_fingerprint
+            baseline_eligibility_fp = eligibility_fp
+            stability_processed_addresses = set()
+            stable_runs = 0
+            stage_gate = "OPEN"
+    elif not recheck_mode and coverage_complete:
+        if not baseline_fp:
+            baseline_fp = universe_fingerprint
+            baseline_eligibility_fp = eligibility_fp
+        stable_runs = 1
+        stage_gate = "OPEN"
 
     snapshot = {
         "task": "p5_pair_discovery",
@@ -1305,39 +1355,46 @@ def task_p5_pairs():
         "pair_workers": worker_limit,
         "pair_batch_size": P5_PAIR_BATCH_SIZE,
         "recheck_mode": recheck_mode,
-        "stability_eligibility_fingerprint": eligibility_fp,
+        "baseline_fingerprint": baseline_fp,
+        "baseline_eligibility_fingerprint": baseline_eligibility_fp,
+        "stability_state_file": str(P5_STABILITY_STATE),
         "checks": {
-            "source_requests_complete": (len(batch) > 0 and len(request_errors) == 0) or (
-                len(batch) == 0 and recheck_mode and coverage_complete
+            "source_requests_complete": len(request_errors) == 0 and (
+                len(batch) > 0 or coverage_complete
             ),
             "eligible_token_universe_nonempty": len(eligible_after_merge) > 0,
         },
         "evidence_class": "DISCOVERY",
     }
-
-    snapshot["stage_gate"] = "CLOSED" if p5_closure_ready(snapshot, {
-        "fingerprint": previous_closure.get("fingerprint"),
-        "stable_runs": stable_runs,
-        "coverage_complete": previous_complete,
-    }) else "OPEN"
+    snapshot["stage_gate"] = stage_gate
 
     write_json("P5_CLOSURE_STATE.json", {
         "fingerprint": universe_fingerprint,
         "stable_runs": stable_runs,
         "updated_at": snapshot["time"],
-        "stage_gate": snapshot["stage_gate"],
+        "stage_gate": stage_gate,
         "coverage_complete": coverage_complete,
         "eligible_token_count": len(eligible_after_merge),
         "processed_eligible_count": processed_eligible_count,
         "rechecked_eligible_count": rechecked_eligible_count,
         "total_pair_records": len(merged_pairs),
     })
+
+    save_json(
+        P5_STABILITY_STATE,
+        {
+            "baseline_fingerprint": baseline_fp,
+            "baseline_eligibility_fingerprint": baseline_eligibility_fp,
+            "processed_addresses": sorted(stability_processed_addresses),
+            "stable_runs": stable_runs,
+            "active": stage_gate != "CLOSED",
+            "updated_at": now(),
+        },
+    )
     write_json("P5_CURSOR.json", {
         "processed_addresses": sorted(processed_addresses),
-        "stability_processed_addresses": sorted(stability_processed_addresses),
         "total_eligible_tokens": len(eligible_after_merge),
         "eligibility_fingerprint": eligibility_fp,
-        "stability_eligibility_fingerprint": eligibility_fp,
         "last_coverage_complete": coverage_complete,
     })
     return write_json("P5_PAIR_SNAPSHOT.json", snapshot)
