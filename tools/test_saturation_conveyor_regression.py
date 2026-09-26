@@ -139,7 +139,8 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
 
     def test_p4_capability_probe_falls_back_to_single_rpc_calls(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
-        needle = 'except ValueError:\\n        rows = _p4_rpc_single_calls(pool, endpoint_id, calls, timeout=30)'
+        self.assertIn("except ValueError:", worker)
+        self.assertIn("rows = _p4_rpc_single_calls(pool, endpoint_id, calls, timeout=30)", worker)
         self.assertIn(needle, worker)
 
     def test_p4_has_bounded_429_recovery_and_batch_fallback(self):
