@@ -578,3 +578,14 @@ P7 closure certifies strategy-family coverage and matrix schema completeness, no
 - P3 is **CLOSED** only for multi-source discovery convergence. It does not verify protocol addresses, token contracts, pools, routes, liquidity, execution or profitability.
 - Ethereum next critical stage is now **P4_TOKEN_UNIVERSE**. Live signing, public broadcast and real-money execution remain OFF.
 
+
+## 2026-09-26 — Ethereum P4 token-universe implementation ACTIVE
+- P3 remains canonically CLOSED; Polygon remains sealed and untouched.
+- Ethereum P4 implementation is now present at `chains/ethereum-mainnet/ethereum_p4_token_universe.py`.
+- P4 policy: `chains/ethereum-mainnet/P4_TOKEN_UNIVERSE_POLICY.json`.
+- P4 regression: `tools/test_ethereum_p4_token_universe.py`.
+- P4 workflow: `.github/workflows/ethereum-p4-token-universe.yml`.
+- P4 boundary is read-only: multi-source token-candidate union plus same-block `eth_getCode` verification; no signing, broadcast, profitability or execution authorization.
+- Current authoritative engineering HEAD: `0a666db75d7a224296300bab89568a8a8cfae2ec`.
+- Current P4 Actions state is **NOT GREEN**: Run #3 `36262108128` is still marked IN_PROGRESS on the pre-optimization implementation; Run #4 `36262165960` is PENDING; Run #5 `36262194895` is QUEUED on the latest optimized implementation.
+- P4 is not CLOSED and must not be promoted until the latest terminal run and artifact independently verify the declared closure predicate.
