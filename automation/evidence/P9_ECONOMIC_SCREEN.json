@@ -151,13 +151,31 @@
       "status": "NOT_EXACTLY_CERTIFIED"
     },
     {
+      "gross_spread_pct": 0.649351,
+      "pair_key": "0x88548808840220390dd9e19eefafa442e8e75041:0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
       "gross_spread_pct": 3.01936,
       "pair_key": "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063:0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
       "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
       "status": "NOT_EXACTLY_CERTIFIED"
     },
     {
-      "gross_spread_pct": 0.110854,
+      "gross_spread_pct": 1.413645,
+      "pair_key": "0x6631ee651da438db2be611b5a44dfe2ca04590c5:0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.823893,
+      "pair_key": "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063:0xe5417af564e4bfda1c483642db72007871397896",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.333131,
       "pair_key": "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063:0xa3fa99a148fa48d14ed51d610c367c61876997f1",
       "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
       "status": "NOT_EXACTLY_CERTIFIED"
@@ -223,6 +241,12 @@
       "status": "NOT_EXACTLY_CERTIFIED"
     },
     {
+      "gross_spread_pct": 2638.678091,
+      "pair_key": "0xbbba073c31bf03b8acf7c28ef0738decf3695683:0xdf7837de1f2fa4631d716cf2502f8b230f1dcc32",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
       "gross_spread_pct": 6.618472,
       "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x311434160d7537be358930def317afb606c0d737",
       "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
@@ -253,7 +277,7 @@
       "status": "NOT_EXACTLY_CERTIFIED"
     },
     {
-      "gross_spread_pct": 0.723066,
+      "gross_spread_pct": 11152.019386,
       "pair_key": "0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39:0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3",
       "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
       "status": "NOT_EXACTLY_CERTIFIED"
@@ -295,7 +319,7 @@
       "status": "NOT_EXACTLY_CERTIFIED"
     },
     {
-      "gross_spread_pct": 1.331322,
+      "gross_spread_pct": 133674.891775,
       "pair_key": "0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3:0xd6df932a45c0f255f85145f286ea0b292b21c90b",
       "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
       "status": "NOT_EXACTLY_CERTIFIED"
@@ -317,9 +341,645 @@
       "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x714db550b574b3e927af3d93e26127d15721d4c2",
       "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
       "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 2.09264,
+      "pair_key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174:0x40379a439d4f6795b6fc9aa5687db461677a2dba",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 5.009593,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0xe5417af564e4bfda1c483642db72007871397896",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.558197,
+      "pair_key": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359:0xe5417af564e4bfda1c483642db72007871397896",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.670792,
+      "pair_key": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619:0xe5417af564e4bfda1c483642db72007871397896",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.064052,
+      "pair_key": "0xa3fa99a148fa48d14ed51d610c367c61876997f1:0xe5417af564e4bfda1c483642db72007871397896",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.414614,
+      "pair_key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174:0xa3fa99a148fa48d14ed51d610c367c61876997f1",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.161242,
+      "pair_key": "0xa3fa99a148fa48d14ed51d610c367c61876997f1:0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 7.000917,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0xa3fa99a148fa48d14ed51d610c367c61876997f1",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.584147,
+      "pair_key": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359:0xa3fa99a148fa48d14ed51d610c367c61876997f1",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 2.674454,
+      "pair_key": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619:0x831753dd7087cac61ab5644b308642cc1c33dc13",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 8.825847,
+      "pair_key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174:0x831753dd7087cac61ab5644b308642cc1c33dc13",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.138088,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x831753dd7087cac61ab5644b308642cc1c33dc13",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.453172,
+      "pair_key": "0x831753dd7087cac61ab5644b308642cc1c33dc13:0xb5c064f955d8e7f38fe0460c556a72987494ee17",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.866667,
+      "pair_key": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619:0xb5c064f955d8e7f38fe0460c556a72987494ee17",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.155556,
+      "pair_key": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359:0xb5c064f955d8e7f38fe0460c556a72987494ee17",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 3.217158,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0xb5c064f955d8e7f38fe0460c556a72987494ee17",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.178571,
+      "pair_key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174:0xb5c064f955d8e7f38fe0460c556a72987494ee17",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 10.516605,
+      "pair_key": "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6:0xb5c064f955d8e7f38fe0460c556a72987494ee17",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 11.887477,
+      "pair_key": "0xb5c064f955d8e7f38fe0460c556a72987494ee17:0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.603563,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0xbbba073c31bf03b8acf7c28ef0738decf3695683",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.604839,
+      "pair_key": "0xbbba073c31bf03b8acf7c28ef0738decf3695683:0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.066313,
+      "pair_key": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619:0xbbba073c31bf03b8acf7c28ef0738decf3695683",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.887216,
+      "pair_key": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359:0xbbba073c31bf03b8acf7c28ef0738decf3695683",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 2.693089,
+      "pair_key": "0x692597b009d13c4049a947cab2239b7d6517875f:0xbbba073c31bf03b8acf7c28ef0738decf3695683",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.533408,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0xd3e28c74177b812d1543a406ad1a97ee3c398ac2",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 2.362967,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x7ecb5699d8e0a6572e549dc86dde5a785b8c29bc",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 3.040541,
+      "pair_key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174:0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 4.859967,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.991736,
+      "pair_key": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619:0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.495458,
+      "pair_key": "0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3:0xdf7837de1f2fa4631d716cf2502f8b230f1dcc32",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.024616,
+      "pair_key": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619:0xd93f7e271cb87c23aaa73edc008a79646d1f9912",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 2.711551,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0xd93f7e271cb87c23aaa73edc008a79646d1f9912",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 4.637183,
+      "pair_key": "0xc2132d05d31c914a87c6611c10748aeb04b58e8f:0xd93f7e271cb87c23aaa73edc008a79646d1f9912",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.087673,
+      "pair_key": "0x9cd6746665d9557e1b9a775819625711d0693439:0xd93f7e271cb87c23aaa73edc008a79646d1f9912",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 2.526316,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x8e677ca17065ed74675bc27bcabadb7eef10a292",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.257862,
+      "pair_key": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359:0x8e677ca17065ed74675bc27bcabadb7eef10a292",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.93361,
+      "pair_key": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619:0xb33eaad8d922b1083446dc23f610c2567fb5180f",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.834202,
+      "pair_key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174:0xb33eaad8d922b1083446dc23f610c2567fb5180f",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 8.715084,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0xb33eaad8d922b1083446dc23f610c2567fb5180f",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 7.252747,
+      "pair_key": "0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39:0xb33eaad8d922b1083446dc23f610c2567fb5180f",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.31185,
+      "pair_key": "0xb33eaad8d922b1083446dc23f610c2567fb5180f:0xd6df932a45c0f255f85145f286ea0b292b21c90b",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.313808,
+      "pair_key": "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063:0xb33eaad8d922b1083446dc23f610c2567fb5180f",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 165.198777,
+      "pair_key": "0x49e6a20f1bbdfeec2a8222e052000bbb14ee6007:0xb5dfabd7ff7f83bab83995e72a52b97abb7bcf63",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 3.072796,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x9b034262e0095210ab9ddec60199741a8a1fbfe7",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 3.221976,
+      "pair_key": "0x9b034262e0095210ab9ddec60199741a8a1fbfe7:0xd6df932a45c0f255f85145f286ea0b292b21c90b",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.178367,
+      "pair_key": "0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39:0x9b034262e0095210ab9ddec60199741a8a1fbfe7",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.465575,
+      "pair_key": "0x172370d5cd63279efa6d502dab29171933a610af:0x9b034262e0095210ab9ddec60199741a8a1fbfe7",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.515152,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x9719d867a500ef117cc201206b8ab51e794d3f82",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.41844,
+      "pair_key": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619:0xf50d05a1402d0adafa880d36050736f9f6ee7dee",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.70922,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0xf50d05a1402d0adafa880d36050736f9f6ee7dee",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 2.158273,
+      "pair_key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174:0xf50d05a1402d0adafa880d36050736f9f6ee7dee",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.569692,
+      "pair_key": "0x0b3f868e0be5597d5db7feb59e1cadbb0fdda50a:0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 6.237425,
+      "pair_key": "0x0b3f868e0be5597d5db7feb59e1cadbb0fdda50a:0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 4.39604,
+      "pair_key": "0x0b3f868e0be5597d5db7feb59e1cadbb0fdda50a:0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.767165,
+      "pair_key": "0x0b3f868e0be5597d5db7feb59e1cadbb0fdda50a:0xd6df932a45c0f255f85145f286ea0b292b21c90b",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.994525,
+      "pair_key": "0x0b3f868e0be5597d5db7feb59e1cadbb0fdda50a:0x8a953cfe442c5e8855cc6c61b1293fa648bae472",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 6.068018,
+      "pair_key": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619:0xa1c57f48f0deb89f569dfbe6e2b7f46d33606fd4",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 13.076747,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0xa1c57f48f0deb89f569dfbe6e2b7f46d33606fd4",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.709377,
+      "pair_key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174:0xa1c57f48f0deb89f569dfbe6e2b7f46d33606fd4",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 2.036147,
+      "pair_key": "0xa1c57f48f0deb89f569dfbe6e2b7f46d33606fd4:0xdf7837de1f2fa4631d716cf2502f8b230f1dcc32",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 2.78668,
+      "pair_key": "0xa1c57f48f0deb89f569dfbe6e2b7f46d33606fd4:0xcbf4ab00b6aa19b4d5d29c7c3508b393a1c01fe3",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.711939,
+      "pair_key": "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6:0xcbf4ab00b6aa19b4d5d29c7c3508b393a1c01fe3",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.379501,
+      "pair_key": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619:0xcbf4ab00b6aa19b4d5d29c7c3508b393a1c01fe3",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.206289,
+      "pair_key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174:0xcbf4ab00b6aa19b4d5d29c7c3508b393a1c01fe3",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.316861,
+      "pair_key": "0xc2132d05d31c914a87c6611c10748aeb04b58e8f:0xcbf4ab00b6aa19b4d5d29c7c3508b393a1c01fe3",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.539011,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0xcbf4ab00b6aa19b4d5d29c7c3508b393a1c01fe3",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 3.130288,
+      "pair_key": "0x692ac1e363ae34b6b489148152b12e2785a3d8d6:0xcbf4ab00b6aa19b4d5d29c7c3508b393a1c01fe3",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 2.866405,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x6f8a06447ff6fcf75d803135a7de15ce88c1d4ec",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 3.820771,
+      "pair_key": "0x6f8a06447ff6fcf75d803135a7de15ce88c1d4ec:0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.138294,
+      "pair_key": "0x6f8a06447ff6fcf75d803135a7de15ce88c1d4ec:0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 2.077703,
+      "pair_key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174:0x6f8a06447ff6fcf75d803135a7de15ce88c1d4ec",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.700896,
+      "pair_key": "0x6f8a06447ff6fcf75d803135a7de15ce88c1d4ec:0x9cd6746665d9557e1b9a775819625711d0693439",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.290102,
+      "pair_key": "0x692597b009d13c4049a947cab2239b7d6517875f:0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.883302,
+      "pair_key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174:0x692597b009d13c4049a947cab2239b7d6517875f",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.25441,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x692597b009d13c4049a947cab2239b7d6517875f",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.605385,
+      "pair_key": "0x692597b009d13c4049a947cab2239b7d6517875f:0x9cd6746665d9557e1b9a775819625711d0693439",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 7.831496,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0xada58df0f643d959c2a47c9d4d4c1a4defe3f11c",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.87185,
+      "pair_key": "0x5fe2b58c013d7601147dcdd68c143a77499f5531:0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.705156,
+      "pair_key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174:0x385eeac5cb85a38a9a07a70c73e0a3271cfb54a7",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.943177,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x385eeac5cb85a38a9a07a70c73e0a3271cfb54a7",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 2.434178,
+      "pair_key": "0x385eeac5cb85a38a9a07a70c73e0a3271cfb54a7:0x9c78ee466d6cb57a4d01fd887d2b5dfb2d46288f",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 24.482821,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x9cd6746665d9557e1b9a775819625711d0693439",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.174603,
+      "pair_key": "0x9cd6746665d9557e1b9a775819625711d0693439:0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.111661,
+      "pair_key": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619:0x9cd6746665d9557e1b9a775819625711d0693439",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.144254,
+      "pair_key": "0x9cd6746665d9557e1b9a775819625711d0693439:0xb5c064f955d8e7f38fe0460c556a72987494ee17",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 3.830275,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0xbac3368b5110f3a3dda8b5a0f7b66edb37c47afe",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.340759,
+      "pair_key": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619:0xc3c7d422809852031b44ab29eec9f1eff2a58756",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.836905,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0xc3c7d422809852031b44ab29eec9f1eff2a58756",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.867607,
+      "pair_key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174:0xc3c7d422809852031b44ab29eec9f1eff2a58756",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.106501,
+      "pair_key": "0x1c954e8fe737f99f68fa1ccda3e51ebdb291948c:0xc3c7d422809852031b44ab29eec9f1eff2a58756",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 2.578313,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x79774bf5867ac4e014a48b471cbd94a01cc9a4d2",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 8.160123,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x2f6f07cdcf3588944bf4c42ac74ff24bf56e7590",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.0,
+      "pair_key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174:0x2f6f07cdcf3588944bf4c42ac74ff24bf56e7590",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.630011,
+      "pair_key": "0x172370d5cd63279efa6d502dab29171933a610af:0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 7.896341,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x172370d5cd63279efa6d502dab29171933a610af",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.539773,
+      "pair_key": "0x172370d5cd63279efa6d502dab29171933a610af:0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.891061,
+      "pair_key": "0x172370d5cd63279efa6d502dab29171933a610af:0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.194291,
+      "pair_key": "0x172370d5cd63279efa6d502dab29171933a610af:0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.352803,
+      "pair_key": "0x50b728d8d964fd00c2d0aad81718b71311fef68a:0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.062574,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x50b728d8d964fd00c2d0aad81718b71311fef68a",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 0.587372,
+      "pair_key": "0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b:0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 12.77533,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 7.728707,
+      "pair_key": "0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b:0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.029252,
+      "pair_key": "0x61299774020da444af134c82fa83e3810b309991:0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 2.920609,
+      "pair_key": "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270:0x61299774020da444af134c82fa83e3810b309991",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
+    },
+    {
+      "gross_spread_pct": 1.687993,
+      "pair_key": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174:0x61299774020da444af134c82fa83e3810b309991",
+      "reason": "Requires venue-specific swap math, gas, fees, slippage, competition and fresh-state simulation",
+      "status": "NOT_EXACTLY_CERTIFIED"
     }
   ],
   "evidence_class": "SCREENING_ONLY",
   "task": "p9_economic_screen",
-  "time": "2026-09-25T20:13:54Z"
+  "time": "2026-09-26T05:54:50Z"
 }

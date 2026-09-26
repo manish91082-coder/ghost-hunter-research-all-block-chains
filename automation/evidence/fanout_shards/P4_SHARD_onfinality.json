@@ -1,0 +1,6 @@
+{
+  "endpoint_id": "onfinality",
+  "error": "RateLimited: RPC rate limited",
+  "observations": [],
+  "status": "ERROR"
+}

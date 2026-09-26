@@ -1,20 +1,22 @@
 {
   "evidence_class": "AUDIT",
   "evidence_files": {
-    "P10_SATURATION_AUDIT.json": 825,
+    "P10_SATURATION_AUDIT.json": 897,
     "P2_CONTROL_FUNCTION_LATEST.json": 27448,
     "P2_DERIVED_LATEST.json": 1994,
     "P2_PROVENANCE_LATEST.json": 85714,
     "P2_PROVENANCE_REPLAY.json": 85714,
-    "P3_CLOSURE_STATE.json": 172,
-    "P3_PROTOCOL_SNAPSHOT.json": 1145,
-    "P4_TOKEN_SNAPSHOT.json": 1525,
-    "P5_CURSOR.json": 41,
-    "P5_PAIR_SNAPSHOT.json": 255,
-    "P6_ROUTE_SNAPSHOT.json": 2479330,
+    "P3_CLOSURE_STATE.json": 174,
+    "P3_PROTOCOL_SNAPSHOT.json": 1330,
+    "P4_CLOSURE_STATE.json": 266,
+    "P4_TOKEN_SNAPSHOT.json": 4442,
+    "P4_VERIFICATION_STATE.json": 7297,
+    "P5_CURSOR.json": 43,
+    "P5_PAIR_SNAPSHOT.json": 257,
+    "P6_ROUTE_SNAPSHOT.json": 2502638,
     "P7_STRATEGY_MATRIX.json": 2794,
-    "P8_FEATURE_SNAPSHOT.json": 99030,
-    "P9_ECONOMIC_SCREEN.json": 16568
+    "P8_FEATURE_SNAPSHOT.json": 375231,
+    "P9_ECONOMIC_SCREEN.json": 50672
   },
   "open_reason": [
     "P2 live control/provenance gates pending",
@@ -23,9 +25,9 @@
   ],
   "stage_gate": "OPEN",
   "task": "p10_saturation_audit",
-  "time": "2026-09-25T20:15:15Z",
+  "time": "2026-09-26T05:57:34Z",
   "universe_counts": {
-    "pairs": 341,
-    "tokens": 64
+    "pairs": 1132,
+    "tokens": 224
   }
 }

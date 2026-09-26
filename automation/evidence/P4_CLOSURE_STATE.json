@@ -1,0 +1,9 @@
+{
+  "candidate_count": 15,
+  "fingerprint": "bdf419fc157205fe3fa111e77e958c4b1180ffb3e1813332f5ccf6cec3424c31",
+  "stable_runs": 2,
+  "stage_gate": "CLOSED",
+  "updated_at": "2026-09-26T07:38:21Z",
+  "verification_cycle_complete": true,
+  "verified_token_count": 15
+}

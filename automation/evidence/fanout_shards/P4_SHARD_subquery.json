@@ -1,0 +1,6 @@
+{
+  "endpoint_id": "subquery",
+  "error": "URLError: <urlopen error [Errno -2] Name or service not known>",
+  "observations": [],
+  "status": "ERROR"
+}

@@ -1,0 +1,6 @@
+{
+  "endpoint_id": "publicnode-bor",
+  "error": "HTTPError: HTTP Error 403: Forbidden",
+  "observations": [],
+  "status": "ERROR"
+}

@@ -43,9 +43,9 @@
     "https://api.dexscreener.com/token-profiles/latest/v1",
     "https://api.geckoterminal.com/api/v2/networks/polygon_pos/dexes"
   ],
-  "stable_runs": 2,
+  "stable_runs": 5,
   "stage_gate": "CLOSED",
   "task": "p3_protocol_discovery",
-  "time": "2026-09-25T20:19:56Z",
+  "time": "2026-09-26T05:57:35Z",
   "universe_fingerprint": "28e93a53c2480c01c7590c256cd22830eecd7558cf52528267ffcb10a335db5f"
 }
