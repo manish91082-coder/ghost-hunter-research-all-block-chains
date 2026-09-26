@@ -124,6 +124,16 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("P3_CLOSURE_STATE.json", worker)
 
 
+    def test_p4_capability_aware_quorum_is_required(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn("def _p4_select_capable_endpoints", worker)
+        self.assertIn("max_endpoints=3", worker)
+        self.assertIn('"selected_endpoints": selected_endpoints', worker)
+        self.assertIn("Fewer than two independent semantically capable Polygon batch endpoints", worker)
+        self.assertIn("import hashlib, json, os, time", worker)
+
+
+
     def test_p4_checkpoint_writer_uses_defined_writer(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertNotIn("save_json(P4_VERIFY_STATE", worker)
