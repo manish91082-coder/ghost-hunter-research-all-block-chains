@@ -234,7 +234,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         }
         self.assertFalse(module.p4_closure_ready(base, {"fingerprint": "xyz", "stable_runs": 1}))
         self.assertFalse(module.p4_closure_ready(base, {"fingerprint": "abc", "stable_runs": 0}))
-        self.assertTrue(module.p4_closure_ready(base, {"fingerprint": "abc", "stable_runs": 1}))
+        self.assertTrue(module.p4_closure_ready(base, {"fingerprint": "abc", "stable_runs": 1, "verification_cycle_complete": True}))
 
     def test_p4_gate_is_explicitly_written_by_worker(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
