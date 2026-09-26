@@ -124,6 +124,14 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("P3_CLOSURE_STATE.json", worker)
 
 
+    def test_p4_parallel_rpc_and_larger_batch_are_locked(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn("P4_VERIFY_BATCH_SIZE = 48", worker)
+        self.assertIn("P4_RPC_WORKERS = 3", worker)
+        self.assertIn("ThreadPoolExecutor", worker)
+        self.assertIn("as_completed", worker)
+        self.assertIn('"rpc_workers": P4_RPC_WORKERS', worker)
+
     def test_p4_capability_aware_quorum_is_required(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn("def _p4_select_capable_endpoints", worker)
