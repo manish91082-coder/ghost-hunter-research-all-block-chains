@@ -1,0 +1,40 @@
+name: Ethereum P3 Protocol Discovery
+concurrency:
+  group: ethereum-p3-discovery-main
+  cancel-in-progress: true
+on:
+  push:
+    paths:
+      - "chains/ethereum-mainnet/ethereum_p3_discovery.py"
+      - "chains/ethereum-mainnet/P3_DISCOVERY_POLICY.json"
+      - "tools/test_ethereum_p3_discovery.py"
+      - ".github/workflows/ethereum-p3-discovery.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Validate
+        run: |
+          set -euo pipefail
+          python -m py_compile chains/ethereum-mainnet/ethereum_p3_discovery.py
+          python tools/test_ethereum_p3_discovery.py
+      - name: Run multi-source discovery
+        run: |
+          set -euo pipefail
+          python chains/ethereum-mainnet/ethereum_p3_discovery.py
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ethereum-p3-discovery
+          path: |
+            automation/evidence/ETHEREUM_P3_PROTOCOL_SNAPSHOT.json
+            automation/evidence/ETHEREUM_P3_CLOSURE_STATE.json
+          if-no-files-found: warn
