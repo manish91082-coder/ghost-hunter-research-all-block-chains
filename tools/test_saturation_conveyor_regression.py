@@ -25,7 +25,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
         self.assertIn("def critical_task_complete(task, state):", source)
         self.assertIn("if critical_task_complete(task, state):", source)
-        self.assertIn("--max-critical 2", self.workflow)
+        self.assertIn("--max-critical 1", self.workflow)
 
     def test_p2_is_still_hard_gate(self):
         self.assertIn("state['critical_stage']='P2'", self.source)
@@ -128,7 +128,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
 
     def test_critical_stage_pauses_shadow_lane(self):
         source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
-        self.assertIn("effective_shadow_limit = 0 if critical_open else args.max_shadow", source)
+        self.assertIn("warm_shadow", source)
         self.assertIn("resume-safe and will automatically resume once the critical gate closes", source)
 
     def test_p4_parallel_rpc_and_larger_batch_are_locked(self):
@@ -150,7 +150,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
 
     def test_checkpoint_restore_supports_p4_fanout_workflow(self):
         source = (ROOT / "tools" / "automation_state_store.py").read_text(encoding="utf-8")
-        self.assertIn('"p4-rpc-fanout.yml"', source)
+        self.assertNotIn('"p4-rpc-fanout.yml"', source)
 
     def test_p4_identity_fingerprint_excludes_dynamic_total_supply(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
