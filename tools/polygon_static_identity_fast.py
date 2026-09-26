@@ -3,6 +3,7 @@ import hashlib,json,re,time
 from concurrent.futures import ThreadPoolExecutor,as_completed
 from pathlib import Path
 from urllib.request import Request,urlopen
+from urllib.error import HTTPError
 
 P=Path("chains/polygon-pos")
 TOKEN_FILE=P/"TOKEN_UNIVERSE.jsonl"
@@ -15,6 +16,7 @@ PAIR_CHUNK=30
 CROSS_PAIR_CHUNK=20
 CROSS_TOKEN_CHUNK=20
 TIMEOUT=25
+GLOBAL_ENDPOINTS=[]
 
 def now(): return time.strftime("%Y-%m-%dT%H:%M:%SZ",time.gmtime())
 def jl(p): return [json.loads(x) for x in p.read_text().splitlines() if x.strip()]
@@ -35,6 +37,21 @@ def rpc(url,calls):
     if isinstance(body,list): return {int(x["id"]):x for x in body if isinstance(x,dict) and isinstance(x.get("id"),int)}
     if len(calls)==1 and isinstance(body,dict): return {0:body}
     raise RuntimeError("bad_batch_response")
+def rpc_rotating(preferred_url,calls):
+    candidates=[preferred_url]+[e["url"] for e in GLOBAL_ENDPOINTS if e["url"]!=preferred_url]
+    last=None
+    for i,url in enumerate(candidates):
+        try:
+            return rpc(url,calls)
+        except Exception as e:
+            last=e
+            if getattr(e,"code",None)==429:
+                time.sleep(min(2.0,0.5*(i+1)))
+                continue
+            if i+1<len(candidates):
+                continue
+    raise last if last else RuntimeError("rpc_rotation_exhausted")
+
 def code_ok(v): return isinstance(v,str) and v.startswith("0x") and len(v)>2
 def code_sha(v):
     if not code_ok(v): return None
@@ -72,7 +89,7 @@ def run_token_batch(url,chunk):
     for a in chunk:
         calls += [("eth_getCode",[a,"latest"]),("eth_call",[{"to":a,"data":"0x313ce567"},"latest"])]
         meta += [(a,"code"),(a,"decimals")]
-    r=rpc(url,calls); out={}
+    r=rpc_rotating(url,calls); out={}
     for i,(a,k) in enumerate(meta): out.setdefault(a,{})[k]=r.get(i,{}).get("result")
     return out
 
@@ -100,12 +117,14 @@ def round_robin_batches(addrs,endpoints,size,worker):
             ep,chunk=futs[fut]
             try: results.update(fut.result())
             except Exception as e:
-                for a in chunk: results[a]={"_error":f"{ep[0]}:{type(e).__name__}:{e}"}
+                for a in chunk: results[a]={"_error":f"{ep['name']}:{type(e).__name__}:{e}"}
     return results
 
 def main():
     tokens=jl(TOKEN_FILE); pairs=jl(PAIR_FILE); pools=jl(POOL_FILE); dex=json.loads(DEX_FILE.read_text())
     endpoints,probes=select(tokens,pairs)
+    global GLOBAL_ENDPOINTS
+    GLOBAL_ENDPOINTS=endpoints
 
     token_addrs=sorted(str(x["address"]).lower() for x in tokens)
     token_obs=round_robin_batches(token_addrs,endpoints,TOKEN_CHUNK,run_token_batch)
