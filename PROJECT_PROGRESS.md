@@ -712,3 +712,22 @@ Inspect the corrected control-function CI artifact. Then run the corrected conve
 - P3 gate transitioned to the next critical stage, **P4**.
 - Gate-transition commit: `658e9d7dbc7f4c91a2d125def13e863464c90d1d`.
 - Follow-up persisted stage-ledger reconciliation commit: `5362d2db433ffbd320babd11bcfe9975195fa18f`.
+
+
+## 2026-09-26 — P6 route saturation CLOSED / P7 unlocked
+### Engineering repair
+- P6 previously produced a large derived route snapshot without an explicit closure contract and used hidden start-node/neighbor sampling caps.
+- Replaced the P6 worker with full graph traversal over the persisted P5 pair universe.
+- Added graph fingerprinting, complete-record checks, explicit `P6_CLOSURE_STATE.json`, stage-specific `stage_gate`, and matching stability recheck.
+- Added regression coverage for closure, full-graph traversal and revision invalidation.
+- CI initially failed because the new regression assertion had malformed nested quotes. The exact failure was isolated through a temporary diagnostic workflow; the assertion was repaired, diagnostics were removed, and the corrected workflow passed.
+
+### Closure evidence
+- First complete P6 pass: 451 nodes, 2,821 unique pairs, 0 invalid records, 617,622 total routes, stable_runs=1, gate OPEN.
+- Second matching complete pass: same graph fingerprint, closure state persisted, stage_gate=CLOSED.
+- Canonical P6 closure state: `automation/evidence/P6_CLOSURE_STATE.json`.
+- Gate transition commit: `027144a08419651f29e3274a4f39e3a6f3dadef6`.
+- Critical stage is now **P7**.
+
+### Next critical objective
+Execute P7 strategy-universe saturation under the same fail-closed discipline. Route existence is research evidence only; no economic or live-trading conclusion is implied by P6 closure.

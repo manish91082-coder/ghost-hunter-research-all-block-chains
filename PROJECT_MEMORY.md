@@ -318,3 +318,13 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - P3 does not promote discovered protocols or DEXs to on-chain VERIFIED status. Downstream P4-P9 must perform address, token, pool, route, economic and exact-state verification.
 - Critical stage is now P4.
 - Main gate-state metadata has been reconciled explicitly in commit `5362d2db433ffbd320babd11bcfe9975195fa18f`: P2 CLOSED, P3 CLOSED, P4 OPEN/CRITICAL, P5-P10 PREPARE, P11 LOCKED.
+
+
+## 2026-09-26 — P6 closure memory lock
+- P6 is canonically **CLOSED** in the live repository.
+- P6 closure requires full persisted P5 pair-universe alignment, zero invalid pair records, complete graph traversal, a graph fingerprint, and a matching stable recheck. File existence alone cannot close P6.
+- First complete P6 pass produced 451 graph nodes and 2,821 unique pairs with 617,622 total route candidates and stable_runs=1.
+- The matching recheck produced the same graph fingerprint and stage_gate=CLOSED; persisted closure state later showed stable_runs=3 after the gate-transition execution.
+- Canonical P6 fingerprint: `e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5`.
+- Run #136 / Actions `36230852577` completed SUCCESS and advanced the critical stage to P7.
+- P6 does not certify profitability, execution viability, gas/slippage economics, or live trading. Those require downstream evidence.

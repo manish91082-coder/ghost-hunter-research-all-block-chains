@@ -447,3 +447,22 @@ Evidence:
 
 ### P3 evidence boundary
 P3 closure confirms multi-source discovery convergence and snapshot stability only. It does not verify on-chain protocol contracts, pools, liquidity, or profitability. Those remain downstream evidence tasks.
+
+
+## CURRENT CANONICAL STATUS — 2026-09-26 — P6 CLOSED / P7 ACTIVE
+- Canonical main HEAD: `027144a08419651f29e3274a4f39e3a6f3dadef6`.
+- Research gate: **P2_CLOSED**.
+- P2: **CLOSED**.
+- P3: **CLOSED**.
+- P4: **CLOSED**.
+- P5: **CLOSED**.
+- P6 route/combinations: **CLOSED** after a complete matching recheck.
+- Current critical stage: **P7 OPEN**.
+- P6 graph evidence: 451 nodes, 2,821 unique pair records, 0 invalid pair records, 617,622 total route candidates.
+- P6 graph fingerprint: `e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5`.
+- P6 closure stability: `stable_runs=3` in the persisted closure state.
+- GitHub Actions Run #136 (`36230852577`) completed **SUCCESS** and performed the gate transition to P7.
+- Live trading: **OFF**. Exact economic certification remains downstream.
+
+### P6 evidence boundary
+P6 closure certifies complete deterministic route-graph enumeration over the persisted P5 pair universe and matching graph stability. It does not certify swap execution, gas, slippage, competition, profitability, or live-trade viability. Those remain downstream P8/P9/P10 evidence tasks.
