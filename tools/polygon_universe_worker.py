@@ -629,7 +629,9 @@ def _p4_rpc_token_verification(candidates, verification_state):
     conflict_count = sum(1 for x in verification_state.values() if x.get("conflict"))
     cycle_complete = verified_count == len(candidates) and len(candidates) > 0
 
-    save_json(P4_VERIFY_STATE, {
+    P4_VERIFY_STATE.parent.mkdir(parents=True, exist_ok=True)
+    P4_VERIFY_STATE.write_text(
+        json.dumps({
         "universe_fingerprint_context": sha(candidates),
         "updated_at": now(),
         "batch_size": P4_VERIFY_BATCH_SIZE,
@@ -640,7 +642,9 @@ def _p4_rpc_token_verification(candidates, verification_state):
         "verification": verification_state,
         "transport": "json_rpc_batch",
         "endpoint_success": endpoint_success,
-    })
+        }, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
 
     return {
         "state": verification_state,
