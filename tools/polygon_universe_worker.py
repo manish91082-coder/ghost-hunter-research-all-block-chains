@@ -2237,16 +2237,24 @@ def _p9_exact_requirements(surface_rows):
             "status": "BLOCKED_NO_RPC_OBSERVATION",
             "blockers": ["no independent RPC capability observation"],
         }
+    valid_rows = [row for row in surface_rows if isinstance(row.get("surface"), dict)]
+    unsupported = [row for row in surface_rows if row.get("batch_supported") is False]
+    if not valid_rows:
+        return {
+            "status": "BLOCKED_RPC_BATCH_UNSUPPORTED",
+            "blockers": ["no endpoint returned a supported JSON-RPC batch response"],
+            "unsupported_endpoints": [row.get("endpoint") for row in unsupported],
+        }
     all_same = True
     for key in ("code_present", "token_surface", "constant_product_surface", "cl_surface", "fee_surface", "liquidity_surface"):
-        vals = {bool(row["surface"].get(key)) for row in surface_rows}
+        vals = {bool(row["surface"].get(key)) for row in valid_rows}
         all_same = all_same and len(vals) == 1
     if not all_same:
         return {
             "status": "BLOCKED_RPC_DISAGREEMENT",
             "blockers": ["independent RPC surface disagreement"],
         }
-    surface = surface_rows[0]["surface"]
+    surface = valid_rows[0]["surface"]
     blockers = []
     if not surface["code_present"]:
         blockers.append("pair contract code unavailable")

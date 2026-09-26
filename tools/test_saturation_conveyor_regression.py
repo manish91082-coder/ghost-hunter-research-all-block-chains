@@ -926,5 +926,19 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn('"observations": merged_observations', worker)
 
 
+
+
+    def test_p9_handles_batch_unsupported_rows_without_crashing(self):
+        import importlib.util
+        worker_path = ROOT / "tools" / "polygon_universe_worker.py"
+        spec = importlib.util.spec_from_file_location("polygon_universe_worker_p9_shape", worker_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        result = module._p9_exact_requirements([
+            {"endpoint": "rpc-a", "surface": None, "batch_supported": False, "error": "unsupported batch"},
+        ])
+        self.assertEqual(result["status"], "BLOCKED_RPC_BATCH_UNSUPPORTED")
+
+
 if __name__ == "__main__":
     unittest.main()
