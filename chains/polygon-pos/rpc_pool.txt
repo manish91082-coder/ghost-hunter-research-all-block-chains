@@ -16,3 +16,8 @@ llama|https://polygon.llamarpc.com
 ankr|https://rpc.ankr.com/polygon
 blastapi|https://polygon-mainnet.public.blastapi.io
 nodeflare|https://rpc.nodeflare.app/polygon/public
+
+tenderly-gateway|https://polygon.gateway.tenderly.co
+zan|https://api.zan.top/polygon-mainnet
+lava|https://polygon.lava.build
+subquery|https://polygon.rpc.subquery.network/public

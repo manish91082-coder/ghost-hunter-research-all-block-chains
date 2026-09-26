@@ -161,6 +161,15 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn('candidates = [item["id"] for item in pool.ordered()[:max_endpoints]]', worker)
 
+    def test_p4_rpc_pool_expands_and_scan_cap_covers_candidates(self):
+        pool = (ROOT / "chains" / "polygon-pos" / "rpc_pool.txt").read_text(encoding="utf-8")
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn("lava|https://polygon.lava.build", pool)
+        self.assertIn("subquery|https://polygon.rpc.subquery.network/public", pool)
+        self.assertIn("zan|https://api.zan.top/polygon-mainnet", pool)
+        self.assertIn("tenderly-gateway|https://polygon.gateway.tenderly.co", pool)
+        self.assertIn("P4_ENDPOINT_SCAN_MAX = 18", worker)
+
     def test_p4_scans_multiple_rpc_candidates_in_parallel(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn("P4_ENDPOINT_SCAN_MAX = 12", worker)
