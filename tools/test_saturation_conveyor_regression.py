@@ -172,7 +172,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
 
     def test_p4_scans_multiple_rpc_candidates_in_parallel(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
-        self.assertIn("P4_ENDPOINT_SCAN_MAX = 12", worker)
+        self.assertIn("P4_ENDPOINT_SCAN_MAX = 18", worker)
         self.assertIn("def _p4_discover_chain_endpoints", worker)
         self.assertIn('"chain_probe": chain_probe', worker)
         self.assertIn("P4_RPC_WORKERS = 6", worker)
