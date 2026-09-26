@@ -2401,8 +2401,7 @@ def task_p9_economics():
         "stable_runs": stable_runs,
         "ledger_complete": complete,
         "updated_at": now(),
-    }, sort_keys=True) + "
-", encoding="utf-8")
+    }, sort_keys=True) + "\n", encoding="utf-8")
     return write_json("P9_ECONOMIC_CERTIFICATION.json", snapshot)
 
 
