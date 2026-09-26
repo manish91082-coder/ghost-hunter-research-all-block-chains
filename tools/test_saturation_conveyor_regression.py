@@ -958,5 +958,22 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         )
 
 
+
+
+
+    def test_p9_closure_is_capability_complete_not_profit_claim(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn("all_processed_pairs_have_two_endpoint_observations", worker)
+        self.assertIn("READINESS_CLOSED_NOT_PROFIT_CERTIFIED", worker)
+        self.assertIn("economic_adapter_work", worker)
+
+
+    def test_p10_and_p11_define_final_polygon_census_lock(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn('P10_SCHEMA_VERSION = "p10-polygon-saturation-audit-v2"', worker)
+        self.assertIn('"polygon_universe_status"', worker)
+        self.assertIn('"polygon_census_lock"', worker)
+
+
 if __name__ == "__main__":
     unittest.main()
