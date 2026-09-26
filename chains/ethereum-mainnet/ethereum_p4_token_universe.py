@@ -15,6 +15,7 @@ CHAIN_ID = 1
 HEAD_TOLERANCE = 2
 BATCH_SIZE = 50
 MIN_RPC = 2
+PREFERRED_RPC_IDS = ["1rpc", "blastapi", "drpc"]
 
 SOURCES = [
     ("uniswap_default", "https://raw.githubusercontent.com/Uniswap/default-token-list/main/src/tokens/mainnet.json"),
@@ -276,7 +277,10 @@ def verify_candidates(candidates, rpc_pool_path):
     selected_block = min(blocks)
     if max(blocks) - min(blocks) > HEAD_TOLERANCE:
         raise RuntimeError("Ethereum P4 failed closed: chain-head spread exceeds tolerance")
-    selected = eligible[:3]
+    preferred = [e for wanted in PREFERRED_RPC_IDS for e in eligible if e["id"] == wanted]
+    selected = preferred[:3]
+    if len(selected) < MIN_RPC:
+        selected = eligible[:3]
     addresses = sorted(candidates.keys())
     by_address = {
         address: {"observations": 0, "successful_observations": 0, "code_nonempty": 0, "code_hashes": set(), "endpoint_results": []}
@@ -335,7 +339,7 @@ def main():
     previous = json.loads(closure.read_text(encoding="utf-8")) if closure.exists() else {}
     samples = [source_sample(), source_sample()]
     stable = samples[0]["candidate_fingerprint"] == samples[1]["candidate_fingerprint"]
-    sources_ok = all(all(src["ok"] and src["http_status"] == 200 for src in sample["sources"]) for sample in samples)
+    sources_ok = all(all(src["ok"] and src["http_status"] == 200 and src["count"] > 0 for src in sample["sources"]) for sample in samples)
     if not (stable and sources_ok):
         raise SystemExit("Ethereum P4 discovery failed closed: source availability or stable candidate fingerprint incomplete")
     verification = verify_candidates(samples[-1]["candidates"], "chains/ethereum-mainnet/rpc_pool.txt")
@@ -368,7 +372,7 @@ def main():
             for s in samples
         ],
         "checks": {
-            "all_sources_http_200": sources_ok,
+            "all_sources_http_200_nonempty": sources_ok,
             "consecutive_candidate_fingerprint_stable": stable,
             "minimum_two_chain1_identity_endpoints": len(verification["eligible_chain1_endpoints"]) >= MIN_RPC,
             "fixed_verification_block_head_span_within_tolerance": verification["head_span"] <= HEAD_TOLERANCE,
