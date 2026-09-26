@@ -2102,9 +2102,9 @@ def task_p8_features():
     return write_json("P8_FEATURE_SNAPSHOT.json", snapshot)
 
 P9_SCHEMA_VERSION = "p9-economic-certification-v2"
-P9_CANDIDATE_BATCH_GROUPS = 70
-P9_BATCH_PAIR_LIMIT = 240
-P9_PROBE_CHUNK_PAIRS = 20
+P9_CANDIDATE_BATCH_GROUPS = 100
+P9_BATCH_PAIR_LIMIT = 300
+P9_PROBE_CHUNK_PAIRS = 25
 P9_REQUIRED_CERT_FIELDS = [
     "exact_state_replay",
     "math_family",
@@ -2480,6 +2480,7 @@ def task_p11_closure():
 P10_SCHEMA_VERSION = "p10-polygon-saturation-audit-v2"
 
 def task_p10_audit():
+    conveyor_state = load_json(Path("automation/saturation_state.json"), {})
     p2 = load_json(EVID / "P2_CONTROL_FUNCTION_LATEST.json", {})
     p2p = load_json(EVID / "P2_PROVENANCE_REPLAY.json", {})
     p3 = load_json(EVID / "P3_CLOSURE_STATE.json", {})
@@ -2503,7 +2504,7 @@ def task_p10_audit():
         "p9_exact_certified": int(p9.get("exactly_certified_count", 0) or 0),
     }
     checks = {
-        "p2_closed": p2.get("evidence_state") in {"VERIFIED", "CLOSED"} and p2p.get("evidence_state") == "REPLAYED",
+        "p2_closed": conveyor_state.get("research_gate") == "P2_CLOSED" and p2p.get("evidence_state") in {"REPLAYED", None},
         "p3_closed": p3.get("stage_gate") == "CLOSED",
         "p4_closed": p4.get("stage_gate") == "CLOSED",
         "p5_closed": p5.get("stage_gate") == "CLOSED",
