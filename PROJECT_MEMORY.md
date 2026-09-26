@@ -406,3 +406,13 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - P3 remains discovery evidence only. No protocol/address/pool/token/route/liquidity/profitability object is promoted to VERIFIED from this gate.
 - Main research gate advances to **P4_TOKEN_UNIVERSE**. Polygon remains sealed and is not reopened.
 
+
+## 2026-09-26 — Ethereum P4 active-stage memory lock
+- P4 token-universe work is ACTIVE, not CLOSED.
+- The evidence model deliberately separates source discovery from on-chain truth.
+- Candidate addresses are normalized by address, and duplicate observations from multiple lists are merged rather than counted as separate universe objects.
+- P4 verification uses a fixed Ethereum block selected from fresh chain-head observations within the existing tolerance, then compares runtime-code evidence across independent RPC endpoints.
+- Code-presence classification is distinct from ERC20 semantic certification; semantic token behavior remains downstream.
+- Performance optimization must not weaken fail-closed rules: minimum two chain-1 RPC identities, same-block verification, dual independent observations, zero code-hash conflicts, stable source fingerprints and complete classification remain mandatory.
+- Current authoritative main HEAD: `0a666db75d7a224296300bab89568a8a8cfae2ec`.
+- Latest authoritative P4 validation candidate is Run `36262194895` (#5), currently QUEUED. Earlier Run `36262108128` (#3) is still IN_PROGRESS on the older serial worker; it is not a closure source.
