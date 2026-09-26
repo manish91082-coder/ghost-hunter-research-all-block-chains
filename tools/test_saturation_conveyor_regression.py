@@ -1020,5 +1020,15 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn('p9_econ.get("non_evm_pool_refs_total"', worker)
 
 
+
+
+    def test_p11_final_closure_executes_and_exposes_ready_state(self):
+        source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
+        self.assertIn("if current in PROMOTION:", source)
+        self.assertNotIn("current in PROMOTION and current not in ('P11',)", source)
+        self.assertIn('elif current == "P11":', source)
+        self.assertIn('entry["status"] = "READY" if stage_ready("P11") else "OPEN"', source)
+
+
 if __name__ == "__main__":
     unittest.main()

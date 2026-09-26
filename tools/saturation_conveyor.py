@@ -194,8 +194,15 @@ def sync_stage_metadata(state):
     for index, stage in enumerate(order):
         entry = stages.setdefault(stage, {})
         if stage == "P11":
-            entry["mode"] = "SHADOW"
-            entry["status"] = "LOCKED" if current_index < order.index("P11") else entry.get("status", "PREPARE")
+            if current_index < order.index("P11"):
+                entry["mode"] = "SHADOW"
+                entry["status"] = "LOCKED"
+            elif current == "P11":
+                entry["mode"] = "CRITICAL"
+                entry["status"] = "READY" if stage_ready("P11") else "OPEN"
+            else:
+                entry["mode"] = "SHADOW"
+                entry["status"] = entry.get("status", "READY")
             continue
         if index < current_index:
             entry["status"] = "CLOSED"
@@ -256,7 +263,7 @@ def main():
         state.setdefault('cursors',{})['critical']=critical_cursor
     else:
         current=state.get('critical_stage','P3')
-        if current in PROMOTION and current not in ('P11',):
+        if current in PROMOTION:
             ts=task_state(state,current)
             epoch=current_code_epoch()
             revision=TASK_REVISIONS.get(current)
