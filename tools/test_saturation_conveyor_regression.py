@@ -407,9 +407,13 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
                 "eligible_token_universe_nonempty": True,
             },
         }
-        self.assertTrue(module.p5_closure_ready(
+        self.assertFalse(module.p5_closure_ready(
             snapshot,
             {"fingerprint": "abc", "coverage_complete": True, "stable_runs": 0},
+        ))
+        self.assertTrue(module.p5_closure_ready(
+            snapshot,
+            {"fingerprint": "abc", "coverage_complete": True, "stable_runs": 1},
         ))
 
     def test_p5_closure_requires_complete_stable_pair_universe(self):
@@ -602,7 +606,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
         self.assertIn('"P3":"p3-multisource-closure-v1"', source)
         self.assertIn('"P4":"p4-parallel-endpoint-discovery-v3"', source)
-        self.assertIn('"P5":"p5-full-universe-v2"', source)
+        self.assertIn('"P5":"p5-closure-stability-v3"', source)
         self.assertIn("or (revision and ts.get('revision') != revision)", source)
         self.assertIn("ts['revision']=revision", source)
 

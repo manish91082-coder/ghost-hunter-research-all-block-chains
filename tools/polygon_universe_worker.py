@@ -1399,7 +1399,7 @@ def task_p5_pairs():
     ):
         stage_gate = "CLOSED" if p5_closure_ready(snapshot, {
             "fingerprint": baseline_fp,
-            "stable_runs": 0,
+            "stable_runs": max(0, stable_runs - 1),
             "coverage_complete": True,
         }) else "OPEN"
 
