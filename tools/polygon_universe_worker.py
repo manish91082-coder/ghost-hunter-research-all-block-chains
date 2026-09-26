@@ -1439,27 +1439,136 @@ def task_p5_pairs():
     return write_json("P5_PAIR_SNAPSHOT.json", snapshot)
 
 
+P6_ROUTE_STORAGE_LIMIT = 5000
+P6_CLOSURE_STATE = EVID / "P6_CLOSURE_STATE.json"
+
+
+def p6_route_closure_ready(snapshot, previous_state):
+    checks = snapshot.get("checks", {})
+    current_fp = snapshot.get("graph_fingerprint")
+    previous_fp = previous_state.get("fingerprint")
+    stable_count = int(snapshot.get("stable_runs", 0) or 0)
+    return (
+        checks.get("p5_pair_universe_aligned") is True
+        and checks.get("all_pair_records_consumed") is True
+        and checks.get("no_invalid_pair_records") is True
+        and checks.get("route_enumeration_complete") is True
+        and int(snapshot.get("pair_nodes", 0)) > 0
+        and int(snapshot.get("unique_pairs", 0)) > 0
+        and current_fp
+        and current_fp == previous_fp
+        and previous_state.get("route_enumeration_complete") is True
+        and stable_count >= 1
+    )
+
+
 def task_p6_routes():
-    pairs=load_jsonl(UNIV/"pairs.jsonl"); adj=defaultdict(list); seen=set()
+    pairs = load_jsonl(UNIV / "pairs.jsonl")
+    adj = defaultdict(list)
+    seen = set()
+    invalid_pair_records = 0
+    graph_records = []
+
     for p in pairs:
-        b=(p.get("baseToken") or {}).get("address"); q=(p.get("quoteToken") or {}).get("address"); pair=p.get("pairAddress")
-        if not b or not q or not pair or b.lower()==q.lower(): continue
-        key=(b.lower(),q.lower(),pair.lower());
-        if key in seen: continue
-        seen.add(key); adj[b.lower()].append((q.lower(),pair)); adj[q.lower()].append((b.lower(),pair))
-    routes=[]
-    def dfs(start,node,path,used):
-        if 2<=len(path)<=4 and node==start: routes.append(list(path)); return
-        if len(path)>=4: return
-        for nxt,pair in adj.get(node,[])[:100]:
-            if pair in used: continue
-            if nxt==start and len(path)>=3:
-                routes.append(path+[(start,pair)])
+        b = (p.get("baseToken") or {}).get("address")
+        q = (p.get("quoteToken") or {}).get("address")
+        pair = p.get("pairAddress")
+        if not b or not q or not pair or b.lower() == q.lower():
+            invalid_pair_records += 1
+            continue
+        b = str(b).lower()
+        q = str(q).lower()
+        pair = str(pair).lower()
+        key = (b, q, pair)
+        if key in seen:
+            continue
+        seen.add(key)
+        graph_records.append(key)
+        adj[b].append((q, pair))
+        adj[q].append((b, pair))
+
+    for node in adj:
+        adj[node].sort(key=lambda item: (item[1], item[0]))
+
+    routes = []
+    route_count_total = 0
+
+    def dfs(start, node, path, used):
+        nonlocal route_count_total
+        if len(path) >= 4:
+            return
+        for nxt, pair in adj.get(node, []):
+            if pair in used:
                 continue
-            if nxt in [x[0] for x in path]: continue
-            dfs(start,nxt,path+[(nxt,pair)],used|{pair})
-    for token in list(adj)[:200]: dfs(token,token,[(token,"")],set())
-    return write_json("P6_ROUTE_SNAPSHOT.json",{"task":"p6_route_enumeration","time":now(),"pair_nodes":len(adj),"unique_pairs":len(seen),"route_candidates":routes[:5000],"route_count_sampled":len(routes),"evidence_class":"DERIVED"})
+            if nxt == start:
+                if len(path) >= 3:
+                    route_count_total += 1
+                    if len(routes) < P6_ROUTE_STORAGE_LIMIT:
+                        routes.append(path + [(start, pair)])
+                continue
+            if nxt in [x[0] for x in path]:
+                continue
+            dfs(start, nxt, path + [(nxt, pair)], used | {pair})
+
+    for token in sorted(adj):
+        dfs(token, token, [(token, "")], set())
+
+    previous = load_json(P6_CLOSURE_STATE, {})
+    graph_fingerprint = sha(sorted(graph_records))
+    previous_fp = previous.get("fingerprint")
+    previous_complete = previous.get("route_enumeration_complete") is True
+    if graph_fingerprint and graph_fingerprint == previous_fp and previous_complete:
+        stable_runs = int(previous.get("stable_runs", 0) or 0) + 1
+    else:
+        stable_runs = 1
+
+    p5 = load_json(EVID / "P5_PAIR_SNAPSHOT.json", {})
+    expected_pairs = int(p5.get("total_pair_records", 0) or 0)
+    snapshot = {
+        "task": "p6_route_enumeration",
+        "time": now(),
+        "pair_records_consumed": len(pairs),
+        "valid_pair_records": len(pairs) - invalid_pair_records,
+        "invalid_pair_records": invalid_pair_records,
+        "pair_nodes": len(adj),
+        "unique_pairs": len(seen),
+        "p5_total_pair_records": expected_pairs,
+        "graph_fingerprint": graph_fingerprint,
+        "route_candidates": routes,
+        "route_count_sampled": len(routes),
+        "route_count_total": route_count_total,
+        "route_storage_limit": P6_ROUTE_STORAGE_LIMIT,
+        "route_storage_truncated": route_count_total > len(routes),
+        "stable_runs": stable_runs,
+        "route_enumeration_complete": True,
+        "checks": {
+            "p5_pair_universe_aligned": expected_pairs > 0 and len(seen) == expected_pairs,
+            "all_pair_records_consumed": len(pairs) == len(seen) + invalid_pair_records,
+            "no_invalid_pair_records": invalid_pair_records == 0,
+            "route_enumeration_complete": True,
+        },
+        "evidence_class": "DERIVED",
+    }
+    snapshot["stage_gate"] = "CLOSED" if p6_route_closure_ready(
+        snapshot,
+        {
+            "fingerprint": previous_fp,
+            "stable_runs": max(0, stable_runs - 1),
+            "route_enumeration_complete": previous_complete,
+        },
+    ) else "OPEN"
+
+    write_json("P6_CLOSURE_STATE.json", {
+        "fingerprint": graph_fingerprint,
+        "stable_runs": stable_runs,
+        "updated_at": snapshot["time"],
+        "stage_gate": snapshot["stage_gate"],
+        "route_enumeration_complete": True,
+        "pair_nodes": len(adj),
+        "unique_pairs": len(seen),
+        "route_count_total": route_count_total,
+    })
+    return write_json("P6_ROUTE_SNAPSHOT.json", snapshot)
 
 STRATEGIES=["dex_dex","intra_dex","triangular","multi_hop","split","flash_loan","liquidation","backrun","orderflow_mev","intent_rfq_filler","solver_relayer","liquidity_state_transition","cross_domain","statistical_temporal","gas_regime","failed_tx_retry_state","protocol_structural","negative_space_hypothesis"]
 def task_p7_strategies():

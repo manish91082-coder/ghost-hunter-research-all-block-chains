@@ -654,5 +654,60 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
                     self.assertFalse("shell=True" in ast.unparse(node))
 
 
+
+
+
+    def test_p6_route_closure_requires_matching_complete_graph_recheck(self):
+        import importlib.util
+        worker_path = ROOT / "tools" / "polygon_universe_worker.py"
+        spec = importlib.util.spec_from_file_location("polygon_universe_worker_p6_gate", worker_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        snapshot = {
+            "pair_nodes": 4,
+            "unique_pairs": 6,
+            "graph_fingerprint": "abc",
+            "stable_runs": 1,
+            "route_enumeration_complete": True,
+            "checks": {
+                "p5_pair_universe_aligned": True,
+                "all_pair_records_consumed": True,
+                "no_invalid_pair_records": True,
+                "route_enumeration_complete": True,
+            },
+        }
+        self.assertFalse(module.p6_route_closure_ready(
+            snapshot,
+            {"fingerprint": "abc", "stable_runs": 0, "route_enumeration_complete": False},
+        ))
+        self.assertTrue(module.p6_route_closure_ready(
+            snapshot,
+            {"fingerprint": "abc", "stable_runs": 1, "route_enumeration_complete": True},
+        ))
+
+
+    def test_p6_route_enumeration_uses_full_graph_not_hidden_sampling_caps(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn("for token in sorted(adj):", worker)
+        self.assertIn("route_count_total", worker)
+        self.assertIn("P6_ROUTE_STORAGE_LIMIT = 5000", worker)
+        self.assertNotIn("list(adj)[:200]", worker)
+        self.assertNotIn("adj.get(node,[])[:100]", worker)
+
+
+    def test_p6_worker_writes_explicit_closure_state_and_stage_gate(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn("P6_CLOSURE_STATE = EVID / "P6_CLOSURE_STATE.json"", worker)
+        self.assertIn("def p6_route_closure_ready(", worker)
+        self.assertIn('snapshot["stage_gate"] = "CLOSED"', worker)
+        self.assertIn('"route_enumeration_complete": True', worker)
+
+
+    def test_p6_revision_resets_stale_cooldown(self):
+        source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
+        self.assertIn('"P6":"p6-route-closure-v1"', source)
+
+
 if __name__ == "__main__":
     unittest.main()
