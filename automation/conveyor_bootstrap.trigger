@@ -31,3 +31,4 @@ purpose=one-shot live validation of optimized critical lane and repaired P2 evid
 2026-09-26T12:16:00+05:30 P4-stale-revision-test-cleanup-bootstrap
 2026-09-26T12:24:00+05:30 P4-clean-main-sequence-run
 2026-09-26T12:31:00+05:30 P4-rpc-pool-id-normalization-repair
+2026-09-26T12:38:00+05:30 P4-bounded-429-recovery-and-transport-fallback
