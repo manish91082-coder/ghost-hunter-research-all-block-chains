@@ -826,3 +826,12 @@ P9 exact economic certification: exact-state replay, venue-specific swap math, g
 - P2 is now CLOSED for Ethereum Mainnet.
 - Next critical stage: **P3 protocol/DEX discovery**.
 - P3 acceptance must use multi-source discovery convergence and stability; discovery snapshots do not promote addresses/pools to VERIFIED.
+## 2026-09-26 — Ethereum P3 discovery CLOSED / P4 unlocked
+- P3 Run `36261835287` completed SUCCESS on HEAD `4a5c393259d781d6fc6b1eadc35fb8ddd461f7e4`.
+- Artifact `10913180488` independently parsed with valid JSON and no literal-newline corruption.
+- Two samples were stable with normalized universe fingerprint `e342cd402671266d80e08a7669c308d9eac48d514164847dd1dbe3079e3642ac`.
+- Snapshot fingerprint: `533bf32d1f3cdac94f122b2017905b584758c2ddd07d19c51cf151b3b77b7a19`.
+- Observed cross-source DEX overlap: 13; required minimum: 3; duplicate DEX names: 0.
+- P3 is now CLOSED under the declared discovery-only boundary.
+- **Next critical objective: P4 token-universe saturation and on-chain token identity verification.**
+
