@@ -137,6 +137,10 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("as_completed", worker)
         self.assertIn('"rpc_workers": P4_RPC_WORKERS', worker)
 
+    def test_p4_pool_order_is_normalized_to_endpoint_ids(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn('candidates = [item["id"] for item in pool.ordered()[:max_endpoints]]', worker)
+
     def test_p4_scans_multiple_rpc_candidates_in_parallel(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn("P4_ENDPOINT_SCAN_MAX = 12", worker)

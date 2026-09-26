@@ -580,7 +580,7 @@ def _p4_select_capable_endpoints(pool, chain_ok, probe_addresses, max_endpoints=
 
 
 def _p4_discover_chain_endpoints(pool, max_endpoints=P4_ENDPOINT_SCAN_MAX):
-    candidates = pool.ordered()[:max_endpoints]
+    candidates = [item["id"] for item in pool.ordered()[:max_endpoints]]
     chain_ok = []
     diagnostics = {}
 
