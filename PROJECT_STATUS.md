@@ -561,3 +561,12 @@ P7 closure certifies strategy-family coverage and matrix schema completeness, no
 - Polygon closure provenance remains Run 36250240579 / Artifact 10908519045 with artifact digest `sha256:ad2505dceb8968c54bc7d0ae23baf44b9f4015d7b86431774c468b92b639ba48`.
 - GREEN scope is strictly **research-universe saturation**. It does not certify exact profitability and does not authorize live signing, public broadcast or real-money execution.
 - A scheduled Polygon drift-watch workflow is now canonical; future drift is expected to create a new evidence state rather than mutate this historical seal.
+
+## 2026-09-26 — Ethereum P2 CLOSED / P3 UNLOCKED
+- Ethereum P2 closure certificate: `automation/evidence/ETHEREUM_P2_CLOSURE_CERTIFICATE.json`.
+- RPC bootstrap Run `36256665200` completed SUCCESS on HEAD `6e019c50d72f9baca7a65b948fda7984561acfc9`.
+- System runtime-code Run `36257049739` completed SUCCESS on HEAD `d0df6c1b1bb722f47edcbd9e1295487796601c80`; 4/4 system targets matched across independent RPC observations.
+- Semantic-control Run `36257349105` completed SUCCESS on HEAD `a3469ecd39c574b717169d4763cf78774302cfdb`; 5/5 controls verified with matching observations from 1rpc, blastapi and drpc.
+- Ethereum P2 is therefore **CLOSED** under the current infrastructure/control boundary.
+- P3 is now the active critical stage. DEX/protocol discovery remains candidate/discovery evidence until explicit P3 closure predicates pass.
+- Live signing, public broadcast and real-money execution remain OFF.
