@@ -23,11 +23,16 @@
     {
       "chain": "Ethereum Mainnet",
       "chain_id": 1,
-      "status": "P2_CLOSED",
+      "status": "P3_CLOSED",
       "p2_status": "CLOSED",
       "census_lock": false,
-      "p3_stage": "NOT_STARTED",
-      "note": "Ethereum P2 infrastructure/control evidence is closed from current-main CI artifacts. P3 discovery is the next stage; no protocol/pool/profitability claim is implied."
+      "p3_stage": "CLOSED",
+      "note": "Ethereum P3 discovery is closed under multi-source convergence; addresses/pools/tokens/routes remain downstream verification work.",
+      "p3_status": "CLOSED",
+      "p3_run": 36261835287,
+      "p3_artifact_id": 10913180488,
+      "p3_artifact_digest": "sha256:72e150a86ae9b064fb270d8463582b351c47faf40f4bf3bc395a4660eb8b9682",
+      "p3_fingerprint": "533bf32d1f3cdac94f122b2017905b584758c2ddd07d19c51cf151b3b77b7a19"
     }
   ],
   "next_target": {
@@ -35,16 +40,16 @@
     "chain_id": 1,
     "classification": "EVM",
     "status": "RESEARCH_ACTIVE",
-    "research_phase": "P3_DISCOVERY",
-    "stage_gate": "P3_NOT_STARTED",
+    "research_phase": "P4_TOKEN_UNIVERSE",
+    "stage_gate": "P4_NOT_STARTED",
     "required_next_research": [
-      "multi-source DEX/protocol discovery",
-      "protocol surface normalization",
-      "cross-source stability",
-      "candidate address matrix"
+      "token discovery and canonical identity normalization",
+      "on-chain token contract verification",
+      "cross-source token stability",
+      "token taxonomy and non-standard token handling"
     ],
     "profile_path": "chains/ethereum-mainnet/CHAIN_PROFILE.md",
-    "evidence_path": "automation/evidence/ETHEREUM_P2_CLOSURE_CERTIFICATE.json"
+    "evidence_path": "automation/evidence/ETHEREUM_P3_CLOSURE_CERTIFICATE.json"
   },
   "queue_policy": "After Ethereum, order is recalculated from fresh evidence rather than permanently hard-coded."
 }
