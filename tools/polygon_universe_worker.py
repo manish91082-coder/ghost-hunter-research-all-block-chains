@@ -424,7 +424,8 @@ def extract_dex_token_addresses(rows):
 
 P4_VERIFY_STATE = EVID / "P4_VERIFICATION_STATE.json"
 P4_VERIFY_BATCH_SIZE = 48
-P4_RPC_WORKERS = 3
+P4_RPC_WORKERS = 6
+P4_ENDPOINT_SCAN_MAX = 12
 
 
 def p4_verification_batch(candidates, verification_state, batch_size=P4_VERIFY_BATCH_SIZE):
@@ -577,6 +578,44 @@ def _p4_select_capable_endpoints(pool, chain_ok, probe_addresses, max_endpoints=
     selected.sort(key=lambda endpoint_id: chain_ok.index(endpoint_id))
     return selected[:max_endpoints], diagnostics
 
+
+def _p4_discover_chain_endpoints(pool, max_endpoints=P4_ENDPOINT_SCAN_MAX):
+    candidates = pool.ordered()[:max_endpoints]
+    chain_ok = []
+    diagnostics = {}
+
+    def probe(eid):
+        try:
+            obs = pool.request(eid, "eth_chainId", [], f"p4:{eid}:chain", 12, 1)
+            body = obs.get("body")
+            result = body.get("result") if isinstance(body, dict) else None
+            return eid, str(result).lower() == "0x89", obs
+        except Exception as exc:
+            return eid, False, {"ok": False, "message": f"{type(exc).__name__}: {exc}"}
+
+    worker_count = min(P4_RPC_WORKERS, len(candidates))
+    with ThreadPoolExecutor(max_workers=worker_count or 1) as executor:
+        futures = [executor.submit(probe, eid) for eid in candidates]
+        for future in as_completed(futures):
+            eid, is_polygon, obs = future.result()
+            diagnostics[eid] = {
+                "chain_id_137": is_polygon,
+                "http_status": obs.get("http_status"),
+                "error": obs.get("message") or (
+                    (obs.get("body") or {}).get("error")
+                    if isinstance(obs.get("body"), dict) else None
+                ),
+            }
+            if is_polygon:
+                chain_ok.append(eid)
+                pool.mark_success(eid)
+            else:
+                pool.mark_failure(eid, obs)
+
+    chain_ok.sort(key=lambda endpoint_id: candidates.index(endpoint_id))
+    return chain_ok, diagnostics
+
+
 def _p4_rpc_token_verification(candidates, verification_state):
     try:
         import sys
@@ -590,20 +629,7 @@ def _p4_rpc_token_verification(candidates, verification_state):
 
     endpoints = load_rpc_endpoints(None, str(RPC_POOL))
     pool = RpcPool(endpoints, 0.35)
-    chain_ok = []
-
-    for item in pool.ordered():
-        eid = item["id"]
-        obs = pool.request(eid, "eth_chainId", [], f"p4:{eid}:chain", 12, 1)
-        if obs.get("ok"):
-            pool.mark_success(eid)
-        else:
-            pool.mark_failure(eid, obs)
-        result = ((obs.get("body") or {}).get("result") if isinstance(obs.get("body"), dict) else None)
-        if str(result).lower() == "0x89":
-            chain_ok.append(eid)
-        if len(chain_ok) >= 6:
-            break
+    chain_ok, chain_probe = _p4_discover_chain_endpoints(pool)
 
     batch = p4_verification_batch(candidates, verification_state)
     probe_addresses = _p4_endpoint_probe_addresses(candidates)
@@ -714,7 +740,9 @@ def _p4_rpc_token_verification(candidates, verification_state):
         "endpoint_errors": endpoint_errors,
         "capability_probe": capability_probe,
         "selected_endpoints": selected_endpoints,
+        "chain_probe": chain_probe,
         "rpc_workers": P4_RPC_WORKERS,
+        "endpoint_scan_max": P4_ENDPOINT_SCAN_MAX,
     }
     P4_VERIFY_STATE.parent.mkdir(parents=True, exist_ok=True)
     P4_VERIFY_STATE.write_text(json.dumps(save_payload, sort_keys=True) + "\n", encoding="utf-8")
