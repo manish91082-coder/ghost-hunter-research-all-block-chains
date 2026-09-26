@@ -1,0 +1,46 @@
+name: Ethereum P2 System Code Verification
+
+concurrency:
+  group: ethereum-p2-system-code-main
+  cancel-in-progress: true
+
+on:
+  push:
+    paths:
+      - "chains/ethereum-mainnet/P2_SYSTEM_TARGETS.json"
+      - "chains/ethereum-mainnet/ethereum_p2_system_verifier.py"
+      - "chains/ethereum-mainnet/rpc_pool.txt"
+      - "tools/test_ethereum_p2_system.py"
+      - ".github/workflows/ethereum-p2-system-code.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate
+        run: |
+          set -euo pipefail
+          python -m py_compile chains/ethereum-mainnet/ethereum_p2_system_verifier.py
+          python tools/test_ethereum_p2_system.py
+      - name: Live read-only system code verification
+        run: |
+          set -euo pipefail
+          python chains/ethereum-mainnet/ethereum_p2_system_verifier.py
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ethereum-p2-system-code
+          path: |
+            automation/evidence/ETHEREUM_P2_SYSTEM_CODE_REPORT.json
+            automation/evidence/ETHEREUM_P2_SYSTEM_CODE_OBSERVATIONS.jsonl
+          if-no-files-found: warn
