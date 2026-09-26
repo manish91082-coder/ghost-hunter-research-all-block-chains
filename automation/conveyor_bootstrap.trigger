@@ -28,3 +28,4 @@ purpose=one-shot live validation of optimized critical lane and repaired P2 evid
 2026-09-26T11:48:00+05:30 P4-speed-boost-github-orchestration-bootstrap
 2026-09-26T12:02:00+05:30 P4-full-rpc-pool-parallel-discovery-bootstrap
 2026-09-26T12:10:00+05:30 P4-parallel-orchestration-test-fix-bootstrap
+2026-09-26T12:16:00+05:30 P4-stale-revision-test-cleanup-bootstrap
