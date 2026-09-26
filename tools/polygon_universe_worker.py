@@ -3,6 +3,7 @@
 stdlib-only; every external snapshot is labeled discovery evidence, never VERIFIED.
 """
 import hashlib, json, os, time, urllib.error, urllib.parse, urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from collections import defaultdict
 from pathlib import Path
 
@@ -422,7 +423,8 @@ def extract_dex_token_addresses(rows):
 
 
 P4_VERIFY_STATE = EVID / "P4_VERIFICATION_STATE.json"
-P4_VERIFY_BATCH_SIZE = 24
+P4_VERIFY_BATCH_SIZE = 48
+P4_RPC_WORKERS = 3
 
 
 def p4_verification_batch(candidates, verification_state, batch_size=P4_VERIFY_BATCH_SIZE):
@@ -542,22 +544,38 @@ def _p4_endpoint_semantic_probe(pool, endpoint_id, addresses):
 def _p4_select_capable_endpoints(pool, chain_ok, probe_addresses, max_endpoints=3):
     selected = []
     diagnostics = {}
-    for eid in chain_ok:
+
+    def probe(eid):
         try:
             usable, _ = _p4_endpoint_semantic_probe(pool, eid, probe_addresses)
-            diagnostics[eid] = {"usable": usable, "error": ""}
+            return eid, usable, ""
+        except Exception as exc:
+            return eid, False, f"{type(exc).__name__}: {exc}"
+
+    worker_count = min(P4_RPC_WORKERS, len(chain_ok))
+    if worker_count <= 0:
+        return selected, diagnostics
+
+    with ThreadPoolExecutor(max_workers=worker_count) as executor:
+        futures = [executor.submit(probe, eid) for eid in chain_ok]
+        for future in as_completed(futures):
+            eid, usable, error = future.result()
+            diagnostics[eid] = {"usable": usable, "error": error}
             if usable:
                 selected.append(eid)
                 pool.mark_success(eid)
             else:
-                pool.mark_failure(eid, {"http_status": 200, "rate_limited": False, "message": "semantic capability probe failed"})
-        except Exception as exc:
-            diagnostics[eid] = {"usable": False, "error": f"{type(exc).__name__}: {exc}"}
-            pool.mark_failure(eid, {"http_status": None, "rate_limited": False, "message": str(exc)})
-        if len(selected) >= max_endpoints:
-            break
-    return selected, diagnostics
+                pool.mark_failure(
+                    eid,
+                    {
+                        "http_status": 200 if not error else None,
+                        "rate_limited": False,
+                        "message": error or "semantic capability probe failed",
+                    },
+                )
 
+    selected.sort(key=lambda endpoint_id: chain_ok.index(endpoint_id))
+    return selected[:max_endpoints], diagnostics
 
 def _p4_rpc_token_verification(candidates, verification_state):
     try:
@@ -593,13 +611,10 @@ def _p4_rpc_token_verification(candidates, verification_state):
         pool, chain_ok, probe_addresses, max_endpoints=3
     )
     endpoint_success = {}
-
+    endpoint_errors = {}
     candidate_map = {address: {} for address in batch}
 
-    # Every endpoint in the semantic quorum is independently capable of the
-    # required read-only ERC-20 probes. Three endpoints are allowed as bounded
-    # failover, but no majority is inferred: a conflict remains a conflict.
-    for eid in selected_endpoints:
+    def run_endpoint_batch(eid):
         calls = []
         for address in batch:
             calls.append((f"p4:{eid}:{address}:code", "eth_getCode", [address, "latest"]))
@@ -607,36 +622,48 @@ def _p4_rpc_token_verification(candidates, verification_state):
             calls.append((f"p4:{eid}:{address}:supply", "eth_call", [{"to": address, "data": "0x18160ddd"}, "latest"]))
         try:
             _, rows = _p4_rpc_batch_endpoint(pool, eid, calls, timeout=30)
-            endpoint_success[eid] = True
-            pool.mark_success(eid)
+            return eid, True, rows, ""
         except Exception as exc:
-            endpoint_success[eid] = False
-            pool.mark_failure(eid, {"http_status": None, "rate_limited": False, "message": str(exc)})
-            rows = {}
+            return eid, False, {}, f"{type(exc).__name__}: {exc}"
 
-        for address in batch:
-            code_row = rows.get(f"p4:{eid}:{address}:code", {})
-            dec_row = rows.get(f"p4:{eid}:{address}:decimals", {})
-            supply_row = rows.get(f"p4:{eid}:{address}:supply", {})
+    worker_count = min(P4_RPC_WORKERS, len(selected_endpoints))
+    with ThreadPoolExecutor(max_workers=worker_count or 1) as executor:
+        futures = [executor.submit(run_endpoint_batch, eid) for eid in selected_endpoints]
+        for future in as_completed(futures):
+            eid, success, rows, error = future.result()
+            endpoint_success[eid] = success
+            if success:
+                pool.mark_success(eid)
+            else:
+                endpoint_errors[eid] = error
+                pool.mark_failure(
+                    eid,
+                    {"http_status": None, "rate_limited": False, "message": error},
+                )
 
-            code = code_row.get("result")
-            decimals = dec_row.get("result")
-            total_supply = supply_row.get("result")
-            valid_code = isinstance(code, str) and code not in {"", "0x", "0X"}
-            valid_decimals = isinstance(decimals, str) and decimals.startswith("0x")
-            valid_supply = isinstance(total_supply, str) and total_supply.startswith("0x")
-            if valid_decimals:
-                try:
-                    valid_decimals = 0 <= int(decimals, 16) <= 255
-                except ValueError:
-                    valid_decimals = False
+            for address in batch:
+                code_row = rows.get(f"p4:{eid}:{address}:code", {})
+                dec_row = rows.get(f"p4:{eid}:{address}:decimals", {})
+                supply_row = rows.get(f"p4:{eid}:{address}:supply", {})
 
-            candidate_map[address][eid] = {
-                "code": code,
-                "decimals": decimals,
-                "total_supply": total_supply,
-                "valid": bool(valid_code and valid_decimals and valid_supply),
-            }
+                code = code_row.get("result")
+                decimals = dec_row.get("result")
+                total_supply = supply_row.get("result")
+                valid_code = isinstance(code, str) and code not in {"", "0x", "0X"}
+                valid_decimals = isinstance(decimals, str) and decimals.startswith("0x")
+                valid_supply = isinstance(total_supply, str) and total_supply.startswith("0x")
+                if valid_decimals:
+                    try:
+                        valid_decimals = 0 <= int(decimals, 16) <= 255
+                    except ValueError:
+                        valid_decimals = False
+
+                candidate_map[address][eid] = {
+                    "code": code,
+                    "decimals": decimals,
+                    "total_supply": total_supply,
+                    "valid": bool(valid_code and valid_decimals and valid_supply),
+                }
 
     for address in batch:
         observations = []
@@ -684,8 +711,10 @@ def _p4_rpc_token_verification(candidates, verification_state):
         "verification": verification_state,
         "transport": "json_rpc_batch",
         "endpoint_success": endpoint_success,
+        "endpoint_errors": endpoint_errors,
         "capability_probe": capability_probe,
         "selected_endpoints": selected_endpoints,
+        "rpc_workers": P4_RPC_WORKERS,
     }
     P4_VERIFY_STATE.parent.mkdir(parents=True, exist_ok=True)
     P4_VERIFY_STATE.write_text(json.dumps(save_payload, sort_keys=True) + "\n", encoding="utf-8")
