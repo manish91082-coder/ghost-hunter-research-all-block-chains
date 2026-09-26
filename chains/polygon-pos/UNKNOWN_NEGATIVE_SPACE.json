@@ -1,0 +1,21 @@
+{
+  "residuals": [
+    {
+      "area": "dynamic_chain_state",
+      "status": "LIVE_REQUIRED"
+    },
+    {
+      "area": "dex_contract_binding",
+      "status": "LIVE_REQUIRED"
+    },
+    {
+      "area": "split_and_4plus_hop_routes",
+      "status": "SEPARATE_EXTENSION"
+    },
+    {
+      "area": "exact_profitability",
+      "status": "NOT_CERTIFIED"
+    }
+  ],
+  "schema": "polygon-static-negative-space-fast-v1"
+}

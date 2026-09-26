@@ -1,0 +1,897 @@
+{
+  "count": 67,
+  "records": [
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x015de3ec460869eb5ceae4224dc7112ac0a39303",
+      "example_pair_addresses": [
+        "0x81e5d604045731f6856aa9d5665f693e12f26aa7",
+        "0x917273fbf265146201610fdc8c05b3c736f91f6a",
+        "0xd79b023396dc9550c49fbd442570e4e7c2b9d463",
+        "0xdeaa78658d8abc881536d89a865851a7bd7a6ce2"
+      ],
+      "pair_count": 4,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 5
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x03daa61d8007443a6584e3d8f85105096543c19c",
+      "example_pair_addresses": [
+        "0x05cde5c5d656b46832e0f8f5863b2cf3081c0041",
+        "0x0c787944946d22922c9f41c477cc539700d35bb2",
+        "0x15bc4a991e64dac43b16292904f828dfc81367cc",
+        "0x2ae0239fce72fd5d4c93324b50720c9117d4ee17",
+        "0x2ca39d7da62570177238d0acaf0b16c76e85999b"
+      ],
+      "pair_count": 26,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 26
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x150396e304d58495679444ce4e7abcff653a6274",
+      "example_pair_addresses": [
+        "0x6acf4699ff4584578a975c4e98bb9d85002bdd47"
+      ],
+      "pair_count": 1,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 2
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x1a8c7e7553cfea2740a35b3d1b42e3ddb117cb17",
+      "example_pair_addresses": [
+        "0x79d195346b13deed664625116b1a3e5cdc558514"
+      ],
+      "pair_count": 1,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 2
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x2541dbea199a22501d75ea141627776bd4eefc80",
+      "example_pair_addresses": [
+        "0x08957cbe099986ec8e03b82ca8be1721b0b58b7f",
+        "0x1839967a4f067f2a5561e19c5d2aad163c10b1e7",
+        "0x4eb413c031246ece4c42cbbc2678572abdfaa7d8",
+        "0x532e02d9202fa96a3df2c2b6e7f8158206de648f",
+        "0x78bf55f37ae30f8e040a61fac72f9a1afc974c58"
+      ],
+      "pair_count": 14,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 11
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x25cc30af6b2957b0ed7ceca026fc204fdbe04e59",
+      "example_pair_addresses": [
+        "0xf6efcb97626a7fa0bf455ce3f808b36e18df634d"
+      ],
+      "pair_count": 1,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 2
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x2d7360db7216792cfc2c73b79c0ca629007e2af4",
+      "example_pair_addresses": [
+        "0x42328911027615c629f989e5fbaaad5e971a688b",
+        "0x6f207374c5c7946fbae60736d47e9003a9bfba8f",
+        "0xb4aea291c29ed30968fbe648e7bb0c2e7d6dbaa1",
+        "0xb6b93617a3eedd8139f2657b1aa7e605b8741ef5",
+        "0xba58179d96d259f43d505436fd6cf468a84c3b54"
+      ],
+      "pair_count": 6,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 5
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x388371233439cf57bb8c9f2e4835954841cfcb15",
+      "example_pair_addresses": [
+        "0x0acbd0c1100c5fda96b506f7f1b5849fdd3fd1bc",
+        "0x991d2748afff558e4b98f51a7e0154f9323070bb"
+      ],
+      "pair_count": 2,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 3
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x3dd8fd033f7a3231e38a54ce6d710d5e5f074745",
+      "example_pair_addresses": [
+        "0x68625bee2beeb0444e8eb806e803d6fa1bbbf0b2"
+      ],
+      "pair_count": 1,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 2
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x42e635d36913c94a340567761ec8383b9932906a",
+      "example_pair_addresses": [
+        "0xec3434a26545a8a04dc3971c8bddcba23efb1b61"
+      ],
+      "pair_count": 1,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 2
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x442266042667407329e1729e6bead71424f42021",
+      "example_pair_addresses": [
+        "0x0c100343ad704aa81bb50f2f15a8bf9b2e55e3c9",
+        "0x43b2e41bb9b2ca91c2c1c9865c6bd36f2295d891",
+        "0x9f897324aaf3a6426165341ff1747688151e604c",
+        "0xcf3fd9e4285387296a9bc8d97230c7c458d2451e",
+        "0xd6982e01d183b3a979c3294c2f48416458f0e19c"
+      ],
+      "pair_count": 6,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 6
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x4fee52912f81b78c3cdcb723728926ed6a893d27",
+      "example_pair_addresses": [
+        "0xc8f255954af417ea8a52362a6fdee74ed262545a"
+      ],
+      "pair_count": 1,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 2
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x598a177cccf553eea28eb2aee7542c8b04d46b82",
+      "example_pair_addresses": [
+        "0x4ea0d8124b44fcd25453ceea720fefa2a104080a",
+        "0xa8ba977eb3d9e5c3af151d5b10f892cb8cc3e80b",
+        "0xc1970bdbaf83023c3ba2a3c923f818855043ea38"
+      ],
+      "pair_count": 3,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 4
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x5be44d6c5634161cdadcc2bc35389325aa493e83",
+      "example_pair_addresses": [
+        "0x0764e07278bc6413d7676f7f404480ff91f3ccc4",
+        "0x515dec2c0a12cee7614e05bbc120a407d6da2078"
+      ],
+      "pair_count": 2,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 4
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x5ede3f4e7203bf1f12d57af1810448e5db20f46c",
+      "example_pair_addresses": [
+        "0x30e5e9f09ab58554d827a1123c936f58aa254711",
+        "0x436803355d26943dd0bc9826d39f9079199a890a",
+        "0x6c6ac1c806379877b6a4ea236b47890b9d195ae4",
+        "0x80f93221e875d14aeddfdfc778ca755ab3562ce3",
+        "0x9df16efd7c95316302f64d3b5f9a067a0f9d1f41"
+      ],
+      "pair_count": 6,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 8
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x672353e4e674dddd7319a4852e49f6e1d2ac6f18",
+      "example_pair_addresses": [
+        "0x0d4b195f615982c09eec2c3165b25d98916b71e7",
+        "0x1f7df23299b8502a23ddae43b79a8c8719ec05f4",
+        "0x5cffdbc1f1975e41525e1b82b4340748fcc06d54",
+        "0x75d4877fe9e2b16b744832c8d91ce15fd0df294e",
+        "0xa357b4aa07ee6ee71f7df0f0575e64925a7b34aa"
+      ],
+      "pair_count": 9,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 9
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x6e553d5f028bd747a27e138fa3109570081a23ae",
+      "example_pair_addresses": [
+        "0x12e7b8c88f9f0babb3907c46c6453c34a5ff838b"
+      ],
+      "pair_count": 1,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 2
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x709e3c6b22993189327a8cfebd572b6cc459fe40",
+      "example_pair_addresses": [
+        "0x05f39c44ebd336ec36faa9b74f446186075bbd1f",
+        "0x0d02cf5c4a896412ac628b469ff7e7f532221fd8",
+        "0x1da2651759e81541ec1fc09aada24fe61cdd1114",
+        "0x2504740cde3cfbef629b942f481f99a4f5bdc750",
+        "0x4211fb084c006e9a19e4c7c7df62dfd4dc9cdeae"
+      ],
+      "pair_count": 12,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 12
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x75ed971834b0e176a053ac959d9cf77f0b4c89d0",
+      "example_pair_addresses": [
+        "0x38fbdff275aa144ee76581c56f02bd254840e5e9",
+        "0x54e256dc87073de6e519b52a9a6bb5cedd881203",
+        "0x6c5c3285c1519d23777472d302d00731ce514af9",
+        "0xb16d66c2f6ca479e9d0eb6d719eedb3b82bd851c",
+        "0xcd38d1b46cea363886b429a33099ac432a672e2a"
+      ],
+      "pair_count": 5,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 7
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x76915cc0c69ffcb0c278739075ea2822d8d06f9f",
+      "example_pair_addresses": [
+        "0x4682148cae65516adee69a67d5cd672d503c4696"
+      ],
+      "pair_count": 1,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 2
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x79038549c96bbfb1e45914402c3479f65e192787",
+      "example_pair_addresses": [
+        "0x2fede863ffce33cc0d22d6680c8c822a68775627"
+      ],
+      "pair_count": 1,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 2
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x9405d6a4ae2605b666609c675570cd889fcdaf60",
+      "example_pair_addresses": [
+        "0x03686f576391c9f97b0513fd62a8cdcbc83e7c7d",
+        "0x5895d5dce7e898a0d2d9cbe3967f5849865f11fc",
+        "0xb705ff7921831776167e474a3304e7de032f4035",
+        "0xda5f7fbea27c245659ff5e51861d9c782c34664a",
+        "0xddb04cf999e851f29dc014e9b0823cbebee32c94"
+      ],
+      "pair_count": 5,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 5
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x9679010bf908225f84cd030b4acf7fd4fa13c8f5",
+      "example_pair_addresses": [
+        "0x13c5cb6762eb5dc01c515cf85a2d8d74fc21a18d",
+        "0xb786e08e78c12178aa13f699643e9dc3fa7ce230"
+      ],
+      "pair_count": 2,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 3
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0x9ccb9a679ac05cb05569ff9916a6d56352d3f587",
+      "example_pair_addresses": [
+        "0xd85b603dbaf7581e1a894150e3d961cbbc77c6b9"
+      ],
+      "pair_count": 1,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 2
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0xa2d23c7ca6d360d5b0b30caff79dbbfa242b4811",
+      "example_pair_addresses": [
+        "0x86c5ff0729801be567038ec0e91b2d6a5b212f4e"
+      ],
+      "pair_count": 1,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 2
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0xa347adf8c314c1051f85e5c4edb5b3d2768bed21",
+      "example_pair_addresses": [
+        "0x545a497b5a5bb7a8397ab6d1ed938492a2519229"
+      ],
+      "pair_count": 1,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 2
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0xa98ea6356a316b44bf710d5f9b6b4ea0081409ef",
+      "example_pair_addresses": [
+        "0x1a881d021d346c5433b2cf8fb46ee00dec89070d",
+        "0x2857ec555c1e4fa20982acbf985b8b8807157a5b",
+        "0x3b537f1b6b4f2119f0b088e4937f589e408228f1",
+        "0x44825bf3b74695bd72ed247d62dd755e67b7ed87",
+        "0x48063376eac95806a59ee00b901b6104da960b98"
+      ],
+      "pair_count": 12,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 12
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0xba06043a777652baf540ccc785edafd94ee05b37",
+      "example_pair_addresses": [
+        "0x471e05a18919f1c98d85e8799aa2cb5eb686c842"
+      ],
+      "pair_count": 1,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 2
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0xbe087bed88539d28664c9998fe3f180ea7b9749c",
+      "example_pair_addresses": [
+        "0x47dde0cf1be032b8984547a00d4f07a46177d989"
+      ],
+      "pair_count": 1,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 2
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0xbedf73e58560024881229a0b622db448ccfa8046",
+      "example_pair_addresses": [
+        "0x1ef79cefe2384fcaf1a8377e4145cd9030c5cc01"
+      ],
+      "pair_count": 1,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 2
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0xc03c125359111d188b1c4cd7e5ccd935edbb5833",
+      "example_pair_addresses": [
+        "0x600606c73d802a165883b57bb8dea17cc4dc5ac9",
+        "0x6ea70d160dc965cecb08b988ee31b27109527c0d"
+      ],
+      "pair_count": 2,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 3
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0xc05a5aa56df0dc97d6b9849a06627a079790014f",
+      "example_pair_addresses": [
+        "0xeb67d16037537c099c6d9e9ba3fe269d71b34c59"
+      ],
+      "pair_count": 1,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 2
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0xc1fd0bbe28536bcba95720d4712b204d41e4a7bf",
+      "example_pair_addresses": [
+        "0x5b935fe7ce517c4232aea8598987fee80330654b"
+      ],
+      "pair_count": 1,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 2
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0xd109af9eea5849f1a3c7a976995a5c315534dd9c",
+      "example_pair_addresses": [
+        "0xada929a719dd3a643ffcad21c2237f94e7b65b6e"
+      ],
+      "pair_count": 1,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 2
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0xd36aba9ec96523b0a89886c76065852adfe2eb39",
+      "example_pair_addresses": [
+        "0x020e4a02bbebd05635fac7dab7fcc27291e23d53",
+        "0x0fefe361cfda056ebfaf464ebb913c95160f373c",
+        "0x20a2556965596b513a4392e0479fc42a122c3de8",
+        "0x2ff749aa870f68deada3c10dad12f600e3f56e52",
+        "0x31e87035e9b86ec811c7ad5a05e09cf4459613a4"
+      ],
+      "pair_count": 18,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 16
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0xe2f6673805c00f5d8569e5a9b81e3a938104fded",
+      "example_pair_addresses": [
+        "0x71ac8cef2c682d555dd927ff435c97760cb70351",
+        "0x843d7874083a145380e6ccd5036081c36582755a",
+        "0xb3ae26acd62c77cb44a1aa7beb649298771d8e5e",
+        "0xbf780f6c665054334bf67ec3731e36be73d61652",
+        "0xf60b3eea957bf00c593e62c1e35bae42a1718f71"
+      ],
+      "pair_count": 6,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 7
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0xeaa98f7b5f7bfbcd1af14d0efaa9d9e68d82f640",
+      "example_pair_addresses": [
+        "0x4b5f9fabc4f6f9c8dfbec38127f7fd925f80f6fc",
+        "0xb78906c8a461d6a39a57285c129843e1937c3278"
+      ],
+      "pair_count": 2,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 4
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0xf08ae17c2a2728a788bb1b6c243fe7eb3e5bbadc",
+      "example_pair_addresses": [
+        "0x273284b3c5fc85afe679122994d47ee278b8248b",
+        "0x3425ab3a6a92aed14c665fe8c9c206386540fc14",
+        "0x4aa9c2ce122f30d3f6ac50c01ae28e2387bc937c",
+        "0x6ced5d031d0bcb2f831c6ef2e216cb1e4005451a",
+        "0x809f7c69a7f24e0f74174c044770d5d5679722f3"
+      ],
+      "pair_count": 9,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 10
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0xf502b3d87311863bb0ac3cf3d2729a78438116cf",
+      "example_pair_addresses": [
+        "0x3c30e4e69cb95e11e7c5398c98ba862d3a17f3f7",
+        "0x625f89b73cead0811efbc12ed40eb8829e169a65",
+        "0xd24f7a2e0aca240793b8b76a3bca8ff4c52530bb"
+      ],
+      "pair_count": 3,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 4
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "0xf559b39f5e9891afcf9c4426a6d3630e79149d06",
+      "example_pair_addresses": [
+        "0xbcf9803cdc7e91a22e966b2ea70daffa4fcb94bd"
+      ],
+      "pair_count": 1,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 2
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "algebra",
+      "example_pair_addresses": [
+        "0x87ed637706a8de8fdf34912121bffa266bc2ddbd"
+      ],
+      "pair_count": 1,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 2
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "apeswap",
+      "example_pair_addresses": [
+        "0x0806a407d6eea72788d91c36829a19d424446040",
+        "0x103062f71b7106a8df6fd2a4dd9368358c44a9d0",
+        "0x16d70f7c3d17598ae0f5e56e27273e2a9b845e6e",
+        "0x1807cac8576468d96a09a2c04fbdf6fdf0ed2a1d",
+        "0x2b9895b8c2d2fbca65b4a5b0935b522d7079098a"
+      ],
+      "pair_count": 30,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 24
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "balancer",
+      "example_pair_addresses": [
+        "0x0297e37f1873d2dab4487aa67cd56b58e2f27875-0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270-0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+        "0x0297e37f1873d2dab4487aa67cd56b58e2f27875-0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270-0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+        "0x0297e37f1873d2dab4487aa67cd56b58e2f27875-0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270-0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3",
+        "0x0297e37f1873d2dab4487aa67cd56b58e2f27875-0x2791bca1f2de4661ed88a30c99a7a9449aa84174-0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+        "0x0297e37f1873d2dab4487aa67cd56b58e2f27875-0x2791bca1f2de4661ed88a30c99a7a9449aa84174-0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3"
+      ],
+      "pair_count": 185,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 49
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "comethswap",
+      "example_pair_addresses": [
+        "0x12a2abcfcadc04681929f0c199bdf812967207e4",
+        "0x14caf80f9aef3f3252903da5bce5189cce83c6c2",
+        "0x174f902194fce92ef3a51079b531f1e5073de335",
+        "0x18469c8d7cbf29542f54ea47588bba202a35c0d1",
+        "0x1d52ce4e81b1fa3c2ef5332f7a8e2ef65b92d9f6"
+      ],
+      "pair_count": 24,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 17
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "dfyn",
+      "example_pair_addresses": [
+        "0x02274e937aa27eae700e3abc5107ab5918429ac4",
+        "0x137ea00f2ddfd5ee70b0930e502f05ac3fe15178",
+        "0x1b9c54a3b92b3423e6eabfef4247052686ea7002",
+        "0x1d608df1bcad4681f1b929110710eb936d7354e5",
+        "0x1fde9b92ca96ef6545378a611ff624dc13925e09"
+      ],
+      "pair_count": 67,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 43
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "dinoswap",
+      "example_pair_addresses": [
+        "0xc419c78039dc2e35e639cb0ab1ac7351a4a9aa44",
+        "0xce621ce85eabc6dd95088b81cab683dfb4628864",
+        "0xe7b79d61c763bb97a476198baa6c8017fd82df31"
+      ],
+      "pair_count": 3,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 5
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "dooar",
+      "example_pair_addresses": [
+        "0x404fac6814a05dd5a936080f64248808c62eb4df",
+        "0x4d9865903e0590d27130b6ccc50b17b4c7221a71",
+        "0xb064e9b00d713496d54617c3ef6e659072b8339f",
+        "0xc6a39449c4eb2feee3681abe7d85d765b15bf7ba",
+        "0xc84f479bf220e38ba3bd0262049bad47aaa673ee"
+      ],
+      "pair_count": 6,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 7
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "dystopia",
+      "example_pair_addresses": [
+        "0x04f9ee08c2c9c0e6dad5e07f4ae0201d8dbeebde",
+        "0x1237fea0b26f68191d50900bffd85e142697c423",
+        "0x20945ac0eb02aed8bbf405cf6b0e56655841e447",
+        "0x2be4d59697d532b9c3a09163aef62f34c0bce603",
+        "0x3f54c58092e9735ad23cf296ee3af81f5a44a5bc"
+      ],
+      "pair_count": 11,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 10
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "elkfinance",
+      "example_pair_addresses": [
+        "0x021079e9c60ab36d62ac10087fc9b62047722403",
+        "0x05b0eb68e5b32a09a92b25b833ab2e6b65fc1291",
+        "0x14a0fe781fa4a1d9a3dd73b0c0ac90e8e7962128",
+        "0x1822ac6992d591d82bd6d650c1d64b598e342b4f",
+        "0x244c98cb5e82671c556da02fe4802cfc6f573fad"
+      ],
+      "pair_count": 34,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 21
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "firebird",
+      "example_pair_addresses": [
+        "0x310ae97ea9c9faa12be7bd65a43797d27a96aa4f",
+        "0x326e00705b2e742426623dab0ace2ceecbbd6067"
+      ],
+      "pair_count": 2,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 4
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "fraxswap",
+      "example_pair_addresses": [
+        "0xa964b92c690f0b8efad5b46a278a84bd0ef8ac01"
+      ],
+      "pair_count": 1,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 2
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "gravityfinance",
+      "example_pair_addresses": [
+        "0x241ed15a37c85e531e83255ae719b8d2ea079ddb",
+        "0x2aabda501253b3aeeb4bee0bf7b0d5fd87b038eb",
+        "0x73a7b621090b8d7584cc40d1b1f016fb831949a3",
+        "0x84d49beff6aecf52c461eae687d959d64edf2427",
+        "0x96d6f7afff161e7152bec4272b51cc007e4417ae"
+      ],
+      "pair_count": 10,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 11
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "jamonswap",
+      "example_pair_addresses": [
+        "0x59be8033cc556e62e8cb836599cb764e8b05a5b5"
+      ],
+      "pair_count": 1,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 2
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "jetswap",
+      "example_pair_addresses": [
+        "0x20bf018fddba3b352f3d913fe1c81b846fe0f490",
+        "0x23e5d894177840dd25de6b37752593a9c5dcc762",
+        "0x4c2ab54adbc557334289bee9a7f5237461bc7844",
+        "0x5e58e0ced3a272caeb8ba00f4a4c2805df6be495",
+        "0x6efba4744aeda8fde5d69fc0bdbcc5f2437370b7"
+      ],
+      "pair_count": 9,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 9
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "kyberswap",
+      "example_pair_addresses": [
+        "0x1317fe389b7992571bc84ff4d9d248225e96d199",
+        "0x29920010de717c9c49d8d109e535bd989125f4c7",
+        "0x353288b2db543cb320472c740513341172b9e305",
+        "0x41e18af214ec121ef30cb3d365750f2a442c5aa2",
+        "0x42f179077bab533e436613756316abaa6dc8af0b"
+      ],
+      "pair_count": 33,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 20
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "mmfinance",
+      "example_pair_addresses": [
+        "0x0404f9b850df6fabde06d4c8392aff1a4e79a47b",
+        "0x0d54918038dbee259173bdb055dcbc58211626fc",
+        "0x5a9f3695e706cdb6f73706bfa4d5293766a95be2",
+        "0xb965c131f1c48d89b1760860b782d2acdf87273b"
+      ],
+      "pair_count": 4,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 4
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "pearl",
+      "example_pair_addresses": [
+        "0x0edc235693c20943780b76d79dd763236e94c751",
+        "0x16e9d19221df563cfb15628953b5c51e4a2be30c",
+        "0x4cadf559ceac3ae18210cdd281e4e3e24753b8a8",
+        "0x56c86afbd17fc779255a4c12bab10fa3c2ca96d4",
+        "0x5f9fecbeccaa14767ce5e067641002673ce3e946"
+      ],
+      "pair_count": 15,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 11
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "polycat",
+      "example_pair_addresses": [
+        "0x0509083749716b68f0fdb490a59ca62f2cffebb9",
+        "0x1adb57769b5e5d88675b9c40c5b938742336a74f",
+        "0x29315b444a0730cfda55bc4f297b81cba7b13950",
+        "0x4cd2b8b7e00ac8eb544c51c4b1f0bd39868a89df",
+        "0x4db1087154cd5b33fa275a88b183619f1a6f6614"
+      ],
+      "pair_count": 14,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 9
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "polyzap",
+      "example_pair_addresses": [
+        "0x001a5201fd46f2c77eff4f5bed1382e500e20b08",
+        "0x328767469ff1d88f62ca26b18bc7d8c4de6e86a3",
+        "0x4485df5f2b6bf03935cee44bf41ba65c06650b84",
+        "0xab55c21663e56ac97f40522d3ff59e53a7a4d3b2",
+        "0xcaf7834cab11e00123d3510abbbcb912b39ab456"
+      ],
+      "pair_count": 7,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 8
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "quickswap",
+      "example_pair_addresses": [
+        "0x003251b5e911f3330479c0b5c5bb1969fcf3d7a1",
+        "0x0060447809822e95889e33051f05f397e9c92fd4",
+        "0x00a6177c6455a29b8daa7144b2befc9f2147bb7e",
+        "0x00df93b1f3b1185c0048d50ab3281311b64836c2",
+        "0x010f15d8c641b7d2b721481a55e6caff6556a803"
+      ],
+      "pair_count": 1183,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 303
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "radioshack",
+      "example_pair_addresses": [
+        "0x13a62ac160ee6f4639e0f9c9baa5ce6f9adfd7e1",
+        "0x332cd6125acc0f9ef3941181f1ca4b806c30a9af",
+        "0x3338e9ae0a2d7f461ab2ccfe06f9fcb3c81fd1ca",
+        "0x3de61fbfd17f6b4d51a7a5e19b0bcbafb1e56992",
+        "0x459d872dfc58ae01e1a70355f71d91951671587b"
+      ],
+      "pair_count": 16,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 16
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "ramses",
+      "example_pair_addresses": [
+        "0x5b2c047bd46650c2e407e3417a159e7f12687440",
+        "0x718b913f54ab69e0b9541fb3cf5cdbc23a1b17be",
+        "0x7bcd99ae248e86ecab7a5b23451d73825117f54d",
+        "0xc3d83da884985a4d84cbccbfa8beee895c9fd95c",
+        "0xfb07d2f13a0c279c82201e084cab1d80888ed3b5"
+      ],
+      "pair_count": 5,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 4
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "retro",
+      "example_pair_addresses": [
+        "0x0973698bb6399c39d628698f9300430c4e7c9bf9",
+        "0x098c1e4bb34decdf49d5966014b5153af326e766",
+        "0x0f73e719a76947752e4b26a2c3fc80a580e68fb4",
+        "0x15949526ff03fe6ab5f49da6a86749c20141b3f1",
+        "0x1e0aa3f6c3130294845b8e162d838e221d170016"
+      ],
+      "pair_count": 21,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 17
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "satin",
+      "example_pair_addresses": [
+        "0x111ee7abab53231add2cd13fef52e0558b39e1fd",
+        "0x1d56e391e2fe12f819e0f87177ef80166e6d1848",
+        "0x4adb688cf6b530f277ca0245c36cc74962887c89",
+        "0x72b11596523b35b2acac5a33915b6297f5e942ac",
+        "0x78a8447b5f1a10b071fe583f1775a206ebfe033b"
+      ],
+      "pair_count": 6,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 6
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "sushiswap",
+      "example_pair_addresses": [
+        "0x00604dcc4463d6c39d957bc25c7b6683ddd2ba90",
+        "0x014ac2a53aa6fba4dcd93fde6d3c787b79a1a6e6",
+        "0x032890efd9cbc5488b9a77a081173fdc604a07e0",
+        "0x034fadc7701628227701b52473d43565c7a6cdbb",
+        "0x035ef797f3810b427ae2d2f31621c445f705baf2"
+      ],
+      "pair_count": 406,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 168
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "uniswap",
+      "example_pair_addresses": [
+        "0x005c4108fa00c6c4721fefd4338fb1e211ff9047",
+        "0x00a59c2d0f0f4837028d47a391decbffc1e10608",
+        "0x019c29d5c97f8cbaa67013e2cf4b6506a5cf183a",
+        "0x024bb5a825b4ea68de28a7075f6e7fc66916c93a",
+        "0x025837d6f6cbdda767577f6ecdfdbc5ec1f2675f"
+      ],
+      "pair_count": 548,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 205
+    },
+    {
+      "chain_id": 137,
+      "dex_namespace": "unknown",
+      "example_pair_addresses": [
+        "0x2c5be0526343a5057b2e10372e64845d666e7140",
+        "0x366dc82d3bffd482cc405e58bab3288f2dd32c94",
+        "0x3f69055f203861abfd5d986dc81a2efa7c915b0c",
+        "0x8b0630cb57d8e63444e97c19a2e82bb1988399e2",
+        "0xbd02973b441aa83c8eecea158b98b5984bb1036e"
+      ],
+      "pair_count": 6,
+      "record_type": "polygon_static_dex",
+      "status": "OBSERVED_NAMESPACE_REQUIRES_LIVE_BINDING",
+      "token_count": 7
+    }
+  ],
+  "schema": "polygon-static-dex-fast-v1"
+}

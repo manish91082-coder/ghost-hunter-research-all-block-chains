@@ -90018,10 +90018,10 @@
   "route_enumeration_complete": true,
   "route_storage_limit": 5000,
   "route_storage_truncated": true,
-  "stable_runs": 3,
+  "stable_runs": 5,
   "stage_gate": "CLOSED",
   "task": "p6_route_enumeration",
-  "time": "2026-09-26T08:49:19Z",
+  "time": "2026-09-26T20:41:37Z",
   "unique_pairs": 2821,
   "valid_pair_records": 2821
 }

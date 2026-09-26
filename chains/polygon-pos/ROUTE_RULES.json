@@ -1,0 +1,13 @@
+{
+  "chain_id": 137,
+  "exact_route_count": 617622,
+  "excluded": [
+    "split_routes",
+    "4_plus_hops"
+  ],
+  "max_hops": 3,
+  "no_repeated_pool": true,
+  "route_generation": "deterministic from PAIR_UNIVERSE",
+  "sample_count": 5000,
+  "schema": "polygon-static-route-fast-v1"
+}

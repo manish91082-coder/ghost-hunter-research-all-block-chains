@@ -1,11 +1,11 @@
 {
   "coverage_complete": true,
-  "eligible_token_count": 457,
-  "fingerprint": "cfbeb1dae7e3387eb78d89b0144b77ddf65f9bc73c6af3836144f23032886295",
-  "processed_eligible_count": 457,
-  "rechecked_eligible_count": 457,
-  "stable_runs": 12,
-  "stage_gate": "CLOSED",
+  "eligible_token_count": 450,
+  "fingerprint": "1bd04a1f0df95015f0b2b8985d1945b9869b9d5521f44ff7f7bc66c402f81e1e",
+  "processed_eligible_count": 450,
+  "rechecked_eligible_count": 0,
+  "stable_runs": 0,
+  "stage_gate": "OPEN",
   "total_pair_records": 2821,
-  "updated_at": "2026-09-26T08:20:29Z"
+  "updated_at": "2026-09-26T20:40:22Z"
 }

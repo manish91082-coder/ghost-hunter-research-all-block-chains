@@ -1,0 +1,44 @@
+{
+  "chain_id": 137,
+  "counts": {
+    "dex_namespaces": 67,
+    "economic_candidate_groups": 420,
+    "exact_profit_certified": 0,
+    "feature_groups": 1891,
+    "pairs": 2821,
+    "pools": 2821,
+    "route_sample": 5000,
+    "routes": 617622,
+    "strategies": 18,
+    "tokens": 469
+  },
+  "dynamic_inputs": [
+    "latest_block",
+    "gas",
+    "reserves/slot0/ticks",
+    "liquidity",
+    "fees",
+    "prices",
+    "spreads",
+    "orderflow",
+    "competition",
+    "estimateGas",
+    "slippage",
+    "protocol_health"
+  ],
+  "schema": "polygon-static-master-index-fast-v1",
+  "static_inputs": {
+    "contracts": "STATIC_CONTRACT_UNIVERSE.json",
+    "dexes": "DEX_UNIVERSE.json",
+    "economic_frontier": "ECONOMIC_FRONTIER.json",
+    "features": "FEATURE_SCHEMA.json",
+    "flash_liquidity": "FLASH_LIQUIDITY_UNIVERSE.json",
+    "pairs": "PAIR_UNIVERSE.jsonl",
+    "pools": "POOL_UNIVERSE.jsonl",
+    "protocols": "PROTOCOL_UNIVERSE.json",
+    "routes": "ROUTE_RULES.json + ROUTE_SAMPLE_5000.jsonl.gz",
+    "strategies": "STRATEGY_UNIVERSE.json",
+    "tokens": "TOKEN_UNIVERSE.jsonl",
+    "unknowns": "UNKNOWN_NEGATIVE_SPACE.json"
+  }
+}

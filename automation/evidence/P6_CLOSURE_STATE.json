@@ -3,8 +3,8 @@
   "pair_nodes": 451,
   "route_count_total": 617622,
   "route_enumeration_complete": true,
-  "stable_runs": 3,
+  "stable_runs": 5,
   "stage_gate": "CLOSED",
   "unique_pairs": 2821,
-  "updated_at": "2026-09-26T08:49:19Z"
+  "updated_at": "2026-09-26T20:41:37Z"
 }

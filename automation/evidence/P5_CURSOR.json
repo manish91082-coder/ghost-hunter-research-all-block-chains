@@ -1,5 +1,5 @@
 {
-  "eligibility_fingerprint": "08ae529a44ad53492b1f4e9113bd2063db38a1af3cd0c8a07e36053dbdd8ccbe",
+  "eligibility_fingerprint": "0e2274a677497e7538dec41bf69c66fd55e43b5cac53c178cc6080fd86992e64",
   "last_coverage_complete": true,
   "processed_addresses": [
     "0x01c379bb49a7a269bf430fcd45cb281ad4134337",
@@ -460,5 +460,5 @@
     "0xfeff6c1643d38b13a198cfe1d76505701c380af0",
     "0xffffff9936bd58a008855b0812b44d2c8dffe2aa"
   ],
-  "total_eligible_tokens": 457
+  "total_eligible_tokens": 450
 }

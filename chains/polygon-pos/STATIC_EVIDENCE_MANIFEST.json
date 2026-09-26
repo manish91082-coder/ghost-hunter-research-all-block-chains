@@ -1,0 +1,15 @@
+{
+  "chain_id": 137,
+  "inputs": [
+    "automation/universe/tokens.jsonl",
+    "automation/universe/pairs.jsonl",
+    "automation/evidence/P5_PAIR_SNAPSHOT.json",
+    "automation/evidence/P6_ROUTE_SNAPSHOT.json",
+    "automation/evidence/P7_STRATEGY_MATRIX.json",
+    "automation/evidence/P8_FEATURE_SNAPSHOT.json",
+    "automation/evidence/P9_ECONOMIC_CERTIFICATION.json"
+  ],
+  "no_public_broadcast": true,
+  "no_signing": true,
+  "schema": "polygon-static-evidence-fast-v1"
+}

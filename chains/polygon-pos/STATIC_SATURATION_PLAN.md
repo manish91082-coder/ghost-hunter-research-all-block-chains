@@ -1,0 +1,1 @@
+# Polygon Static Saturation\n\nP5 pair universe is rechecked to an independent two-pass fingerprint stability gate; P6 computes the exact bounded route count and stores a canonical sample; protocol/DEX/contract/flash-liquidity identities are materialized; static strategy, feature and economic readiness indexes are frozen.\n\nDynamic chain state remains separate.\n

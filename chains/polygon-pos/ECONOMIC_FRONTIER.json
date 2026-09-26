@@ -1,0 +1,7 @@
+{
+  "candidate_groups": 420,
+  "exact_profit_certified": 0,
+  "note": "Candidate readiness only; not live profitability.",
+  "schema": "polygon-static-economic-frontier-fast-v1",
+  "status": "READINESS_CLOSED_NOT_PROFIT_CERTIFIED"
+}

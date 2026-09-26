@@ -1,0 +1,93 @@
+{
+  "domains": [
+    {
+      "feature": "block_activity",
+      "record_count": 1891,
+      "statuses": [
+        "NOT_AVAILABLE"
+      ]
+    },
+    {
+      "feature": "flow_toxicity_proxy",
+      "record_count": 1891,
+      "statuses": [
+        "IMBALANCE_PROXY_ONLY"
+      ]
+    },
+    {
+      "feature": "gas_regime",
+      "record_count": 1891,
+      "statuses": [
+        "NOT_AVAILABLE"
+      ]
+    },
+    {
+      "feature": "imbalance",
+      "record_count": 1891,
+      "statuses": [
+        "H24_BUY_SELL_PROXY"
+      ]
+    },
+    {
+      "feature": "liquidity",
+      "record_count": 1891,
+      "statuses": [
+        "OBSERVED"
+      ]
+    },
+    {
+      "feature": "momentum_reversion",
+      "record_count": 1891,
+      "statuses": [
+        "HORIZON_PROXIES_ONLY"
+      ]
+    },
+    {
+      "feature": "opportunity_persistence",
+      "record_count": 1891,
+      "statuses": [
+        "NOT_AVAILABLE"
+      ]
+    },
+    {
+      "feature": "regime",
+      "record_count": 1891,
+      "statuses": [
+        "NOT_CLASSIFIED"
+      ]
+    },
+    {
+      "feature": "route_recurrence",
+      "record_count": 1891,
+      "statuses": [
+        "NOT_CLASSIFIED"
+      ]
+    },
+    {
+      "feature": "spread",
+      "record_count": 1891,
+      "statuses": [
+        "OBSERVED",
+        "UNAVAILABLE"
+      ]
+    },
+    {
+      "feature": "volatility",
+      "record_count": 1891,
+      "statuses": [
+        "CROSS_HORIZON_PROXY"
+      ]
+    },
+    {
+      "feature": "volume",
+      "record_count": 1891,
+      "statuses": [
+        "OBSERVED"
+      ]
+    }
+  ],
+  "dynamic_values_required_from_live_chain": true,
+  "feature_fingerprint": "5138bae6d46712f79b83d7ad908ad120087529bd52d2917abbfe63969bdff068",
+  "pair_groups": 1891,
+  "schema": "polygon-static-feature-fast-v1"
+}

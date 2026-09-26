@@ -1,0 +1,566 @@
+{
+  "chain_id": 137,
+  "records": [
+    {
+      "address": "0x67366782805870060151383f4bbff9dab53e5cd6",
+      "family": "UNISWAP_V4",
+      "role": "PoolManager",
+      "source": "https://developers.uniswap.org/docs/protocols/v4/deployments",
+      "status": "DOCUMENTED_STATIC_DEPLOYMENT"
+    },
+    {
+      "address": "0x5ea1bd7974c8a611cbab0bdcafcb1d9cc9b3ba5a",
+      "family": "UNISWAP_V4",
+      "role": "StateView",
+      "source": "https://developers.uniswap.org/docs/protocols/v4/deployments",
+      "status": "DOCUMENTED_STATIC_DEPLOYMENT"
+    },
+    {
+      "address": "0xb3d5c3dfc3a7aebff71895a7191796bffc2c81b9",
+      "family": "UNISWAP_V4",
+      "role": "Quoter",
+      "source": "https://developers.uniswap.org/docs/protocols/v4/deployments",
+      "status": "DOCUMENTED_STATIC_DEPLOYMENT"
+    },
+    {
+      "address": "0x1ec2ebf4f37e7363fdfe3551602425af0b3ceef9",
+      "family": "UNISWAP_V4",
+      "role": "PositionManager",
+      "source": "https://developers.uniswap.org/docs/protocols/v4/deployments",
+      "status": "DOCUMENTED_STATIC_DEPLOYMENT"
+    },
+    {
+      "address": "0x1095692a6237d83c6a72f3f5efedb9a670c49223",
+      "family": "UNISWAP_V4",
+      "role": "UniversalRouter",
+      "source": "https://developers.uniswap.org/docs/protocols/v4/deployments",
+      "status": "DOCUMENTED_STATIC_DEPLOYMENT"
+    },
+    {
+      "address": "0xa97684ead0e402dc232d5a977953df7ecbab3cdb",
+      "family": "AAVE_V3_POLYGON",
+      "role": "POOL_ADDRESSES_PROVIDER",
+      "source": "https://github.com/aave-dao/aave-address-book/blob/main/src/ts/AaveV3Polygon.ts",
+      "status": "DOCUMENTED_STATIC_DEPLOYMENT"
+    },
+    {
+      "address": "0x794a61358d6845594f94dc1db02a252b5b4814ad",
+      "family": "AAVE_V3_POLYGON",
+      "role": "POOL",
+      "source": "https://github.com/aave-dao/aave-address-book/blob/main/src/ts/AaveV3Polygon.ts",
+      "status": "DOCUMENTED_STATIC_DEPLOYMENT"
+    },
+    {
+      "address": "0x8145edddf43f50276641b55bd3ad95944510021e",
+      "family": "AAVE_V3_POLYGON",
+      "role": "POOL_CONFIGURATOR",
+      "source": "https://github.com/aave-dao/aave-address-book/blob/main/src/ts/AaveV3Polygon.ts",
+      "status": "DOCUMENTED_STATIC_DEPLOYMENT"
+    },
+    {
+      "address": "0xb023e699f5a33916ea823a16485e259257ca8bd1",
+      "family": "AAVE_V3_POLYGON",
+      "role": "ORACLE",
+      "source": "https://github.com/aave-dao/aave-address-book/blob/main/src/ts/AaveV3Polygon.ts",
+      "status": "DOCUMENTED_STATIC_DEPLOYMENT"
+    },
+    {
+      "address": "0xa72636cbca8f5ff95b2cc47f3cdee83f3294a0b",
+      "family": "AAVE_V3_POLYGON",
+      "role": "ACL_MANAGER",
+      "source": "https://github.com/aave-dao/aave-address-book/blob/main/src/ts/AaveV3Polygon.ts",
+      "status": "DOCUMENTED_STATIC_DEPLOYMENT"
+    },
+    {
+      "address": "0x243aa95cac2a25651eda86e80bee66114413c43b",
+      "family": "AAVE_V3_POLYGON",
+      "role": "AAVE_PROTOCOL_DATA_PROVIDER",
+      "source": "https://github.com/aave-dao/aave-address-book/blob/main/src/ts/AaveV3Polygon.ts",
+      "status": "DOCUMENTED_STATIC_DEPLOYMENT"
+    },
+    {
+      "address": "0xba12222222228d8ba445958a75a0704d566bf2c8",
+      "family": "BALANCER_V2_POLYGON",
+      "role": "VAULT",
+      "source": "https://github.com/balancer/docs-developers/blob/main/references/valuing-balancer-lp-tokens/deployment-addresses.md",
+      "status": "DOCUMENTED_STATIC_DEPLOYMENT"
+    },
+    {
+      "address": "0x239e55f427d44c3cc793f49bfb507ebe76638a2b",
+      "family": "BALANCER_V2_POLYGON",
+      "role": "HELPERS",
+      "source": "https://github.com/balancer/docs-developers/blob/main/references/valuing-balancer-lp-tokens/deployment-addresses.md",
+      "status": "DOCUMENTED_STATIC_DEPLOYMENT"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x015de3ec460869eb5ceae4224dc7112ac0a39303",
+      "pair_count": 4,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x03daa61d8007443a6584e3d8f85105096543c19c",
+      "pair_count": 26,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x150396e304d58495679444ce4e7abcff653a6274",
+      "pair_count": 1,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x1a8c7e7553cfea2740a35b3d1b42e3ddb117cb17",
+      "pair_count": 1,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x2541dbea199a22501d75ea141627776bd4eefc80",
+      "pair_count": 14,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x25cc30af6b2957b0ed7ceca026fc204fdbe04e59",
+      "pair_count": 1,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x2d7360db7216792cfc2c73b79c0ca629007e2af4",
+      "pair_count": 6,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x388371233439cf57bb8c9f2e4835954841cfcb15",
+      "pair_count": 2,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x3dd8fd033f7a3231e38a54ce6d710d5e5f074745",
+      "pair_count": 1,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x42e635d36913c94a340567761ec8383b9932906a",
+      "pair_count": 1,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x442266042667407329e1729e6bead71424f42021",
+      "pair_count": 6,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x4fee52912f81b78c3cdcb723728926ed6a893d27",
+      "pair_count": 1,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x598a177cccf553eea28eb2aee7542c8b04d46b82",
+      "pair_count": 3,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x5be44d6c5634161cdadcc2bc35389325aa493e83",
+      "pair_count": 2,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x5ede3f4e7203bf1f12d57af1810448e5db20f46c",
+      "pair_count": 6,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x672353e4e674dddd7319a4852e49f6e1d2ac6f18",
+      "pair_count": 9,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x6e553d5f028bd747a27e138fa3109570081a23ae",
+      "pair_count": 1,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x709e3c6b22993189327a8cfebd572b6cc459fe40",
+      "pair_count": 12,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x75ed971834b0e176a053ac959d9cf77f0b4c89d0",
+      "pair_count": 5,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x76915cc0c69ffcb0c278739075ea2822d8d06f9f",
+      "pair_count": 1,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x79038549c96bbfb1e45914402c3479f65e192787",
+      "pair_count": 1,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x9405d6a4ae2605b666609c675570cd889fcdaf60",
+      "pair_count": 5,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x9679010bf908225f84cd030b4acf7fd4fa13c8f5",
+      "pair_count": 2,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0x9ccb9a679ac05cb05569ff9916a6d56352d3f587",
+      "pair_count": 1,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0xa2d23c7ca6d360d5b0b30caff79dbbfa242b4811",
+      "pair_count": 1,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0xa347adf8c314c1051f85e5c4edb5b3d2768bed21",
+      "pair_count": 1,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0xa98ea6356a316b44bf710d5f9b6b4ea0081409ef",
+      "pair_count": 12,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0xba06043a777652baf540ccc785edafd94ee05b37",
+      "pair_count": 1,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0xbe087bed88539d28664c9998fe3f180ea7b9749c",
+      "pair_count": 1,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0xbedf73e58560024881229a0b622db448ccfa8046",
+      "pair_count": 1,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0xc03c125359111d188b1c4cd7e5ccd935edbb5833",
+      "pair_count": 2,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0xc05a5aa56df0dc97d6b9849a06627a079790014f",
+      "pair_count": 1,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0xc1fd0bbe28536bcba95720d4712b204d41e4a7bf",
+      "pair_count": 1,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0xd109af9eea5849f1a3c7a976995a5c315534dd9c",
+      "pair_count": 1,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0xd36aba9ec96523b0a89886c76065852adfe2eb39",
+      "pair_count": 18,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0xe2f6673805c00f5d8569e5a9b81e3a938104fded",
+      "pair_count": 6,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0xeaa98f7b5f7bfbcd1af14d0efaa9d9e68d82f640",
+      "pair_count": 2,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0xf08ae17c2a2728a788bb1b6c243fe7eb3e5bbadc",
+      "pair_count": 9,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0xf502b3d87311863bb0ac3cf3d2729a78438116cf",
+      "pair_count": 3,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "0xf559b39f5e9891afcf9c4426a6d3630e79149d06",
+      "pair_count": 1,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "algebra",
+      "pair_count": 1,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "apeswap",
+      "pair_count": 30,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "balancer",
+      "pair_count": 185,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "comethswap",
+      "pair_count": 24,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "dfyn",
+      "pair_count": 67,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "dinoswap",
+      "pair_count": 3,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "dooar",
+      "pair_count": 6,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "dystopia",
+      "pair_count": 11,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "elkfinance",
+      "pair_count": 34,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "firebird",
+      "pair_count": 2,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "fraxswap",
+      "pair_count": 1,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "gravityfinance",
+      "pair_count": 10,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "jamonswap",
+      "pair_count": 1,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "jetswap",
+      "pair_count": 9,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "kyberswap",
+      "pair_count": 33,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "mmfinance",
+      "pair_count": 4,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "pearl",
+      "pair_count": 15,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "polycat",
+      "pair_count": 14,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "polyzap",
+      "pair_count": 7,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "quickswap",
+      "pair_count": 1183,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "radioshack",
+      "pair_count": 16,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "ramses",
+      "pair_count": 5,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "retro",
+      "pair_count": 21,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "satin",
+      "pair_count": 6,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "sushiswap",
+      "pair_count": 406,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "uniswap",
+      "pair_count": 548,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    },
+    {
+      "address": null,
+      "family": "OBSERVED_DEX_NAMESPACE",
+      "namespace": "unknown",
+      "pair_count": 6,
+      "status": "REQUIRES_LIVE_ONCHAIN_BINDING"
+    }
+  ],
+  "schema": "polygon-static-contract-fast-v1"
+}
