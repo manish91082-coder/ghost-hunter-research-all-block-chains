@@ -188,7 +188,28 @@ def probe(endpoint_id):
                 code = result_of(rows.get(f"fanout:{endpoint_id}:{address}:code", {}))
                 decimals = result_of(rows.get(f"fanout:{endpoint_id}:{address}:decimals", {}))
                 supply = result_of(rows.get(f"fanout:{endpoint_id}:{address}:supply", {}))
-                obs = observation(endpoint_id, code, decimals, supply)
+
+                valid_code = isinstance(code, str) and code not in {"", "0x", "0X"}
+                valid_decimals = isinstance(decimals, str) and decimals.startswith("0x")
+                valid_supply = isinstance(supply, str) and supply.startswith("0x")
+                if valid_decimals:
+                    try:
+                        valid_decimals = 0 <= int(decimals, 16) <= 255
+                    except ValueError:
+                        valid_decimals = False
+
+                obs = None
+                if valid_code:
+                    obs = {
+                        "rpc": endpoint_id,
+                        "code_hash": hashlib.sha256(code.lower().encode()).hexdigest(),
+                        "decimals": decimals.lower() if valid_decimals else None,
+                        "total_supply": supply.lower() if valid_supply else None,
+                        "code_valid": True,
+                        "decimals_valid": bool(valid_decimals),
+                        "total_supply_valid": bool(valid_supply),
+                    }
+
                 if obs:
                     observations.append({
                         "address": address,

@@ -23,13 +23,32 @@ def save_json(path, data):
 
 
 def reconcile_observations(observations):
-    semantic = {(x.get("code_hash"), x.get("decimals")) for x in observations}
-    supplies = {x.get("total_supply") for x in observations}
+    code_hashes = {x.get("code_hash") for x in observations if x.get("code_hash")}
+    decimal_values = {
+        x.get("decimals") for x in observations
+        if x.get("decimals_valid") and x.get("decimals") is not None
+    }
+    supplies = {
+        x.get("total_supply") for x in observations
+        if x.get("total_supply_valid") and x.get("total_supply") is not None
+    }
+
+    code_identity_match = len(observations) >= 2 and len(code_hashes) == 1
+    decimals_consistent = len(decimal_values) <= 1
+    erc20_semantic_seen = len(decimal_values) >= 1
+    matching = code_identity_match and decimals_consistent and erc20_semantic_seen
+    conflict = len(observations) >= 2 and (
+        len(code_hashes) > 1 or len(decimal_values) > 1
+    )
+
     return {
-        "matching": len(observations) >= 2 and len(semantic) == 1,
-        "conflict": len(observations) >= 2 and len(semantic) > 1,
+        "matching": matching,
+        "conflict": conflict,
+        "code_identity_match": code_identity_match,
+        "erc20_semantic_seen": erc20_semantic_seen,
         "total_supply_equal": len(supplies) <= 1,
         "semantic_fingerprint_fields": ["code_hash", "decimals"],
+        "identity_transport": "runtime_code_plus_optional_erc20_semantics",
     }
 
 

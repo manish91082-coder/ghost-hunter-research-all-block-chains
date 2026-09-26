@@ -27,6 +27,32 @@ class P4FanoutRegressionTests(unittest.TestCase):
         self.assertFalse(result["conflict"])
         self.assertFalse(result["total_supply_equal"])
 
+    def test_code_identity_plus_one_semantic_probe_is_sufficient(self):
+        mod = aggregator()
+        observations = [
+            {
+                "rpc":"quicknode-public",
+                "code_hash":"abc",
+                "decimals":None,
+                "decimals_valid":False,
+                "total_supply":None,
+                "total_supply_valid":False,
+            },
+            {
+                "rpc":"tenderly-gateway",
+                "code_hash":"abc",
+                "decimals":"0x12",
+                "decimals_valid":True,
+                "total_supply":"0x101",
+                "total_supply_valid":True,
+            },
+        ]
+        result = mod.reconcile_observations(observations)
+        self.assertTrue(result["matching"])
+        self.assertFalse(result["conflict"])
+        self.assertTrue(result["code_identity_match"])
+        self.assertTrue(result["erc20_semantic_seen"])
+
     def test_real_identity_conflict_stays_fail_closed(self):
         mod = aggregator()
         observations = [
