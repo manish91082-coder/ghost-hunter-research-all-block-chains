@@ -137,6 +137,14 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("as_completed", worker)
         self.assertIn('"rpc_workers": P4_RPC_WORKERS', worker)
 
+    def test_p4_has_bounded_429_recovery_and_batch_fallback(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn("P4_CHAIN_RECOVERY_ROUNDS = 2", worker)
+        self.assertIn("P4_RECOVERY_WAIT_MAX = 60", worker)
+        self.assertIn('if obs.get("http_status") == 429 or obs.get("rate_limited")', worker)
+        self.assertIn("except ValueError as exc:", worker)
+        self.assertIn("rows = _p4_rpc_single_calls", worker)
+
     def test_p4_pool_order_is_normalized_to_endpoint_ids(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn('candidates = [item["id"] for item in pool.ordered()[:max_endpoints]]', worker)

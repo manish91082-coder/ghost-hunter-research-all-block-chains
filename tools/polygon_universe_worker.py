@@ -426,6 +426,8 @@ P4_VERIFY_STATE = EVID / "P4_VERIFICATION_STATE.json"
 P4_VERIFY_BATCH_SIZE = 48
 P4_RPC_WORKERS = 6
 P4_ENDPOINT_SCAN_MAX = 12
+P4_CHAIN_RECOVERY_ROUNDS = 2
+P4_RECOVERY_WAIT_MAX = 60
 
 
 def p4_verification_batch(candidates, verification_state, batch_size=P4_VERIFY_BATCH_SIZE):
@@ -465,7 +467,7 @@ def p4_closure_ready(snapshot, previous_state):
 
 
 def _p4_rpc_batch_endpoint(pool, endpoint_id, calls, timeout=30):
-    """Send a JSON-RPC batch to one endpoint while preserving per-endpoint pacing."""
+    """Use JSON-RPC batching, falling back only when the endpoint rejects batch shape."""
     state = pool.state[endpoint_id]
     with state["lock"]:
         now_mono = time.monotonic()
@@ -474,32 +476,43 @@ def _p4_rpc_batch_endpoint(pool, endpoint_id, calls, timeout=30):
             time.sleep(wait)
         state["last_request_at"] = time.monotonic()
 
-        payload = []
-        for request_id, method, params in calls:
-            payload.append({
-                "jsonrpc": "2.0",
-                "id": request_id,
-                "method": method,
-                "params": params,
-            })
+    payload = [
+        {"jsonrpc": "2.0", "id": request_id, "method": method, "params": params}
+        for request_id, method, params in calls
+    ]
+    url = pool.endpoint_url(endpoint_id)
+    if not url.startswith("https://"):
+        raise ValueError("Only HTTPS RPC endpoints are permitted")
 
-        url = pool.endpoint_url(endpoint_id)
-        if not url.startswith("https://"):
-            raise ValueError("Only HTTPS RPC endpoints are permitted")
+    headers = {"Content-Type": "application/json"}
+    if "tatum.io" in url and os.environ.get("TATUM_API_KEY"):
+        headers["X-API-Key"] = os.environ["TATUM_API_KEY"]
 
-        headers = {"Content-Type": "application/json"}
-        if "tatum.io" in url and os.environ.get("TATUM_API_KEY"):
-            headers["X-API-Key"] = os.environ["TATUM_API_KEY"]
-
-        req = urllib.request.Request(url, data=json.dumps(payload).encode(), headers=headers, method="POST")
-        try:
-            with urllib.request.urlopen(req, timeout=timeout) as response:
-                body = json.loads(response.read())
-                if not isinstance(body, list):
-                    raise ValueError("JSON-RPC batch endpoint returned non-list response")
+    req = urllib.request.Request(url, data=json.dumps(payload).encode(), headers=headers, method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as response:
+            body = json.loads(response.read())
+            if isinstance(body, list):
                 return response.status, {str(row.get("id")): row for row in body if isinstance(row, dict)}
-        except Exception:
-            raise
+            if len(calls) == 1 and isinstance(body, dict):
+                return response.status, {str(calls[0][0]): body}
+            raise ValueError("JSON-RPC endpoint rejected batch response shape")
+    except urllib.error.HTTPError:
+        raise
+
+
+def _p4_rpc_single_calls(pool, endpoint_id, calls, timeout=30):
+    rows = {}
+    for request_id, method, params in calls:
+        obs = pool.request(endpoint_id, method, params, request_id, timeout, 1)
+        body = obs.get("body")
+        if isinstance(body, dict):
+            rows[request_id] = body
+        if obs.get("ok"):
+            pool.mark_success(endpoint_id)
+        else:
+            pool.mark_failure(endpoint_id, obs)
+    return rows
 
 
 def _p4_endpoint_probe_addresses(candidates):
@@ -583,6 +596,7 @@ def _p4_discover_chain_endpoints(pool, max_endpoints=P4_ENDPOINT_SCAN_MAX):
     candidates = [item["id"] for item in pool.ordered()[:max_endpoints]]
     chain_ok = []
     diagnostics = {}
+    retryable = []
 
     def probe(eid):
         try:
@@ -593,24 +607,51 @@ def _p4_discover_chain_endpoints(pool, max_endpoints=P4_ENDPOINT_SCAN_MAX):
         except Exception as exc:
             return eid, False, {"ok": False, "message": f"{type(exc).__name__}: {exc}"}
 
+    def apply_result(eid, is_polygon, obs):
+        diagnostics[eid] = {
+            "chain_id_137": is_polygon,
+            "http_status": obs.get("http_status"),
+            "rate_limited": bool(obs.get("rate_limited")),
+            "retry_after_seconds": obs.get("retry_after_seconds"),
+            "error": obs.get("message") or (
+                (obs.get("body") or {}).get("error")
+                if isinstance(obs.get("body"), dict) else None
+            ),
+        }
+        if is_polygon:
+            if eid not in chain_ok:
+                chain_ok.append(eid)
+            pool.mark_success(eid)
+        else:
+            pool.mark_failure(eid, obs)
+            if obs.get("http_status") == 429 or obs.get("rate_limited"):
+                retryable.append(eid)
+
     worker_count = min(P4_RPC_WORKERS, len(candidates))
     with ThreadPoolExecutor(max_workers=worker_count or 1) as executor:
         futures = [executor.submit(probe, eid) for eid in candidates]
         for future in as_completed(futures):
-            eid, is_polygon, obs = future.result()
-            diagnostics[eid] = {
-                "chain_id_137": is_polygon,
-                "http_status": obs.get("http_status"),
-                "error": obs.get("message") or (
-                    (obs.get("body") or {}).get("error")
-                    if isinstance(obs.get("body"), dict) else None
-                ),
-            }
-            if is_polygon:
-                chain_ok.append(eid)
-                pool.mark_success(eid)
-            else:
-                pool.mark_failure(eid, obs)
+            apply_result(*future.result())
+
+    for recovery_round in range(1, P4_CHAIN_RECOVERY_ROUNDS):
+        if not retryable:
+            break
+        now_mono = time.monotonic()
+        waits = [
+            max(0.0, pool.state[eid]["cooldown_until"] - now_mono)
+            for eid in retryable
+            if eid in pool.state
+        ]
+        wait_for = min(max(waits, default=0.0), P4_RECOVERY_WAIT_MAX)
+        if wait_for > 0:
+            time.sleep(wait_for)
+
+        retry_ids = list(dict.fromkeys(retryable))
+        retryable = []
+        with ThreadPoolExecutor(max_workers=min(P4_RPC_WORKERS, len(retry_ids))) as executor:
+            futures = [executor.submit(probe, eid) for eid in retry_ids]
+            for future in as_completed(futures):
+                apply_result(*future.result())
 
     chain_ok.sort(key=lambda endpoint_id: candidates.index(endpoint_id))
     return chain_ok, diagnostics
@@ -647,7 +688,12 @@ def _p4_rpc_token_verification(candidates, verification_state):
             calls.append((f"p4:{eid}:{address}:decimals", "eth_call", [{"to": address, "data": "0x313ce567"}, "latest"]))
             calls.append((f"p4:{eid}:{address}:supply", "eth_call", [{"to": address, "data": "0x18160ddd"}, "latest"]))
         try:
-            _, rows = _p4_rpc_batch_endpoint(pool, eid, calls, timeout=30)
+            try:
+                _, rows = _p4_rpc_batch_endpoint(pool, eid, calls, timeout=30)
+            except ValueError as exc:
+                rows = _p4_rpc_single_calls(pool, eid, calls, timeout=30)
+                if not rows:
+                    raise exc
             return eid, True, rows, ""
         except Exception as exc:
             return eid, False, {}, f"{type(exc).__name__}: {exc}"
@@ -743,6 +789,8 @@ def _p4_rpc_token_verification(candidates, verification_state):
         "chain_probe": chain_probe,
         "rpc_workers": P4_RPC_WORKERS,
         "endpoint_scan_max": P4_ENDPOINT_SCAN_MAX,
+        "chain_recovery_rounds": P4_CHAIN_RECOVERY_ROUNDS,
+        "recovery_wait_max": P4_RECOVERY_WAIT_MAX,
     }
     P4_VERIFY_STATE.parent.mkdir(parents=True, exist_ok=True)
     P4_VERIFY_STATE.write_text(json.dumps(save_payload, sort_keys=True) + "\n", encoding="utf-8")
