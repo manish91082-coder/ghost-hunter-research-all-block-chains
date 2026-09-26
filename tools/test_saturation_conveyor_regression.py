@@ -124,6 +124,14 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("P3_CLOSURE_STATE.json", worker)
 
 
+    def test_p4_checkpoint_writer_uses_defined_writer(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertNotIn("save_json(P4_VERIFY_STATE", worker)
+        self.assertIn("P4_VERIFY_STATE.write_text(", worker)
+        self.assertIn('"transport": "json_rpc_batch"', worker)
+
+
+
     def test_p4_batch_transport_and_two_endpoint_quorum_are_explicit(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn("json_rpc_batch", worker)
