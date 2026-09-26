@@ -23,7 +23,7 @@ def sha(v): return hashlib.sha256(json.dumps(v,sort_keys=True,separators=(",",":
 def normalize(s):
     s=str(s or "").strip().lower()
     s=re.sub(r"[^a-z0-9]+"," ",s)
-    return re.sub(r"\\s+"," ",s).strip()
+    return re.sub(r"\s+"," ",s).strip()
 
 def fetch(url, timeout=25, retries=2):
     last=None
@@ -128,14 +128,16 @@ def main():
       "current_fingerprint":second["fingerprint"]
     }
     out["fingerprint"]=sha({"current":second["fingerprint"],"checks":checks})
-    (EVID/"ETHEREUM_P3_PROTOCOL_SNAPSHOT.json").write_text(json.dumps(out,indent=2,sort_keys=True)+"\n")
+    (EVID/"ETHEREUM_P3_PROTOCOL_SNAPSHOT.json").write_text(json.dumps(out,indent=2,sort_keys=True)+"
+")
     state={
       "fingerprint":second["fingerprint"],
       "stable_runs": 2 if first["fingerprint"]==second["fingerprint"] else 1,
       "stage_gate":"CLOSED" if gate else "OPEN",
       "updated_at":now()
     }
-    closure.write_text(json.dumps(state,indent=2,sort_keys=True)+"\n")
+    closure.write_text(json.dumps(state,indent=2,sort_keys=True)+"
+")
     if not gate:
         raise SystemExit("Ethereum P3 discovery failed closed")
     print("Ethereum P3 discovery CLOSED")
