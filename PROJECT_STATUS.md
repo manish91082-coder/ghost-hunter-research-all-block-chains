@@ -482,3 +482,31 @@ P6 closure certifies complete deterministic route-graph enumeration over the per
 
 ### P7/P8 evidence boundary
 P7 closure certifies strategy-family coverage and matrix schema completeness, not exact contract discovery or profitability. P8 closure certifies deterministic feature coverage over the available pair snapshot; proxy features and unavailable domains are explicitly labeled. Neither stage certifies profitable execution.
+
+
+## 2026-09-26 — POLYGON FULL SATURATION / P11 READY
+- Canonical main HEAD before documentation lock: `b7b497a15596131240eba4df907c34cb41928726`.
+- P6: CLOSED.
+- P7: CLOSED.
+- P8: CLOSED.
+- P9: CLOSED.
+- P10: CLOSED.
+- P11: **READY**.
+- Polygon census lock: **TRUE**.
+- Next-chain unlock: **TRUE**.
+- Polygon universe audit counts:
+  - 469 tokens
+  - 2,821 pair records
+  - 617,622 route candidates
+  - 18 strategy families
+  - 1,891 feature groups
+  - 1,233 P9 capability pair addresses, all processed with two-endpoint observations
+  - 420 P9 economic candidate groups
+- P9 exact-profit certification count: **0/420**.
+- P9 residuals: 420 economic adapter/certification work items, 112 non-EVM pool references requiring adapters.
+- Live signing/public broadcast: **OFF**.
+- Final boundary: Polygon universe/census is closed; exact profitability/execution economics remain a separate downstream research track.
+
+### Final evidence
+- P10 `stage_gate=CLOSED`, `polygon_universe_status=CENSUS_COMPLETE_FOR_AUDIT`.
+- P11 `status=READY`, `polygon_census_lock=true`, `next_chain_unlock=true`.

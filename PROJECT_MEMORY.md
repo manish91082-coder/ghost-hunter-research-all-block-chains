@@ -338,3 +338,14 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - P8 closure required a matching stable recheck after repairing route-fingerprint provenance.
 - The conveyor now fails closed if an executed task returns non-zero; this is a permanent safety invariant.
 - Current critical stage is P9. The next objective is exact economic certification, not another discovery-only snapshot.
+
+
+## 2026-09-26 — Polygon final closure memory lock
+- Polygon saturation is canonically COMPLETE through P11.
+- P6/P7/P8/P9/P10 are CLOSED.
+- P11 is READY and explicitly unlocks the next chain.
+- Final Polygon census: 469 tokens, 2,821 pairs, 617,622 routes, 18 strategy families, 1,891 feature groups, 1,233/1,233 P9 capability addresses, 420 P9 economic candidate groups.
+- Exact profitability is not certified: 0/420 exact-profit-certified at P9 closure.
+- Residual economic work remains explicit: 420 candidate economic adapter/certification items and 112 non-EVM pool references.
+- No live signing or public broadcast is enabled.
+- Next thread must begin from the next chain, not restart Polygon discovery.
