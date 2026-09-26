@@ -1,0 +1,59 @@
+{
+  "schema_version":"polygon-saturation-v2",
+  "boundary":{
+    "census_status":"CENSUS_SATURATED",
+    "economic_status":"DISPOSITIONED_NOT_PROFIT_CERTIFIED",
+    "live_execution_status":"NOT_AUTHORIZED",
+    "route_policy":{"max_hops":3,"no_repeated_pool":true,"split_routes":"separate_extension","four_plus_hops":"separate_extension"}
+  },
+  "sealed_universe":{"tokens":469,"pairs":2821,"routes":617622,"strategy_families":18,"feature_groups":1891,"economic_candidate_groups":420,"exact_profit_certified":0},
+  "pool_identity":{
+    "kinds":["EVM_PAIR_ADDRESS","CONCENTRATED_LIQUIDITY_POOL","SINGLETON_POOL_MANAGER","BALANCER_POOL_ID","ORDERBOOK_MARKET_ID","RFQ_INTENT_MARKET","LENDING_MARKET","DERIVATIVE_MARKET","CUSTOM_EVM_MARKET"],
+    "rule":"pairAddress is not universal market identity"
+  },
+  "adapter_families":{
+    "V2_CONSTANT_PRODUCT":{"state":["token0","token1","reserves","fee"]},
+    "V3_CONCENTRATED_LIQUIDITY":{"state":["slot0","liquidity","fee","ticks"]},
+    "V4_SINGLETON_POOL_MANAGER":{"state":["PoolManager","PoolKey/poolId","StateView","hooks"]},
+    "BALANCER_VAULT":{"state":["Vault","poolId","balances","pool math"]},
+    "ORDERBOOK_RFQ":{"state":["market_id","orders_or_quotes","settlement"]},
+    "LENDING_LIQUIDATION":{"state":["market","reserve","health_factor","liquidation_rules"]},
+    "DERIVATIVE_MARKET":{"state":["market_id","oracle","margin","settlement"]},
+    "CUSTOM_EVM":{"state":["runtime_code_hash","native_market_id","selectors"]}
+  },
+  "opportunity_surfaces":[
+    "DEX_SPOT","DEX_AGGREGATOR","RFQ_INTENT_SOLVER","FLASH_LIQUIDITY","LENDING_LIQUIDATION",
+    "MEV_PUBLIC_ORDERFLOW","MEV_PRIVATE_ORDERFLOW","CROSS_DOMAIN_AGGLAYER","STAKING_LIQUID_STAKING",
+    "RWA_TOKENIZATION","STABLECOINS","DERIVATIVES_PREDICTION","LIQUIDITY_STATE_TRANSITION",
+    "ORACLE_STATE_TRANSITION","NEGATIVE_SPACE"
+  ],
+  "dynamic_state":["block","gas","rpc_latency","liquidity","price","fee","volume","trade_count","spread","opportunity_lifetime","recurrence","competition","private_orderflow","lending_health","bridge_state","staking_rate","stablecoin_supply","rwa_liquidity"],
+  "token_taxonomy":["canonical","bridged","wrapped","stablecoin","staking_derivative","RWA","permissioned","rebasing","fee_on_transfer","ERC4626","upgradeable","pause_or_blacklist","oracle_dependent","liquidation_collateral"],
+  "current_sources":[
+    {"id":"private_mempool","url":"https://www.polygon.technology/blog/polygon-launches-private-mempool-mev-protection-is-now-a-one-line-integration","markers":["Private Mempool","sandwich"]},
+    {"id":"agglayer","url":"https://support.polygon.technology/support/solutions/articles/82000917044-agglayer-powering-cross-chain-interoperability","markers":["Bridge-and-Call","Message Bridging"]},
+    {"id":"uniswap_v4","url":"https://developers.uniswap.org/docs/protocols/v4/deployments","markers":["Polygon: 137","PoolManager","StateView"]},
+    {"id":"defillama_chain","url":"https://defillama.com/chain/polygon","markers":["Polygon","DEXs Volume","Perps Volume"]},
+    {"id":"defillama_dex","url":"https://enterprise.defillama.com/dexs/chain/polygon","markers":["Uniswap","Quickswap","RamsesX"]},
+    {"id":"defillama_aggregators","url":"https://enterprise.defillama.com/dex-aggregators/chain/polygon","markers":["0x Protocol","KyberSwap","1inch"]},
+    {"id":"defillama_perps","url":"https://enterprise.defillama.com/perps/chain/polygon","markers":["Polymarket","Gains Network"]},
+    {"id":"polygon_rwa","url":"https://www.polygon.technology/tokenization","markers":["RWA","stablecoin","tokenized"]},
+    {"id":"polygon_portal","url":"https://portal.polygon.technology/","markers":["AggLayer Bridge","Upgrade MATIC to POL"]},
+    {"id":"aave_flash","url":"https://www.aave.com/docs/aave-v3/guides/flash-loans","markers":["flashLoan","flashLoanSimple"]},
+    {"id":"aave_pool","url":"https://aave.com/docs/aave-v3/smart-contracts/pool","markers":["liquidat","flashLoan"]},
+    {"id":"aave_market","url":"https://www.aave.com/docs/aave-v3/markets/data","markers":["Reserve","flash loans","liquidation"]}
+  ],
+  "uniswap_v4_polygon_deployments":{
+    "PoolManager":"0x67366782805870060151383f4bbff9dab53e5cd6",
+    "StateView":"0x5ea1bd7974c8a611cbab0bdcafcb1d9cc9b3ba5a",
+    "Quoter":"0xb3d5c3dfc3a7aebff71895a7191796bffc2c81b9",
+    "PositionManager":"0x1ec2ebf4f37e7363fdfe3551602425af0b3ceef9",
+    "UniversalRouter":"0x1095692a6237d83c6a72f3f5efedb9a670c49223"
+  },
+  "economic_boundary":{
+    "candidate_groups":420,
+    "exact_profit_certified":0,
+    "requirement":"Every candidate has deterministic status and blockers. No candidate is called profitable without exact state, venue math, gas, execution/ordering and realized simulation evidence."
+  },
+  "green_definition":"The independent post-closure audit may issue GREEN only when sealed universe persistence, registry completeness, source reachability/markers and exhaustive economic disposition all pass. GREEN means research-universe saturation, not profitability or live execution."
+}
