@@ -1,0 +1,50 @@
+{
+  "schema_version": "ethereum-p2-control-targets-v1",
+  "chain": {
+    "name": "Ethereum Mainnet",
+    "chain_id": 1
+  },
+  "safety": {
+    "read_only": true,
+    "signing": false,
+    "broadcast": false,
+    "real_money": false
+  },
+  "controls": [
+    {
+      "id": "deposit_root",
+      "target": "0x00000000219ab540356cBB839Cbe05303d7705Fa",
+      "method": "eth_call",
+      "data": "0xc5f2892f",
+      "semantic": "get_deposit_root"
+    },
+    {
+      "id": "deposit_count",
+      "target": "0x00000000219ab540356cBB839Cbe05303d7705Fa",
+      "method": "eth_call",
+      "data": "0x621fd130",
+      "semantic": "get_deposit_count"
+    },
+    {
+      "id": "beacon_root_lookup",
+      "target": "0x000F3df6D732807Ef1319fB7B8bB8522d0Beac02",
+      "method": "eth_call",
+      "data_template": "beacon_timestamp_32byte",
+      "semantic": "EIP-4788 get(timestamp)"
+    },
+    {
+      "id": "withdrawal_fee_getter",
+      "target": "0x00000961Ef480Eb55e80D19ad83579A64c007002",
+      "method": "eth_call",
+      "data": "0x",
+      "semantic": "EIP-7002 fee getter"
+    },
+    {
+      "id": "consolidation_fee_getter",
+      "target": "0x0000BBdDc7CE488642fb579F8B00f3a590007251",
+      "method": "eth_call",
+      "data": "0x",
+      "semantic": "EIP-7251 fee getter"
+    }
+  ]
+}
