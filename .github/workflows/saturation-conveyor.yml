@@ -13,7 +13,7 @@ concurrency:
 
 permissions:
   contents: write
-  actions: read
+  actions: write
 
 jobs:
   conveyor:
@@ -80,6 +80,34 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
 
+      - name: Auto-continue open P5 coverage
+        if: success()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python - <<'PY' > /tmp/p5_continue
+          import json
+          from pathlib import Path
+          state=json.loads(Path("automation/saturation_state.json").read_text(encoding="utf-8"))
+          snap_path=Path("automation/evidence/P5_PAIR_SNAPSHOT.json")
+          snap=json.loads(snap_path.read_text(encoding="utf-8")) if snap_path.exists() else {}
+          should = (
+              state.get("research_gate") == "P2_CLOSED"
+              and state.get("critical_stage") == "P5"
+              and snap.get("stage_gate") != "CLOSED"
+              and snap.get("checks", {}).get("source_requests_complete") is True
+              and int(snap.get("processed_tokens", 0)) > 0
+          )
+          print("1" if should else "0")
+          PY
+          if [ "$(cat /tmp/p5_continue)" = "1" ]; then
+            gh workflow run saturation-conveyor.yml --ref main
+            echo "auto_continue_dispatched=true"
+          else
+            echo "auto_continue_dispatched=false"
+          fi
       - name: Commit gate-transition state only
         if: always()
         run: |

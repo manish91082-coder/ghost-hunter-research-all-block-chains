@@ -328,6 +328,10 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         b = dict(a)
         self.assertEqual(module.p5_pair_identity(a), module.p5_pair_identity(b))
 
+    def test_p5_parallel_batch_is_bounded_and_fast(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn("P5_PAIR_BATCH_SIZE = 120", worker)
+        self.assertIn("P5_PAIR_WORKERS = 12", worker)
     def test_p5_checkpoint_uses_processed_addresses_not_integer_cursor(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn("processed_addresses", worker)

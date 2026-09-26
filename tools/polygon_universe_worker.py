@@ -1008,8 +1008,8 @@ def task_p4_tokens():
     return write_json("P4_TOKEN_SNAPSHOT.json", snapshot)
 
 
-P5_PAIR_BATCH_SIZE = 60
-P5_PAIR_WORKERS = 8
+P5_PAIR_BATCH_SIZE = 120
+P5_PAIR_WORKERS = 12
 P5_CURSOR_STATE = EVID / "P5_CURSOR.json"
 P5_STABILITY_RECHECK = True
 
