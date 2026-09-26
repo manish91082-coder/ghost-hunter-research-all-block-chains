@@ -1,0 +1,65 @@
+{
+  "schema_version": "ethereum-p2-closure-v1",
+  "status": "CLOSED",
+  "chain": {
+    "name": "Ethereum Mainnet",
+    "chain_id": 1
+  },
+  "source_of_truth": "GitHub LIVE main",
+  "closure_heads": {
+    "rpc_bootstrap_head": "6e019c50d72f9baca7a65b948fda7984561acfc9",
+    "system_code_head": "d0df6c1b1bb722f47edcbd9e1295487796601c80",
+    "semantic_control_head": "a3469ecd39c574b717169d4763cf78774302cfdb"
+  },
+  "evidence": {
+    "rpc_bootstrap": {
+      "workflow_run": 36256665200,
+      "conclusion": "success",
+      "sub_gate": "CLOSED",
+      "artifact_id": 10910373942,
+      "artifact_digest": "sha256:1c830691314c5bc33c2a211c8e83b0d5daddaa792a7fe3f088e50ca3f1345435"
+    },
+    "system_code": {
+      "workflow_run": 36257049739,
+      "conclusion": "success",
+      "sub_gate": "VERIFIED",
+      "artifact_id": 10911351074,
+      "artifact_digest": "sha256:640739694539e8576254c89b3929520cea19022820144494f58d3e8afa170ad6"
+    },
+    "semantic_control": {
+      "workflow_run": 36257349105,
+      "conclusion": "success",
+      "sub_gate": "CLOSED",
+      "artifact_id": 10910768918,
+      "artifact_digest": "sha256:23e49bb888535916e0bb5bb0c2bd7d10c04a66a978298ee01e5572bfc20e6093",
+      "fingerprint": "8ef03586e1abc04b803d9cba23f2bd9dc30a520e9aacbbc9187bea0a51eaf5fe"
+    }
+  },
+  "verified_surfaces": {
+    "rpc_identity_head_capabilities": true,
+    "system_runtime_code_targets": 4,
+    "semantic_control_targets": 5,
+    "independent_rpc_endpoints": [
+      "1rpc",
+      "blastapi",
+      "drpc"
+    ],
+    "fresh_head_quorum_blocks": {
+      "1rpc": 26062969,
+      "drpc": 26062969
+    },
+    "fresh_head_span": 0,
+    "semantic_controls_all_verified": true
+  },
+  "safety": {
+    "read_only": true,
+    "signing": false,
+    "broadcast": false,
+    "real_money": false
+  },
+  "boundary": {
+    "p2": "CLOSED",
+    "p3_onward": "NOT_STARTED",
+    "no_protocol_pool_route_profitability_claimed": true
+  }
+}
