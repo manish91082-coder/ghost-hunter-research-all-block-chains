@@ -849,5 +849,19 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn('"P8":"p8-feature-matrix-v2"', source)
 
 
+
+
+
+    def test_conveyor_fails_closed_when_an_executed_task_fails(self):
+        source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
+        self.assertIn("failed_executed = [", source)
+        self.assertIn("raise SystemExit(1)", source)
+
+
+    def test_p8_runtime_dependency_imports_math(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn("import hashlib, json, math, os, time", worker)
+
+
 if __name__ == "__main__":
     unittest.main()

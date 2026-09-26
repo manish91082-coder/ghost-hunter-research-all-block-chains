@@ -328,5 +328,12 @@ def main():
     report={'time':now(),'critical_stage':state['critical_stage'],'research_gate':state['research_gate'],'commit_required':commit_required,'p2_conditions':conditions,'executed':executed,'task_states':state['tasks'],'shadow_lane':state.get('shadow_lane',True)}
     save_json(STATE,state); save_json(REPORT,report)
     print(json.dumps(report,indent=2,sort_keys=True))
+    failed_executed = [
+        task_name
+        for task_name in executed
+        if not bool(state.get('tasks', {}).get(task_name, {}).get('ok'))
+    ]
+    if failed_executed:
+        raise SystemExit(1)
 
 if __name__=='__main__': main()

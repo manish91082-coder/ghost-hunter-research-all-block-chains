@@ -2,7 +2,7 @@
 """Autonomous Polygon universe evidence worker for P3-P10 plus P2 provenance replay.
 stdlib-only; every external snapshot is labeled discovery evidence, never VERIFIED.
 """
-import hashlib, json, os, time, urllib.error, urllib.parse, urllib.request
+import hashlib, json, math, os, time, urllib.error, urllib.parse, urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from collections import defaultdict
 from pathlib import Path
