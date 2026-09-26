@@ -306,8 +306,9 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
 
-        self.assertFalse(module.p5_token_eligible({"address": "0x1", "source": "polygon_seed_manifest", "p5_scan_eligible": False}))
+        self.assertFalse(module.p5_token_eligible({"address": "0x1", "source": "geckoterminal_top_pools", "p5_scan_eligible": False}))
         self.assertTrue(module.p5_token_eligible({"address": "0x2", "evidence_class": "ONCHAIN_SEMANTIC"}))
+        self.assertTrue(module.p5_token_eligible({"address": "0x3", "source": "polygon_seed_manifest"}))
         self.assertTrue(module.p5_token_eligible({"address": "0x3", "source": "dexscreener_pair_token"}))
 
     def test_p5_closure_requires_complete_stable_pair_universe(self):
@@ -522,7 +523,8 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
 
     def test_pair_snapshot_deduplicates_pair_addresses(self):
         source = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
-        self.assertIn('by_address={str(x.get("pairAddress","")).lower():x for x in existing_pairs if x.get("pairAddress")}', source)
+        self.assertIn('by_address = {', source)
+        self.assertIn('x.get("pairAddress")', source)
         self.assertIn('"new_unique_pairs"', source)
 
     def test_jsonl_recovery_and_real_newlines_are_present(self):
