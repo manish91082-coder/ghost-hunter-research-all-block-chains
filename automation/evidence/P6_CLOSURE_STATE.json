@@ -1,0 +1,10 @@
+{
+  "fingerprint": "e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5",
+  "pair_nodes": 451,
+  "route_count_total": 617622,
+  "route_enumeration_complete": true,
+  "stable_runs": 3,
+  "stage_gate": "CLOSED",
+  "unique_pairs": 2821,
+  "updated_at": "2026-09-26T08:49:19Z"
+}
