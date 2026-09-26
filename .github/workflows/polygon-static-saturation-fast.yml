@@ -115,14 +115,13 @@ jobs:
       - name: Commit canonical static layer
         run: |
           set -euo pipefail
-          git fetch origin main
-          git rebase origin/main
           git config user.name "ghost-hunter-static-bot"
           git config user.email "ghost-hunter-static-bot@users.noreply.github.com"
           git add -A chains/polygon-pos automation/universe automation/evidence/P5_PAIR_SNAPSHOT.json automation/evidence/P5_CLOSURE_STATE.json automation/evidence/P5_CURSOR.json automation/evidence/P5_STABILITY_STATE.json automation/evidence/P6_ROUTE_SNAPSHOT.json automation/evidence/P6_CLOSURE_STATE.json
-          if git diff --cached --quiet; then
-            echo "NO_CHANGES"
-          else
-            git commit -m "feat: persist Polygon static hunting universe"
-            git push origin HEAD:main
-          fi
+          git stash push -u -m "polygon-static-generated"
+          git fetch origin main
+          git rebase origin/main
+          git stash pop
+          git add -A chains/polygon-pos automation/universe automation/evidence/P5_PAIR_SNAPSHOT.json automation/evidence/P5_CLOSURE_STATE.json automation/evidence/P5_CURSOR.json automation/evidence/P5_STABILITY_STATE.json automation/evidence/P6_ROUTE_SNAPSHOT.json automation/evidence/P6_CLOSURE_STATE.json
+          git commit -m "feat: persist Polygon static hunting universe"
+          git push origin HEAD:main
