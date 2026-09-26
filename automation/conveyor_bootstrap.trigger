@@ -23,3 +23,4 @@ purpose=one-shot live validation of optimized critical lane and repaired P2 evid
 2026-09-26T10:28:00+05:30 P4-previous-state-cycle-fixture-fix-bootstrap
 2026-09-26T10:40:00+05:30 P4-json-rpc-batch-transport-bootstrap
 2026-09-26T11:28:00+05:30 P4-checkpoint-writer-fix-bootstrap
+2026-09-26T11:34:00+05:30 P4-capability-aware-quorum-bootstrap
