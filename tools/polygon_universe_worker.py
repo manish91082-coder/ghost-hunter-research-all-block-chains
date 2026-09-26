@@ -2213,8 +2213,17 @@ def _p9_probe_pairs(pool, endpoint_ids, pair_addresses):
                 calls.extend(_p9_capability_calls(address))
             try:
                 _, rows = _p4_rpc_batch_endpoint(pool, endpoint_id, calls, timeout=30)
-            except Exception:
-                rows = _p4_rpc_single_calls(pool, endpoint_id, calls, timeout=30)
+            except Exception as exc:
+                rows = {}
+                endpoint_error = f"{type(exc).__name__}: {exc}"
+                for address in chunk:
+                    results[address].append({
+                        "endpoint": endpoint_id,
+                        "surface": None,
+                        "error": endpoint_error,
+                        "batch_supported": False,
+                    })
+                continue
             for address in chunk:
                 results[address].append({
                     "endpoint": endpoint_id,
