@@ -1015,6 +1015,7 @@ P5_CURSOR_STATE = EVID / "P5_CURSOR.json"
 P5_STABILITY_STATE = EVID / "P5_STABILITY_STATE.json"
 P5_STABILITY_RECHECK = True
 P5_REQUEST_RETRIES = 3
+P5_STABILITY_SCHEMA = "full-pair-universe-v1"
 
 
 def p5_token_eligible(row):
@@ -1033,6 +1034,32 @@ def p5_pair_identity(row):
         str(row.get("dexId", "")).lower(),
     )
 
+
+
+
+def p5_pair_universe_fingerprint(eligible_rows, pair_rows):
+    pair_identity_sets = defaultdict(set)
+    for row in pair_rows:
+        address = str(row.get("pairAddress", "")).lower()
+        if address:
+            pair_identity_sets[address].add(p5_pair_identity(row))
+    conflict_count = sum(1 for values in pair_identity_sets.values() if len(values) > 1)
+    fingerprint = sha({
+        "eligible_tokens": [
+            str(row.get("address", "")).lower()
+            for row in eligible_rows
+        ],
+        "pair_addresses": sorted(
+            str(row.get("pairAddress", "")).lower()
+            for row in pair_rows
+            if row.get("pairAddress")
+        ),
+        "pair_identities": {
+            address: sorted(values)
+            for address, values in sorted(pair_identity_sets.items())
+        },
+    })
+    return fingerprint, conflict_count
 
 def p5_closure_ready(snapshot, previous_state):
     checks = snapshot.get("checks", {})
@@ -1089,6 +1116,17 @@ def task_p5_pairs():
 
     baseline_fp = stability_state.get("baseline_fingerprint")
     baseline_eligibility_fp = stability_state.get("baseline_eligibility_fingerprint")
+    stability_schema = stability_state.get("schema")
+
+    if stability_schema != P5_STABILITY_SCHEMA:
+        baseline_fp = None
+        baseline_eligibility_fp = None
+        stability_processed_addresses = set()
+
+    if baseline_eligibility_fp and baseline_eligibility_fp != eligibility_fp:
+        baseline_fp = None
+        baseline_eligibility_fp = None
+        stability_processed_addresses = set()
 
     # Recovery bootstrap: if the prior run had a complete primary coverage
     # result but no stability state yet, preserve that complete result as the
@@ -1228,14 +1266,11 @@ def task_p5_pairs():
                     "p5_scan_eligible": True,
                 }
 
-    pair_identity_sets = defaultdict(set)
+    batch_pair_identity_sets = defaultdict(set)
     for row in rows:
         address = str(row.get("pairAddress", "")).lower()
         if address:
-            pair_identity_sets[address].add(p5_pair_identity(row))
-    pair_identity_conflict_count = sum(
-        1 for values in pair_identity_sets.values() if len(values) > 1
-    )
+            batch_pair_identity_sets[address].add(p5_pair_identity(row))
     duplicate_pair_observation_count = max(
         0,
         len(rows) - len({
@@ -1294,17 +1329,10 @@ def task_p5_pairs():
             and new_unique_tokens == 0
         )
 
-    universe_fingerprint = sha({
-        "eligible_tokens": [
-            str(row.get("address", "")).lower()
-            for row in eligible_after_merge
-        ],
-        "pair_addresses": sorted(by_address),
-        "pair_identities": {
-            address: sorted(values)
-            for address, values in sorted(pair_identity_sets.items())
-        },
-    })
+    universe_fingerprint, pair_identity_conflict_count = p5_pair_universe_fingerprint(
+        eligible_after_merge,
+        merged_pairs,
+    )
 
     stable_runs = 0
     stage_gate = "OPEN"
@@ -1326,7 +1354,7 @@ def task_p5_pairs():
         if not baseline_fp:
             baseline_fp = universe_fingerprint
             baseline_eligibility_fp = eligibility_fp
-        stable_runs = 1
+        stable_runs = 0
 
     snapshot = {
         "task": "p5_pair_discovery",
@@ -1390,6 +1418,7 @@ def task_p5_pairs():
     P5_STABILITY_STATE.parent.mkdir(parents=True, exist_ok=True)
     P5_STABILITY_STATE.write_text(
         json.dumps({
+            "schema": P5_STABILITY_SCHEMA,
             "baseline_fingerprint": baseline_fp,
             "baseline_eligibility_fingerprint": baseline_eligibility_fp,
             "processed_addresses": sorted(stability_processed_addresses),

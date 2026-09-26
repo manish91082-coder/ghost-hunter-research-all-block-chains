@@ -98,7 +98,11 @@ jobs:
               and state.get("critical_stage") == "P5"
               and snap.get("stage_gate") != "CLOSED"
               and snap.get("checks", {}).get("source_requests_complete") is True
-              and int(snap.get("processed_tokens", 0)) > 0
+              and (
+                  int(snap.get("processed_tokens", 0)) > 0
+                  or bool(snap.get("coverage_complete"))
+                  or bool(snap.get("recheck_mode"))
+              )
           )
           print("1" if should else "0")
           PY

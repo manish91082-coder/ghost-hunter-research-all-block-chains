@@ -340,6 +340,27 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertNotIn("save_json(", worker)
         self.assertIn("P5_STABILITY_STATE.write_text(", worker)
 
+    def test_p5_fingerprint_uses_merged_pair_universe_not_current_batch(self):
+        import importlib.util
+        worker_path = ROOT / "tools" / "polygon_universe_worker.py"
+        spec = importlib.util.spec_from_file_location("polygon_universe_worker_p5_fp", worker_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        eligible = [{"address": "0x1111111111111111111111111111111111111111"}]
+        pair = {
+            "pairAddress": "0x2222222222222222222222222222222222222222",
+            "chainId": "polygon",
+            "baseToken": {"address": "0x1111111111111111111111111111111111111111"},
+            "quoteToken": {"address": "0x3333333333333333333333333333333333333333"},
+            "dexId": "quickswap",
+        }
+        fp1, conflicts1 = module.p5_pair_universe_fingerprint(eligible, [pair])
+        fp2, conflicts2 = module.p5_pair_universe_fingerprint(eligible, [dict(pair)])
+        self.assertEqual(fp1, fp2)
+        self.assertEqual(conflicts1, 0)
+        self.assertEqual(conflicts2, 0)
+
     def test_p5_stability_baseline_persists_across_partial_runs(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn("P5_STABILITY_STATE = EVID / \"P5_STABILITY_STATE.json\"", worker)
@@ -550,7 +571,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
         self.assertIn('"P3":"p3-multisource-closure-v1"', source)
         self.assertIn('"P4":"p4-parallel-endpoint-discovery-v3"', source)
-        self.assertIn('"P5":"p5-stability-baseline-v4"', source)
+        self.assertIn('"P5":"p5-full-universe-v1"', source)
         self.assertIn("or (revision and ts.get('revision') != revision)", source)
         self.assertIn("ts['revision']=revision", source)
 
@@ -569,7 +590,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
 
     def test_p5_parallel_closure_revision_is_registered(self):
         source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
-        self.assertIn('"P5":"p5-stability-baseline-v4"', source)
+        self.assertIn('"P5":"p5-full-universe-v1"', source)
 
     def test_pair_snapshot_deduplicates_pair_addresses(self):
         source = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
