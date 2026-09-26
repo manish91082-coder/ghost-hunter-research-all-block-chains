@@ -26,6 +26,7 @@
     "slippage",
     "protocol_health"
   ],
+  "route_artifact_status": "COMPLETE_STATIC_ROUTE_TOPOLOGY",
   "schema": "polygon-static-master-index-fast-v1",
   "static_inputs": {
     "contracts": "STATIC_CONTRACT_UNIVERSE.json",
@@ -36,6 +37,7 @@
     "pairs": "PAIR_UNIVERSE.jsonl",
     "pools": "POOL_UNIVERSE.jsonl",
     "protocols": "PROTOCOL_UNIVERSE.json",
+    "route_universe": "ROUTE_UNIVERSE.jsonl.gz",
     "routes": "ROUTE_RULES.json + ROUTE_SAMPLE_5000.jsonl.gz",
     "strategies": "STRATEGY_UNIVERSE.json",
     "tokens": "TOKEN_UNIVERSE.jsonl",
