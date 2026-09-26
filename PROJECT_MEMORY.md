@@ -387,3 +387,13 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - The seal is bounded by `chains/polygon-pos/POLYGON_SATURATION_V2.json`: census saturation, not profitability or live-execution authorization.
 - Historical closure provenance remains Run 36250240579 / Artifact 10908519045.
 - The current main branch after the audit differs only by the immutable audit report commit and the drift-watch workflow from the audited content baseline; no sealed universe evidence was altered.
+
+## 2026-09-26 — Ethereum P2 closure memory lock
+- Ethereum Mainnet P2 is canonically **CLOSED**.
+- Closure is based on current-main GitHub Actions evidence, not source-file existence:
+  - Run `36256665200`: RPC bootstrap SUCCESS.
+  - Run `36257049739`: 4/4 system-code targets verified.
+  - Run `36257349105`: 5/5 semantic controls verified.
+- The closure certificate is `automation/evidence/ETHEREUM_P2_CLOSURE_CERTIFICATE.json`.
+- Boundary remains strict: P3-P11 are not closed, no protocol/pool/route/economic surface is promoted from discovery alone, and live execution remains disabled.
+- Ethereum critical stage is now **P3**.
