@@ -330,6 +330,10 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertEqual(module.p5_pair_identity(a), module.p5_pair_identity(b))
 
     def test_p5_parallel_batch_is_bounded_and_fast(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn("P5_PAIR_BATCH_SIZE = 120", worker)
+        self.assertIn("P5_PAIR_WORKERS = 12", worker)
+
     def test_p5_stability_recheck_is_chunked_and_rate_limit_aware(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn("P5_STABILITY_WORKERS = 4", worker)
@@ -337,10 +341,6 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("P5_REQUEST_RETRIES = 3", worker)
         self.assertIn('if err and "429" in str(err)', worker)
 
-
-        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
-        self.assertIn("P5_PAIR_BATCH_SIZE = 120", worker)
-        self.assertIn("P5_PAIR_WORKERS = 12", worker)
     def test_p5_checkpoint_uses_processed_addresses_not_integer_cursor(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn("processed_addresses", worker)
