@@ -2492,6 +2492,7 @@ def task_p10_audit():
     p7 = load_json(EVID / "P7_CLOSURE_STATE.json", {})
     p8 = load_json(EVID / "P8_CLOSURE_STATE.json", {})
     p9 = load_json(EVID / "P9_CLOSURE_STATE.json", {})
+    p9_econ = load_json(EVID / "P9_ECONOMIC_CERTIFICATION.json", {})
     p9_cap = load_json(EVID / "P9_CAPABILITY_STATE.json", {})
 
     counts = {
@@ -2521,7 +2522,7 @@ def task_p10_audit():
     residuals = {
         "exact_profit_certification": counts["p9_exact_certified"] < counts["p9_candidate_groups"],
         "economic_adapter_work": max(counts["p9_candidate_groups"] - counts["p9_exact_certified"], 0),
-        "non_evm_adapter_required": int(p9.get("non_evm_pool_refs_total", 0) or 0),
+        "non_evm_adapter_required": int(p9_econ.get("non_evm_pool_refs_total", 0) or 0),
     }
     required = [
         "p2_closed", "p3_closed", "p4_closed", "p5_closed", "p6_closed",
