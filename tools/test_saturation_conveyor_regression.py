@@ -271,6 +271,34 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
 
 
 
+    def test_gecko_token_extractor_rejects_pool_resource_ids(self):
+        import importlib.util
+        worker_path = ROOT / "tools" / "polygon_universe_worker.py"
+        spec = importlib.util.spec_from_file_location("polygon_universe_worker_gecko_filter", worker_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        token_a = "0x1111111111111111111111111111111111111111"
+        token_b = "0x2222222222222222222222222222222222222222"
+        pool = "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        payload = {
+            "data": [{
+                "type": "pool",
+                "id": pool,
+                "relationships": {
+                    "base_token": {"data": {"type": "token", "id": f"token_polygon_pos_{token_a}"}},
+                    "quote_token": {"data": {"type": "token", "id": f"token_polygon_pos_{token_b}"}},
+                },
+            }],
+            "included": [
+                {"type": "token", "id": f"token_polygon_pos_{token_a}", "attributes": {"address": token_a}},
+                {"type": "token", "id": f"token_polygon_pos_{token_b}", "attributes": {"address": token_b}},
+            ],
+        }
+        result = module.extract_gecko_token_addresses(payload)
+        self.assertEqual(result, sorted([token_a, token_b]))
+        self.assertNotIn(pool, result)
+
     def test_p4_helper_parses_gecko_and_dex_token_addresses(self):
         import importlib.util
         worker_path = ROOT / "tools" / "polygon_universe_worker.py"

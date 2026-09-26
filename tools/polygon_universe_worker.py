@@ -372,21 +372,36 @@ def extract_gecko_token_addresses(payload):
     elif isinstance(payload, list):
         resources = payload
 
+    token_types = {"token", "tokens"}
+    token_relationships = {
+        "base_token", "quote_token", "basetoken", "quotetoken",
+        "token", "tokens",
+    }
+
     for resource in resources:
         if not isinstance(resource, dict):
             continue
-        address = _extract_address(resource.get("id"))
-        if address:
-            found.add(address)
-        attrs = resource.get("attributes")
-        if isinstance(attrs, dict):
-            attribute_address = _extract_address(attrs.get("address"))
-            if attribute_address:
-                found.add(attribute_address)
+
+        resource_type = str(resource.get("type", "")).lower()
+        is_token_resource = resource_type in token_types
+
+        # Never treat an arbitrary pool/DEX resource id as a token address.
+        # Only explicit token resources may contribute their own id/address.
+        if is_token_resource:
+            address = _extract_address(resource.get("id"))
+            if address:
+                found.add(address)
+            attrs = resource.get("attributes")
+            if isinstance(attrs, dict):
+                attribute_address = _extract_address(attrs.get("address"))
+                if attribute_address:
+                    found.add(attribute_address)
 
         relationships = resource.get("relationships")
         if isinstance(relationships, dict):
-            for rel in relationships.values():
+            for rel_name, rel in relationships.items():
+                if str(rel_name).lower() not in token_relationships:
+                    continue
                 if not isinstance(rel, dict):
                     continue
                 rel_data = rel.get("data")
@@ -394,12 +409,15 @@ def extract_gecko_token_addresses(payload):
                     rel_data = [rel_data]
                 if isinstance(rel_data, list):
                     for item in rel_data:
-                        if isinstance(item, dict):
-                            address = _extract_address(item.get("id"))
-                            if address:
-                                found.add(address)
+                        if not isinstance(item, dict):
+                            continue
+                        item_type = str(item.get("type", "")).lower()
+                        if item_type and item_type not in token_types:
+                            continue
+                        address = _extract_address(item.get("id"))
+                        if address:
+                            found.add(address)
     return sorted(found)
-
 
 def extract_dex_token_addresses(rows):
     found = set()
