@@ -1818,22 +1818,288 @@ def task_p7_strategies():
     })
     return write_json("P7_STRATEGY_MATRIX.json", snapshot)
 
+P8_FEATURE_SCHEMA_VERSION = "p8-feature-matrix-v2"
+P8_REQUIRED_FEATURES = [
+    "spread",
+    "volatility",
+    "volume",
+    "liquidity",
+    "imbalance",
+    "regime",
+    "momentum_reversion",
+    "route_recurrence",
+    "opportunity_persistence",
+    "gas_regime",
+    "block_activity",
+    "flow_toxicity_proxy",
+]
+P8_CLOSURE_STATE = EVID / "P8_CLOSURE_STATE.json"
+
+
+def _safe_float(value):
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _horizon_number(payload, horizon, key):
+    value = (payload.get(horizon) or {}).get(key)
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _horizon_change(payload, horizon):
+    value = (payload.get("priceChange") or {}).get(horizon)
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _imbalance(txns, horizon="h24"):
+    row = txns.get(horizon) or {}
+    buys = _safe_float(row.get("buys"))
+    sells = _safe_float(row.get("sells"))
+    if buys is None or sells is None or buys < 0 or sells < 0:
+        return None
+    total = buys + sells
+    if total <= 0:
+        return None
+    return (buys - sells) / total
+
+
+def _p8_group_feature(pair_key, rows, p6):
+    prices = [x["price_usd"] for x in rows if isinstance(x.get("price_usd"), (int, float)) and x["price_usd"] > 0]
+    spread = (max(prices) / min(prices) - 1.0) if len(prices) >= 2 else None
+
+    changes_by_horizon = {
+        horizon: [x["price_change_pct"][horizon] for x in rows if x["price_change_pct"].get(horizon) is not None]
+        for horizon in ("m5", "h1", "h6", "h24")
+    }
+    available_changes = [
+        value for values in changes_by_horizon.values() for value in values
+        if isinstance(value, (int, float))
+    ]
+    volatility_proxy = None
+    if available_changes:
+        volatility_proxy = round(
+            math.sqrt(sum(value * value for value in available_changes) / len(available_changes)),
+            8,
+        )
+
+    h24_imbalance = [
+        x["imbalance_h24"] for x in rows
+        if isinstance(x.get("imbalance_h24"), (int, float))
+    ]
+    imbalance = (
+        sum(h24_imbalance) / len(h24_imbalance)
+        if h24_imbalance else None
+    )
+
+    return {
+        "pair_key": pair_key,
+        "venue_count": len(rows),
+        "features": {
+            "spread": {
+                "status": "OBSERVED" if spread is not None else "UNAVAILABLE",
+                "price_spread": spread,
+            },
+            "volatility": {
+                "status": "CROSS_HORIZON_PROXY",
+                "proxy_rms_pct": volatility_proxy,
+                "source": "snapshot priceChange fields",
+                "not_realized_time_series": True,
+            },
+            "volume": {
+                "status": "OBSERVED",
+                "h24_total_usd": round(sum(
+                    x["volume_h24_usd"] for x in rows
+                    if isinstance(x.get("volume_h24_usd"), (int, float))
+                ), 6),
+            },
+            "liquidity": {
+                "status": "OBSERVED",
+                "h24_usd_total": round(sum(
+                    x["liquidity_usd"] for x in rows
+                    if isinstance(x.get("liquidity_usd"), (int, float))
+                ), 6),
+            },
+            "imbalance": {
+                "status": "H24_BUY_SELL_PROXY",
+                "mean_signed_imbalance": imbalance,
+            },
+            "regime": {
+                "status": "NOT_CLASSIFIED",
+                "reason": "No explicit deterministic regime classifier is authorized in the current source contract.",
+            },
+            "momentum_reversion": {
+                "status": "HORIZON_PROXIES_ONLY",
+                "h1_pct": sum(changes_by_horizon["h1"]) / len(changes_by_horizon["h1"]) if changes_by_horizon["h1"] else None,
+                "h24_pct": sum(changes_by_horizon["h24"]) / len(changes_by_horizon["h24"]) if changes_by_horizon["h24"] else None,
+            },
+            "route_recurrence": {
+                "status": "NOT_CLASSIFIED",
+                "route_graph_fingerprint": p6.get("graph_fingerprint"),
+            },
+            "opportunity_persistence": {
+                "status": "NOT_AVAILABLE",
+                "reason": "Current pair source is a single timestamped snapshot.",
+            },
+            "gas_regime": {
+                "status": "NOT_AVAILABLE",
+                "reason": "No gas time-series source is attached to this feature snapshot.",
+            },
+            "block_activity": {
+                "status": "NOT_AVAILABLE",
+                "reason": "No block-indexed event series is attached to this feature snapshot.",
+            },
+            "flow_toxicity_proxy": {
+                "status": "IMBALANCE_PROXY_ONLY",
+                "absolute_h24_imbalance": abs(imbalance) if isinstance(imbalance, (int, float)) else None,
+                "not_a_toxicity_model": True,
+            },
+        },
+        "venues": rows,
+    }
+
+
+def p8_feature_closure_ready(snapshot, previous_state):
+    checks = snapshot.get("checks", {})
+    current_fp = snapshot.get("feature_fingerprint")
+    previous_fp = previous_state.get("fingerprint")
+    stable_count = int(snapshot.get("stable_runs", 0) or 0)
+    return (
+        checks.get("p7_strategy_source_closed") is True
+        and checks.get("pair_universe_nonempty") is True
+        and checks.get("feature_schema_complete") is True
+        and checks.get("deterministic_observed_features_present") is True
+        and checks.get("unavailable_features_explicit") is True
+        and int(snapshot.get("pair_groups", 0)) > 0
+        and current_fp
+        and current_fp == previous_fp
+        and previous_state.get("feature_matrix_complete") is True
+        and stable_count >= 1
+    )
+
+
 def task_p8_features():
-    pairs=load_jsonl(UNIV/"pairs.jsonl"); groups=defaultdict(list)
-    for p in pairs:
-        b=(p.get("baseToken") or {}).get("address"); q=(p.get("quoteToken") or {}).get("address");
-        if not b or not q: continue
-        k=":".join(sorted([b.lower(),q.lower()]));
-        try: price=float(p.get("priceUsd")) if p.get("priceUsd") not in (None,"") else None
-        except: price=None
-        liq=((p.get("liquidity") or {}).get("usd")); vol=((p.get("volume") or {}).get("h24"));
-        groups[k].append({"dex":p.get("dexId"),"pair":p.get("pairAddress"),"price":price,"liquidity_usd":liq,"volume_24h":vol})
-    features=[]
-    for k,rows in groups.items():
-        prices=[x["price"] for x in rows if isinstance(x["price"],(int,float)) and x["price"]>0]
-        spread=(max(prices)/min(prices)-1.0) if len(prices)>=2 else None
-        features.append({"pair_key":k,"venue_count":len(rows),"price_spread":spread,"venues":rows})
-    return write_json("P8_FEATURE_SNAPSHOT.json",{"task":"p8_features","time":now(),"pair_groups":len(groups),"features":features[:5000],"evidence_class":"DERIVED"})
+    pairs = load_jsonl(UNIV / "pairs.jsonl")
+    p7 = load_json(EVID / "P7_CLOSURE_STATE.json", {})
+    p6 = load_json(EVID / "P6_CLOSURE_STATE.json", {})
+    groups = defaultdict(list)
+
+    for pair in pairs:
+        base = (pair.get("baseToken") or {}).get("address")
+        quote = (pair.get("quoteToken") or {}).get("address")
+        if not base or not quote:
+            continue
+
+        key = ":".join(sorted([str(base).lower(), str(quote).lower()]))
+        price = _safe_float(pair.get("priceUsd"))
+        price_change = pair.get("priceChange") or {}
+        txns = pair.get("txns") or {}
+        groups[key].append({
+            "dex": pair.get("dexId"),
+            "pair": pair.get("pairAddress"),
+            "price_usd": price,
+            "liquidity_usd": _safe_float((pair.get("liquidity") or {}).get("usd")),
+            "volume_h24_usd": _safe_float((pair.get("volume") or {}).get("h24")),
+            "price_change_pct": {
+                horizon: _safe_float(price_change.get(horizon))
+                for horizon in ("m5", "h1", "h6", "h24")
+            },
+            "imbalance_h24": _imbalance(txns, "h24"),
+        })
+
+    features = [
+        _p8_group_feature(key, rows, p6)
+        for key, rows in sorted(groups.items())
+    ]
+
+    required_complete = all(
+        set(feature["features"]) == set(P8_REQUIRED_FEATURES)
+        for feature in features
+    )
+    observed_present = all(
+        feature["features"]["volume"]["status"] == "OBSERVED"
+        and feature["features"]["liquidity"]["status"] == "OBSERVED"
+        and feature["features"]["spread"]["status"] in {"OBSERVED", "UNAVAILABLE"}
+        for feature in features
+    )
+    unavailable_explicit = all(
+        feature["features"]["regime"]["status"] == "NOT_CLASSIFIED"
+        and feature["features"]["opportunity_persistence"]["status"] == "NOT_AVAILABLE"
+        and feature["features"]["gas_regime"]["status"] == "NOT_AVAILABLE"
+        and feature["features"]["block_activity"]["status"] == "NOT_AVAILABLE"
+        for feature in features
+    )
+
+    feature_seed = {
+        "schema": P8_FEATURE_SCHEMA_VERSION,
+        "pair_group_count": len(features),
+        "features": features,
+        "p7_fingerprint": p7.get("fingerprint"),
+        "p6_fingerprint": p6.get("fingerprint"),
+    }
+    feature_fingerprint = sha(feature_seed)
+
+    previous = load_json(P8_CLOSURE_STATE, {})
+    previous_fp = previous.get("fingerprint")
+    previous_complete = previous.get("feature_matrix_complete") is True
+
+    if feature_fingerprint and feature_fingerprint == previous_fp and previous_complete:
+        stable_runs = int(previous.get("stable_runs", 0) or 0) + 1
+    else:
+        stable_runs = 1
+
+    snapshot = {
+        "task": "p8_features",
+        "time": now(),
+        "schema": P8_FEATURE_SCHEMA_VERSION,
+        "pair_groups": len(features),
+        "features": features,
+        "feature_fingerprint": feature_fingerprint,
+        "stable_runs": stable_runs,
+        "feature_matrix_complete": True,
+        "source": {
+            "pair_records": len(pairs),
+            "p7_strategy_gate": p7.get("stage_gate"),
+            "p7_fingerprint": p7.get("fingerprint"),
+            "p6_fingerprint": p6.get("fingerprint"),
+        },
+        "checks": {
+            "p7_strategy_source_closed": p7.get("stage_gate") == "CLOSED" and bool(p7.get("fingerprint")),
+            "pair_universe_nonempty": len(pairs) > 0,
+            "feature_schema_complete": required_complete,
+            "deterministic_observed_features_present": observed_present,
+            "unavailable_features_explicit": unavailable_explicit,
+        },
+        "evidence_class": "DERIVED_FEATURES",
+        "research_boundary": "P8 closes deterministic feature coverage over the available snapshot; it does not certify prediction, profitability, or live execution.",
+    }
+
+    snapshot["stage_gate"] = "CLOSED" if p8_feature_closure_ready(
+        snapshot,
+        {
+            "fingerprint": previous_fp,
+            "stable_runs": max(0, stable_runs - 1),
+            "feature_matrix_complete": previous_complete,
+        },
+    ) else "OPEN"
+
+    write_json("P8_CLOSURE_STATE.json", {
+        "fingerprint": feature_fingerprint,
+        "stable_runs": stable_runs,
+        "updated_at": snapshot["time"],
+        "stage_gate": snapshot["stage_gate"],
+        "feature_matrix_complete": True,
+        "pair_groups": len(features),
+        "pair_records": len(pairs),
+    })
+    return write_json("P8_FEATURE_SNAPSHOT.json", snapshot)
 
 def task_p9_economics():
     data=json.loads((EVID/"P8_FEATURE_SNAPSHOT.json").read_text()).get("features",[]) if (EVID/"P8_FEATURE_SNAPSHOT.json").exists() else []

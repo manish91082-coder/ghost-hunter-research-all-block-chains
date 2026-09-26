@@ -791,5 +791,63 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn('"P7":"p7-strategy-matrix-v2"', source)
 
 
+
+
+
+    def test_p8_feature_schema_and_explicit_unavailable_domains(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        for field in [
+            '"spread"',
+            '"volatility"',
+            '"volume"',
+            '"liquidity"',
+            '"imbalance"',
+            '"regime"',
+            '"momentum_reversion"',
+            '"route_recurrence"',
+            '"opportunity_persistence"',
+            '"gas_regime"',
+            '"block_activity"',
+            '"flow_toxicity_proxy"',
+        ]:
+            self.assertIn(field, worker)
+        self.assertIn('P8_FEATURE_SCHEMA_VERSION = "p8-feature-matrix-v2"', worker)
+        self.assertIn('"NOT_AVAILABLE"', worker)
+        self.assertIn('"NOT_CLASSIFIED"', worker)
+
+
+    def test_p8_closure_requires_stable_complete_feature_matrix(self):
+        import importlib.util
+        worker_path = ROOT / "tools" / "polygon_universe_worker.py"
+        spec = importlib.util.spec_from_file_location("polygon_universe_worker_p8_gate", worker_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        snapshot = {
+            "pair_groups": 10,
+            "feature_fingerprint": "abc",
+            "stable_runs": 1,
+            "feature_matrix_complete": True,
+            "checks": {
+                "p7_strategy_source_closed": True,
+                "pair_universe_nonempty": True,
+                "feature_schema_complete": True,
+                "deterministic_observed_features_present": True,
+                "unavailable_features_explicit": True,
+            },
+        }
+        self.assertFalse(module.p8_feature_closure_ready(
+            snapshot, {"fingerprint": "abc", "stable_runs": 0, "feature_matrix_complete": False}
+        ))
+        self.assertTrue(module.p8_feature_closure_ready(
+            snapshot, {"fingerprint": "abc", "stable_runs": 1, "feature_matrix_complete": True}
+        ))
+
+
+    def test_p8_revision_resets_stale_cooldown(self):
+        source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
+        self.assertIn('"P8":"p8-feature-matrix-v2"', source)
+
+
 if __name__ == "__main__":
     unittest.main()

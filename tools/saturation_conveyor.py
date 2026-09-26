@@ -36,7 +36,7 @@ def current_code_epoch():
     return h.hexdigest()
 
 
-TASK_REVISIONS={"P3":"p3-multisource-closure-v1","P4":"p4-parallel-endpoint-discovery-v3","P5":"p5-closure-contract-v4","P6":"p6-route-closure-v1","P7":"p7-strategy-matrix-v2"}
+TASK_REVISIONS={"P3":"p3-multisource-closure-v1","P4":"p4-parallel-endpoint-discovery-v3","P5":"p5-closure-contract-v4","P6":"p6-route-closure-v1","P7":"p7-strategy-matrix-v2","P8":"p8-feature-matrix-v2"}
 
 def now(): return time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())
 def load_json(p,default):
