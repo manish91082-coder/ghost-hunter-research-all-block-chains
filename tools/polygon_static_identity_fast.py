@@ -132,7 +132,7 @@ def main():
         a=str(row["address"]).lower(); o=token_obs.get(a,{})
         row["onchain_identity"]={
             "status":"VERIFIED_PRIMARY" if code_sha(o.get("code")) else "OPEN",
-            "rpc_endpoint": next((e["name"] for e in endpoints if e[1]),None),
+            "rpc_endpoint": next((e["name"] for e in endpoints),None),
             "code_sha256":code_sha(o.get("code")),
             "code_bytes":(len(o.get("code",""))-2)//2 if code_ok(o.get("code")) else None,
             "decimals":uint(o.get("decimals")),
