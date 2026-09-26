@@ -39,11 +39,11 @@ jobs:
           rows=[json.loads(x) for x in Path("automation/universe/pairs.jsonl").read_text().splitlines() if x.strip()]
           fp=s.get("universe_fingerprint","")
           ok=(len(rows)>0 and len(rows)==int(s.get("total_pair_records",0)) and int(s.get("pair_identity_conflict_count",0))==0 and len(s.get("request_errors",[]))==0)
-          print(fp, s.get("rechecked_eligible_count"), s.get("eligible_token_count"), len(rows), "OK" if ok else "OPEN")
+          print(fp, s.get("processed_eligible_count"), s.get("eligible_token_count"), len(rows), "OK" if ok else "OPEN")
           PY
             cat /tmp/p5_state
-            read fp rechecked eligible pairs ok < /tmp/p5_state
-            if [ "$ok" = "OK" ] && [ "$rechecked" = "$eligible" ] && [ "$fp" = "$prev" ]; then
+            read fp processed eligible pairs ok < /tmp/p5_state
+            if [ "$ok" = "OK" ] && [ "$processed" = "$eligible" ] && [ "$fp" = "$prev" ]; then
               stable=$((stable+1))
             else
               stable=0
