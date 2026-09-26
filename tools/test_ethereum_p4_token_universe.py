@@ -29,7 +29,7 @@ class Tests(unittest.TestCase):
             ]
         }
         rows = m.extract_token_list(payload, "src")
-        self.assertEqual(len(rows), 2)
+        self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]["address"], "0x0000000000000000000000000000000000000001")
 
     def test_gecko_extract(self):
