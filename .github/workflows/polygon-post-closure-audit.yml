@@ -1,0 +1,36 @@
+name: Polygon Post-Closure Residual Audit
+on:
+  push:
+    paths:
+      - "automation/universe/**"
+      - "automation/evidence/P11_POLYGON_CLOSURE_CERTIFICATE.json"
+      - "automation/evidence/P10_SATURATION_AUDIT.json"
+      - "automation/evidence/P11_CLOSURE_REPORT.json"
+      - "automation/evidence/P9_ECONOMIC_CERTIFICATION.json"
+      - "chains/polygon-pos/POLYGON_SATURATION_V2.json"
+      - "tools/polygon_postclosure_audit.py"
+      - "tools/test_polygon_postclosure_audit.py"
+      - ".github/workflows/polygon-post-closure-audit.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: Regression
+        run: python tools/test_polygon_postclosure_audit.py
+      - name: Independent audit
+        run: python tools/polygon_postclosure_audit.py
+      - name: Commit audit record
+        if: success()
+        run: |
+          git config user.name "ghost-hunter-audit-bot"
+          git config user.email "ghost-hunter-audit-bot@users.noreply.github.com"
+          git add automation/evidence/P11_1_POLYGON_RESIDUAL_AUDIT.json
+          git diff --cached --quiet || git commit -m "chore: seal Polygon post-closure audit"
+          git push
