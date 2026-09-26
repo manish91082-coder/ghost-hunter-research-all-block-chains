@@ -1387,16 +1387,17 @@ def task_p5_pairs():
         "total_pair_records": len(merged_pairs),
     })
 
-    save_json(
-        P5_STABILITY_STATE,
-        {
+    P5_STABILITY_STATE.parent.mkdir(parents=True, exist_ok=True)
+    P5_STABILITY_STATE.write_text(
+        json.dumps({
             "baseline_fingerprint": baseline_fp,
             "baseline_eligibility_fingerprint": baseline_eligibility_fp,
             "processed_addresses": sorted(stability_processed_addresses),
             "stable_runs": stable_runs,
             "active": stage_gate != "CLOSED",
             "updated_at": now(),
-        },
+        }, sort_keys=True) + "\n",
+        encoding="utf-8",
     )
     write_json("P5_CURSOR.json", {
         "processed_addresses": sorted(processed_addresses),

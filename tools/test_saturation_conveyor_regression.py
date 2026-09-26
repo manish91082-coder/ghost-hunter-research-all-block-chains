@@ -335,6 +335,11 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("P5_PAIR_WORKERS = 12", worker)
 
 
+    def test_p5_stability_state_writer_is_defined_in_worker(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertNotIn("save_json(", worker)
+        self.assertIn("P5_STABILITY_STATE.write_text(", worker)
+
     def test_p5_stability_baseline_persists_across_partial_runs(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn("P5_STABILITY_STATE = EVID / \"P5_STABILITY_STATE.json\"", worker)
