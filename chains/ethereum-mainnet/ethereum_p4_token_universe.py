@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 EVID = ROOT / "automation" / "evidence"
 CHAIN_ID = 1
 HEAD_TOLERANCE = 2
-BATCH_SIZE = 50
+BATCH_SIZE = 100
 MIN_RPC = 2
 PREFERRED_RPC_IDS = ["1rpc", "blastapi", "drpc"]
 
@@ -107,39 +107,47 @@ def extract_gecko_recent(payload, source_id):
         })
     return rows
 
+def _fetch_source_item(source):
+    source_id, url = source
+    result = http_json(url)
+    rows = []
+    if result["ok"]:
+        if source_id == "geckoterminal_recent":
+            rows = extract_gecko_recent(result["payload"], source_id)
+        else:
+            rows = extract_token_list(result["payload"], source_id)
+    return source_id, url, result, rows
+
 def source_sample():
     records = []
     all_candidates = {}
-    for source_id, url in SOURCES:
-        result = http_json(url)
-        rows = []
-        if result["ok"]:
-            if source_id == "geckoterminal_recent":
-                rows = extract_gecko_recent(result["payload"], source_id)
-            else:
-                rows = extract_token_list(result["payload"], source_id)
-        records.append({
-            "source_id": source_id,
-            "url": url,
-            "http_status": result["status"],
-            "ok": result["ok"],
-            "latency_ms": result["latency_ms"],
-            "error": result["error"],
-            "count": len(rows),
-        })
-        for row in rows:
-            current = all_candidates.setdefault(row["address"], {
-                "address": row["address"],
-                "sources": set(),
-                "metadata": [],
+    with ThreadPoolExecutor(max_workers=len(SOURCES)) as executor:
+        futures = [executor.submit(_fetch_source_item, source) for source in SOURCES]
+        for future in as_completed(futures):
+            source_id, url, result, rows = future.result()
+            records.append({
+                "source_id": source_id,
+                "url": url,
+                "http_status": result["status"],
+                "ok": result["ok"],
+                "latency_ms": result["latency_ms"],
+                "error": result["error"],
+                "count": len(rows),
             })
-            current["sources"].add(source_id)
-            current["metadata"].append({
-                "source": source_id,
-                "name": row.get("name"),
-                "symbol": row.get("symbol"),
-                "decimals": row.get("decimals"),
-            })
+            for row in rows:
+                current = all_candidates.setdefault(row["address"], {
+                    "address": row["address"],
+                    "sources": set(),
+                    "metadata": [],
+                })
+                current["sources"].add(source_id)
+                current["metadata"].append({
+                    "source": source_id,
+                    "name": row.get("name"),
+                    "symbol": row.get("symbol"),
+                    "decimals": row.get("decimals"),
+                })
+    records.sort(key=lambda row: row["source_id"])
     normalized = {
         address: {
             "sources": sorted(item["sources"]),
@@ -286,10 +294,19 @@ def verify_candidates(candidates, rpc_pool_path):
         address: {"observations": 0, "successful_observations": 0, "code_nonempty": 0, "code_hashes": set(), "endpoint_results": []}
         for address in addresses
     }
+    tasks = []
     for endpoint in selected:
         for start in range(0, len(addresses), BATCH_SIZE):
             batch = addresses[start:start + BATCH_SIZE]
-            rows = batch_get_code(endpoint, batch, selected_block)
+            tasks.append((endpoint, batch))
+    with ThreadPoolExecutor(max_workers=min(9, len(tasks))) as executor:
+        futures = {
+            executor.submit(batch_get_code, endpoint, batch, selected_block): (endpoint, batch)
+            for endpoint, batch in tasks
+        }
+        for future in as_completed(futures):
+            endpoint, batch = futures[future]
+            rows = future.result()
             for row in rows:
                 state = by_address[row["address"]]
                 state["observations"] += 1
