@@ -43,8 +43,11 @@ jobs:
           python -m py_compile tools/saturation_conveyor.py
           python -m py_compile tools/polygon_universe_worker.py
           python -m py_compile tools/automation_state_store.py
+          python -m py_compile tools/p4_rpc_fanout.py
+          python -m py_compile tools/p4_fanout_aggregate.py
           python chains/polygon-pos/test_p2_control_function_regression.py
           python tools/test_saturation_conveyor_regression.py
+          python tools/test_p4_fanout_regression.py
 
       - name: Execute bounded conveyor round
         run: |

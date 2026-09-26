@@ -1,0 +1,177 @@
+name: P4 RPC Fanout
+
+on:
+  schedule:
+    - cron: '4-59/10 * * * *'
+  workflow_dispatch:
+  push:
+    paths:
+      - 'automation/p4_fanout.trigger'
+
+concurrency:
+  group: polygon-saturation-conveyor
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      p4_open: ${{ steps.gate.outputs.p4_open }}
+    env:
+      TATUM_API_KEY: ${{ secrets.TATUM_API_KEY }}
+    steps:
+      - name: Checkout canonical repo
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Restore latest saturation checkpoint
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python tools/automation_state_store.py restore --target automation/saturation_state.json
+      - name: Validate fanout sources
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/p4_rpc_fanout.py
+          python -m py_compile tools/p4_fanout_aggregate.py
+          python -m py_compile tools/automation_state_store.py
+          python tools/test_p4_fanout_regression.py
+      - name: Read P4 gate
+        id: gate
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          data=json.load(open("automation/saturation_state.json", encoding="utf-8"))
+          print(f"p4_open={data.get('critical_stage') == 'P4' and data.get('research_gate') == 'P2_CLOSED'}")
+          PY
+
+  fanout:
+    needs: gate
+    if: needs.gate.outputs.p4_open == 'true'
+    strategy:
+      fail-fast: false
+      max-parallel: 18
+      matrix:
+        rpc:
+          - drpc
+          - tenderly
+          - publicnode
+          - tatum
+          - nodies
+          - 1rpc
+          - quicknode-public
+          - onfinality
+          - publicnode-bor
+          - llama
+          - ankr
+          - blastapi
+          - nodeflare
+          - tenderly-gateway
+          - zan
+          - lava
+          - subquery
+          - spectrum
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    env:
+      TATUM_API_KEY: ${{ secrets.TATUM_API_KEY }}
+    steps:
+      - name: Checkout canonical repo
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Restore latest saturation checkpoint
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python tools/automation_state_store.py restore --target automation/saturation_state.json
+      - name: Run RPC shard
+        run: python tools/p4_rpc_fanout.py --endpoint-id "${{ matrix.rpc }}"
+      - name: Upload shard
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p4-shard-${{ matrix.rpc }}
+          path: automation/evidence/fanout_shards/P4_SHARD_${{ matrix.rpc }}.json
+          retention-days: 7
+          if-no-files-found: warn
+
+  aggregate:
+    needs: [gate, fanout]
+    if: always() && needs.gate.outputs.p4_open == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    env:
+      TATUM_API_KEY: ${{ secrets.TATUM_API_KEY }}
+    steps:
+      - name: Checkout canonical repo
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Restore latest saturation checkpoint
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          python tools/automation_state_store.py restore --target automation/saturation_state.json
+      - name: Download RPC shards
+        uses: actions/download-artifact@v4
+        with:
+          pattern: p4-shard-*
+          path: automation/evidence/fanout_shards
+          merge-multiple: true
+      - name: Aggregate P4 evidence
+        run: python tools/p4_fanout_aggregate.py
+      - name: Upload saturation checkpoint
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: saturation-conveyor-state
+          path: |
+            automation/saturation_state.json
+            automation/evidence/
+            automation/universe/
+          retention-days: 90
+          overwrite: true
+          if-no-files-found: warn
+      - name: Upload fanout evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: saturation-conveyor-evidence-${{ github.run_id }}
+          path: |
+            automation/conveyor_report.json
+            automation/evidence/
+            automation/universe/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Commit gate-transition state only
+        if: always()
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, pathlib
+          data=json.load(pathlib.Path('automation/conveyor_report.json').open(encoding='utf-8'))
+          pathlib.Path('/tmp/commit_required').write_text('1' if data.get('commit_required') else '0', encoding='utf-8')
+          print('commit_required=', data.get('commit_required'))
+          PY
+          if [ "$(cat /tmp/commit_required)" != '1' ]; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add automation/saturation_state.json automation/saturation_plan.json automation/evidence automation/universe
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'chore: advance P4 gate from RPC fanout [skip ci]'
+          git push origin HEAD:main

@@ -142,6 +142,10 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("except ValueError:", worker)
         self.assertIn("rows = _p4_rpc_single_calls(pool, endpoint_id, calls, timeout=30)", worker)
 
+    def test_checkpoint_restore_supports_p4_fanout_workflow(self):
+        source = (ROOT / "tools" / "automation_state_store.py").read_text(encoding="utf-8")
+        self.assertIn('"p4-rpc-fanout.yml"', source)
+
     def test_p4_identity_fingerprint_excludes_dynamic_total_supply(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn('semantic_fingerprints = {(x["code_hash"], x["decimals"]) for x in observations}', worker)
