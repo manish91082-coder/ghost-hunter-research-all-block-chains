@@ -709,5 +709,87 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn('"P6":"p6-route-closure-v1"', source)
 
 
+
+
+
+    def test_p7_strategy_matrix_has_exact_18_family_set_and_required_schema(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        expected = [
+            "dex_dex","intra_dex","triangular","multi_hop","split","flash_loan",
+            "liquidation","backrun","orderflow_mev","intent_rfq_filler",
+            "solver_relayer","liquidity_state_transition","cross_domain",
+            "statistical_temporal","gas_regime","failed_tx_retry_state",
+            "protocol_structural","negative_space_hypothesis",
+        ]
+        for strategy in expected:
+            self.assertIn('"' + strategy + '"', worker)
+        for field in [
+            '"mechanism"',
+            '"prerequisites"',
+            '"exact_contracts"',
+            '"state_dependencies"',
+            '"cost_model"',
+            '"failure_modes"',
+            '"competition_model"',
+            '"simulation_method"',
+            '"historical_evidence"',
+            '"live_shadow_evidence"',
+            '"profitability_status"',
+            '"confidence"',
+            '"unknowns"',
+        ]:
+            self.assertIn(field, worker)
+
+
+    def test_p7_closure_requires_stable_complete_matrix(self):
+        import importlib.util
+        worker_path = ROOT / "tools" / "polygon_universe_worker.py"
+        spec = importlib.util.spec_from_file_location("polygon_universe_worker_p7_gate", worker_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        row = {
+            "strategy_id": module.STRATEGIES[0],
+            "mechanism": {"status": "HYPOTHESIS_ONLY"},
+            "prerequisites": {"status": "UNRESOLVED"},
+            "exact_contracts": {"status": "NOT_IDENTIFIED"},
+            "state_dependencies": {"status": "UNRESOLVED"},
+            "cost_model": {"status": "NOT_CERTIFIED"},
+            "failure_modes": {"status": "UNRESOLVED"},
+            "competition_model": {"status": "UNRESOLVED"},
+            "simulation_method": {"status": "EXACT_SIMULATION_REQUIRED"},
+            "historical_evidence": {"status": "NOT_COLLECTED"},
+            "live_shadow_evidence": {"status": "NOT_COLLECTED"},
+            "profitability_status": "NOT_CERTIFIED",
+            "confidence": {"level": "LOW"},
+            "unknowns": ["x"],
+            "status": "RESEARCH_CANDIDATE_UNRESOLVED",
+        }
+        snapshot = {
+            "strategy_count": len(module.STRATEGIES),
+            "matrix_fingerprint": "abc",
+            "stable_runs": 1,
+            "matrix_complete": True,
+            "checks": {
+                "p6_route_source_closed": True,
+                "strategy_set_complete": True,
+                "unique_strategy_ids": True,
+                "required_fields_complete": True,
+                "unresolved_fields_explicit": True,
+            },
+        }
+        self.assertFalse(module.p7_strategy_closure_ready(
+            snapshot, {"fingerprint": "abc", "stable_runs": 0, "matrix_complete": False}
+        ))
+        self.assertTrue(module.p7_strategy_closure_ready(
+            snapshot, {"fingerprint": "abc", "stable_runs": 1, "matrix_complete": True}
+        ))
+
+
+    def test_p7_revision_resets_stale_cooldown(self):
+        source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
+        self.assertIn('"P7":"p7-strategy-matrix-v2"', source)
+
+
 if __name__ == "__main__":
     unittest.main()

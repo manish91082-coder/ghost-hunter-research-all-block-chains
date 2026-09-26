@@ -1570,11 +1570,253 @@ def task_p6_routes():
     })
     return write_json("P6_ROUTE_SNAPSHOT.json", snapshot)
 
-STRATEGIES=["dex_dex","intra_dex","triangular","multi_hop","split","flash_loan","liquidation","backrun","orderflow_mev","intent_rfq_filler","solver_relayer","liquidity_state_transition","cross_domain","statistical_temporal","gas_regime","failed_tx_retry_state","protocol_structural","negative_space_hypothesis"]
+STRATEGY_SCHEMA_VERSION = "p7-strategy-matrix-v2"
+
+STRATEGIES = [
+    "dex_dex",
+    "intra_dex",
+    "triangular",
+    "multi_hop",
+    "split",
+    "flash_loan",
+    "liquidation",
+    "backrun",
+    "orderflow_mev",
+    "intent_rfq_filler",
+    "solver_relayer",
+    "liquidity_state_transition",
+    "cross_domain",
+    "statistical_temporal",
+    "gas_regime",
+    "failed_tx_retry_state",
+    "protocol_structural",
+    "negative_space_hypothesis",
+]
+
+P7_REQUIRED_FIELDS = [
+    "mechanism",
+    "prerequisites",
+    "exact_contracts",
+    "state_dependencies",
+    "cost_model",
+    "failure_modes",
+    "competition_model",
+    "simulation_method",
+    "historical_evidence",
+    "live_shadow_evidence",
+    "profitability_status",
+    "confidence",
+    "unknowns",
+]
+
+P7_CLOSURE_STATE = EVID / "P7_CLOSURE_STATE.json"
+
+P7_MECHANISM_HYPOTHESES = {
+    "dex_dex": "Cross-venue price discrepancy candidate.",
+    "intra_dex": "Single-venue path/state discrepancy candidate.",
+    "triangular": "Three-asset cyclic conversion discrepancy candidate.",
+    "multi_hop": "Multi-hop path pricing/state discrepancy candidate.",
+    "split": "Split-flow routing candidate across alternative paths.",
+    "flash_loan": "Atomic flash-funded strategy wrapper around an eligible route or state transition.",
+    "liquidation": "Protocol liquidation incentive/state-transition candidate.",
+    "backrun": "Post-transaction state-change opportunity candidate.",
+    "orderflow_mev": "Orderflow-dependent candidate requiring eligible transaction-order information.",
+    "intent_rfq_filler": "Intent/RFQ fulfillment candidate subject to solver/filler constraints.",
+    "solver_relayer": "Solver/relayer path candidate subject to protocol-specific settlement rules.",
+    "liquidity_state_transition": "Liquidity-state change candidate independent of simple price spread.",
+    "cross_domain": "Cross-domain opportunity candidate subject to bridge/message/settlement state.",
+    "statistical_temporal": "Temporal/statistical recurrence candidate requiring historical evidence.",
+    "gas_regime": "Gas-regime-dependent opportunity candidate.",
+    "failed_tx_retry_state": "Failed/retried transaction-state opportunity hypothesis.",
+    "protocol_structural": "Protocol-specific structural opportunity hypothesis.",
+    "negative_space_hypothesis": "Explicit unknown/negative-space research hypothesis; no profitability assertion.",
+}
+
+def p7_strategy_row(strategy, route_count_total, route_fingerprint):
+    return {
+        "strategy_id": strategy,
+        "strategy": strategy,
+        "candidate": True,
+        "status": "RESEARCH_CANDIDATE_UNRESOLVED",
+        "evidence_class": "DERIVED_COVERAGE",
+        "mechanism": {
+            "status": "HYPOTHESIS_ONLY",
+            "summary": P7_MECHANISM_HYPOTHESES[strategy],
+        },
+        "prerequisites": {
+            "status": "UNRESOLVED",
+            "items": [],
+        },
+        "exact_contracts": {
+            "status": "NOT_IDENTIFIED",
+            "items": [],
+        },
+        "state_dependencies": {
+            "status": "UNRESOLVED",
+            "items": [],
+        },
+        "cost_model": {
+            "status": "NOT_CERTIFIED",
+            "components": [
+                "gas",
+                "venue_fees",
+                "slippage",
+                "execution_cost",
+                "strategy_specific_costs",
+            ],
+        },
+        "failure_modes": {
+            "status": "UNRESOLVED",
+            "items": [],
+        },
+        "competition_model": {
+            "status": "UNRESOLVED",
+            "items": [],
+        },
+        "simulation_method": {
+            "status": "EXACT_SIMULATION_REQUIRED",
+            "method": "Pending venue/protocol-specific exact-state simulation.",
+        },
+        "historical_evidence": {
+            "status": "NOT_COLLECTED",
+            "sources": [],
+        },
+        "live_shadow_evidence": {
+            "status": "NOT_COLLECTED",
+            "sources": [],
+        },
+        "profitability_status": "NOT_CERTIFIED",
+        "confidence": {
+            "level": "LOW",
+            "reason": "Strategy-family coverage is established; strategy-specific contract/state/economic evidence is still unresolved.",
+        },
+        "unknowns": [
+            "exact contracts and protocol surfaces",
+            "strategy-specific state dependencies",
+            "complete cost model",
+            "failure and competition behavior",
+            "historical/live shadow evidence",
+            "exact economic profitability",
+        ],
+        "route_context": {
+            "available": route_count_total > 0,
+            "route_count_total": route_count_total,
+            "graph_fingerprint": route_fingerprint,
+            "mapping_status": "NOT_CLASSIFIED_PER_STRATEGY",
+        },
+    }
+
+def p7_strategy_closure_ready(snapshot, previous_state):
+    checks = snapshot.get("checks", {})
+    current_fp = snapshot.get("matrix_fingerprint")
+    previous_fp = previous_state.get("fingerprint")
+    stable_count = int(snapshot.get("stable_runs", 0) or 0)
+    return (
+        checks.get("p6_route_source_closed") is True
+        and checks.get("strategy_set_complete") is True
+        and checks.get("unique_strategy_ids") is True
+        and checks.get("required_fields_complete") is True
+        and checks.get("unresolved_fields_explicit") is True
+        and int(snapshot.get("strategy_count", 0)) == len(STRATEGIES)
+        and current_fp
+        and current_fp == previous_fp
+        and previous_state.get("matrix_complete") is True
+        and stable_count >= 1
+    )
+
 def task_p7_strategies():
-    routes=json.loads((EVID/"P6_ROUTE_SNAPSHOT.json").read_text()).get("route_count_sampled",0) if (EVID/"P6_ROUTE_SNAPSHOT.json").exists() else 0
-    rows=[{"strategy":s,"candidate":True,"route_context_count":routes,"status":"RESEARCH_CANDIDATE"} for s in STRATEGIES]
-    return write_json("P7_STRATEGY_MATRIX.json",{"task":"p7_strategy_matrix","time":now(),"strategies":rows,"count":len(rows),"evidence_class":"DERIVED"})
+    p6_path = EVID / "P6_ROUTE_SNAPSHOT.json"
+    p6 = load_json(p6_path, {}) if p6_path.exists() else {}
+    p6_closed = p6.get("stage_gate") == "CLOSED"
+    route_count_total = int(p6.get("route_count_total", 0) or 0)
+    route_fingerprint = p6.get("graph_fingerprint", "")
+
+    rows = [
+        p7_strategy_row(strategy, route_count_total, route_fingerprint)
+        for strategy in STRATEGIES
+    ]
+
+    row_ids = [row["strategy_id"] for row in rows]
+    unique_ids = len(row_ids) == len(set(row_ids))
+    expected = set(STRATEGIES)
+    strategy_set_complete = set(row_ids) == expected
+
+    required_fields_complete = all(
+        all(field in row and row[field] not in (None, "") for field in P7_REQUIRED_FIELDS)
+        for row in rows
+    )
+    unresolved_fields_explicit = all(
+        row["status"] == "RESEARCH_CANDIDATE_UNRESOLVED"
+        and row["exact_contracts"]["status"] == "NOT_IDENTIFIED"
+        and row["profitability_status"] == "NOT_CERTIFIED"
+        for row in rows
+    )
+
+    matrix_seed = {
+        "schema": STRATEGY_SCHEMA_VERSION,
+        "strategies": rows,
+        "route_source": {
+            "stage_gate": p6.get("stage_gate"),
+            "route_count_total": route_count_total,
+            "graph_fingerprint": route_fingerprint,
+        },
+    }
+    matrix_fingerprint = sha(matrix_seed)
+
+    previous = load_json(P7_CLOSURE_STATE, {})
+    previous_fp = previous.get("fingerprint")
+    previous_complete = previous.get("matrix_complete") is True
+
+    if matrix_fingerprint and matrix_fingerprint == previous_fp and previous_complete:
+        stable_runs = int(previous.get("stable_runs", 0) or 0) + 1
+    else:
+        stable_runs = 1
+
+    snapshot = {
+        "task": "p7_strategy_matrix",
+        "time": now(),
+        "schema": STRATEGY_SCHEMA_VERSION,
+        "strategies": rows,
+        "count": len(rows),
+        "strategy_count": len(rows),
+        "route_source": {
+            "stage_gate": p6.get("stage_gate"),
+            "route_count_total": route_count_total,
+            "graph_fingerprint": route_fingerprint,
+        },
+        "matrix_fingerprint": matrix_fingerprint,
+        "stable_runs": stable_runs,
+        "matrix_complete": True,
+        "checks": {
+            "p6_route_source_closed": p6_closed and route_count_total > 0 and bool(route_fingerprint),
+            "strategy_set_complete": strategy_set_complete,
+            "unique_strategy_ids": unique_ids,
+            "required_fields_complete": required_fields_complete,
+            "unresolved_fields_explicit": unresolved_fields_explicit,
+        },
+        "evidence_class": "DERIVED_COVERAGE",
+        "research_boundary": "P7 closes strategy-family coverage/schema completeness only; it does not certify exact contracts, execution, economics, or profitability.",
+    }
+
+    snapshot["stage_gate"] = "CLOSED" if p7_strategy_closure_ready(
+        snapshot,
+        {
+            "fingerprint": previous_fp,
+            "stable_runs": max(0, stable_runs - 1),
+            "matrix_complete": previous_complete,
+        },
+    ) else "OPEN"
+
+    write_json("P7_CLOSURE_STATE.json", {
+        "fingerprint": matrix_fingerprint,
+        "stable_runs": stable_runs,
+        "updated_at": snapshot["time"],
+        "stage_gate": snapshot["stage_gate"],
+        "matrix_complete": True,
+        "strategy_count": len(rows),
+        "route_count_total": route_count_total,
+    })
+    return write_json("P7_STRATEGY_MATRIX.json", snapshot)
 
 def task_p8_features():
     pairs=load_jsonl(UNIV/"pairs.jsonl"); groups=defaultdict(list)
