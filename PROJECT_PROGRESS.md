@@ -817,3 +817,12 @@ P9 exact economic certification: exact-state replay, venue-specific swap math, g
 - Economic candidate disposition is complete at the census boundary: 420 groups have explicit status/blockers; exact profit certification remains 0/420.
 - Polygon research-universe saturation is therefore **CLOSED / GREEN** under the v2 boundary.
 - Exact profitability and live execution remain separate downstream tracks.
+
+## 2026-09-26 — Ethereum P2 CLOSED
+- Current P2 closure certificate: `automation/evidence/ETHEREUM_P2_CLOSURE_CERTIFICATE.json`.
+- RPC identity/head/capability bootstrap closed from current-main Run `36256665200`.
+- Four Ethereum system/predeploy runtime-code targets verified from current-main Run `36257049739`.
+- Five semantic controls verified from current-main Run `36257349105`; all selected independent observations matched.
+- P2 is now CLOSED for Ethereum Mainnet.
+- Next critical stage: **P3 protocol/DEX discovery**.
+- P3 acceptance must use multi-source discovery convergence and stability; discovery snapshots do not promote addresses/pools to VERIFIED.
