@@ -2173,7 +2173,7 @@ def _p9_capability_calls(address):
         (f"p9:{address}:reserves", "eth_call", [{"to": address, "data": "0x0902f1ac"}, "latest"]),
         (f"p9:{address}:slot0", "eth_call", [{"to": address, "data": "0x3850c7bd"}, "latest"]),
         (f"p9:{address}:fee", "eth_call", [{"to": address, "data": "0xddca3f43"}, "latest"]),
-        (f"p9:{address}:liquidity", "eth_call", [{"to": address, "data": "0x1a686502"}, "latest"),
+        (f"p9:{address}:liquidity", "eth_call", [{"to": address, "data": "0x1a686502"}, "latest"]),
     ]
 
 def _p9_surface_from_rows(address, rows):
