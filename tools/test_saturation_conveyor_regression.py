@@ -142,7 +142,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("except ValueError:", worker)
         self.assertIn("rows = _p4_rpc_single_calls(pool, endpoint_id, calls, timeout=30)", worker)
 
-    def test_p4_uses_low-risk_capability_probe_and_micro_batches(self):
+    def test_p4_uses_low_risk_capability_probe_and_micro_batches(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn("P4_RPC_MIN_INTERVAL = 1.0", worker)
         self.assertIn("P4_RPC_CHUNK_TOKENS = 12", worker)
