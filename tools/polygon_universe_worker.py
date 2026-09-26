@@ -2102,8 +2102,8 @@ def task_p8_features():
     return write_json("P8_FEATURE_SNAPSHOT.json", snapshot)
 
 P9_SCHEMA_VERSION = "p9-economic-certification-v2"
-P9_CANDIDATE_BATCH_GROUPS = 40
-P9_BATCH_PAIR_LIMIT = 120
+P9_CANDIDATE_BATCH_GROUPS = 70
+P9_BATCH_PAIR_LIMIT = 240
 P9_PROBE_CHUNK_PAIRS = 20
 P9_REQUIRED_CERT_FIELDS = [
     "exact_state_replay",

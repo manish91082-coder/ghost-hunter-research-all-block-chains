@@ -1001,5 +1001,15 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn('shadow_plan = ["P10"] if current_critical == "P9" else SHADOW', conveyor)
 
 
+
+
+
+    def test_p9_batch_throughput_is_bounded_and_persistent(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn("P9_CANDIDATE_BATCH_GROUPS = 70", worker)
+        self.assertIn("P9_BATCH_PAIR_LIMIT = 240", worker)
+        self.assertIn('"observations": merged_observations', worker)
+
+
 if __name__ == "__main__":
     unittest.main()
