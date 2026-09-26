@@ -835,3 +835,14 @@ P9 exact economic certification: exact-state replay, venue-specific swap math, g
 - P3 is now CLOSED under the declared discovery-only boundary.
 - **Next critical objective: P4 token-universe saturation and on-chain token identity verification.**
 
+
+## 2026-09-26 — Ethereum P4 implementation / verification checkpoint
+- Implemented five-source Ethereum token candidate discovery using Uniswap Default List, CoinGecko Uniswap list, VIA Protocol trusted aggregate, Compound token list, and GeckoTerminal recently-updated Ethereum tokens.
+- Normalization is keyed by canonical lowercase EVM address with duplicate suppression.
+- Runtime-code verification is same-block and read-only, using P2-qualified Ethereum RPC infrastructure and multi-request JSON-RPC batches.
+- Performance hardening parallelizes source fetching and bounded RPC batch I/O; batch size is now 100.
+- Regression validation passes locally for address normalization, token-list deduplication, Gecko extraction and token classification.
+- CI Run #2 failed only because the dedupe regression expected 2 rows instead of the correct 1; this was fixed.
+- CI Run #3 entered the discovery/verification step on the corrected test but was too slow under the serial implementation.
+- The serial worker was superseded by the parallel implementation at `4a93c267f75b0e140cc564dbd9015d95608fad52`, followed by a deterministic CI trigger commit `0a666db75d7a224296300bab89568a8a8cfae2ec`.
+- Latest P4 CI Run #5 is QUEUED and is the authoritative pending validation run. No P4 closure claim is allowed yet.
