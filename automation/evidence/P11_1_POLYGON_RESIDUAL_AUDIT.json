@@ -1,0 +1,117 @@
+{
+  "schema_version": "polygon-postclosure-audit-v2",
+  "time": "2026-09-26T16:34:18Z",
+  "status": "GREEN",
+  "scope": "POLYGON_RESEARCH_UNIVERSE_SATURATED",
+  "counts": {
+    "tokens": 469,
+    "pairs": 2821,
+    "dex_namespaces": 67,
+    "custom_namespaces": 41,
+    "economic_candidates": 420,
+    "exact_profit_certified": 0
+  },
+  "source_results": {
+    "private_mempool": {
+      "ok": true,
+      "http_status": 200,
+      "markers_found": [
+        "Private Mempool",
+        "sandwich"
+      ]
+    },
+    "agglayer": {
+      "ok": true,
+      "http_status": 200,
+      "markers_found": [
+        "Bridge-and-Call",
+        "Message Bridging"
+      ]
+    },
+    "uniswap_v4": {
+      "ok": true,
+      "http_status": 200,
+      "markers_found": [
+        "Polygon: 137",
+        "PoolManager",
+        "StateView"
+      ]
+    },
+    "defillama_chain": {
+      "ok": true,
+      "http_status": 200,
+      "markers_found": [
+        "Polygon",
+        "DEXs Volume",
+        "Perps Volume"
+      ]
+    },
+    "defillama_dex": {
+      "ok": true,
+      "http_status": 200,
+      "markers_found": [
+        "Uniswap",
+        "Quickswap",
+        "RamsesX"
+      ]
+    },
+    "defillama_aggregators": {
+      "ok": true,
+      "http_status": 200,
+      "markers_found": [
+        "0x Protocol",
+        "KyberSwap",
+        "1inch"
+      ]
+    },
+    "defillama_perps": {
+      "ok": true,
+      "http_status": 200,
+      "markers_found": [
+        "Polymarket",
+        "Gains Network"
+      ]
+    },
+    "polygon_rwa": {
+      "ok": true,
+      "http_status": 200,
+      "markers_found": [
+        "RWA",
+        "stablecoin",
+        "tokenized"
+      ]
+    },
+    "polygon_portal": {
+      "ok": true,
+      "http_status": 200,
+      "markers_found": []
+    },
+    "aave_flash": {
+      "ok": true,
+      "http_status": 200,
+      "markers_found": [
+        "flashLoan",
+        "flashLoanSimple"
+      ]
+    },
+    "aave_pool": {
+      "ok": true,
+      "http_status": 200,
+      "markers_found": [
+        "liquidat",
+        "flashLoan"
+      ]
+    },
+    "aave_market": {
+      "ok": true,
+      "http_status": 200,
+      "markers_found": [
+        "Reserve",
+        "flash loans",
+        "liquidation"
+      ]
+    }
+  },
+  "failures": [],
+  "note": "GREEN does not authorize live execution or claim exact profitability."
+}
