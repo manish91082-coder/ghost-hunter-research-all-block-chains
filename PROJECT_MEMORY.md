@@ -373,3 +373,9 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - Identity/head quorum requires two independent chain-1 endpoints and a deterministic two-block freshness tolerance; there is no majority-based conflict resolution.
 - Capability errors, rate limits and transport failures remain distinct from chain-state evidence.
 - The verifier intentionally stops below overall P2 closure. Contract, DEX, pool, token, route, strategy and exact-economic evidence remain downstream.
+## 2026-09-26 — Polygon saturation v2 lock
+- The Polygon closure is now being validated by a second, independent post-closure audit layer rather than trusting the original P11 report alone.
+- Sealed universe provenance: conveyor Run 36250240579, Artifact 10908519045, with 469 unique tokens and 2,821 unique pairs.
+- Pool identity v2 covers CL pools, Uniswap v4 singleton PoolManager/hooks, Balancer pool IDs, RFQ/orderbook markets, lending and derivatives, plus CUSTOM_EVM fallback.
+- Current ecosystem evidence explicitly tracks Private Mempool, AggLayer Bridge-and-Call, Uniswap v4 Polygon deployment, DEX/aggregator/perps/lending data, RWA/tokenization and Aave flash/liquidation surfaces.
+- Economic candidate disposition remains exhaustive but exact profitability remains 0/420 at the historical seal. No profitability or live-execution claim is permitted from the saturation seal.
