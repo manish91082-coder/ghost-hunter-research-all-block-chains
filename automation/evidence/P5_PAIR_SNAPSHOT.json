@@ -1,11 +1,30 @@
 {
-  "cursor": 124,
+  "baseline_eligibility_fingerprint": "08ae529a44ad53492b1f4e9113bd2063db38a1af3cd0c8a07e36053dbdd8ccbe",
+  "baseline_fingerprint": "cfbeb1dae7e3387eb78d89b0144b77ddf65f9bc73c6af3836144f23032886295",
+  "checks": {
+    "eligible_token_universe_nonempty": true,
+    "source_requests_complete": true
+  },
+  "coverage_complete": true,
+  "duplicate_pair_observation_count": 0,
+  "eligible_token_count": 457,
   "evidence_class": "DISCOVERY",
-  "new_unique_pairs": 256,
-  "new_unique_tokens": 41,
-  "observed_pair_rows": 302,
-  "processed_tokens": 30,
+  "new_unique_pairs": 0,
+  "new_unique_tokens": 0,
+  "observed_pair_rows": 0,
+  "pair_batch_size": 120,
+  "pair_identity_conflict_count": 0,
+  "pair_workers": 4,
+  "processed_eligible_count": 457,
+  "processed_tokens": 0,
+  "recheck_mode": true,
+  "rechecked_eligible_count": 457,
+  "request_errors": [],
+  "stability_state_file": "automation/evidence/P5_STABILITY_STATE.json",
+  "stable_runs": 12,
+  "stage_gate": "CLOSED",
   "task": "p5_pair_discovery",
-  "time": "2026-09-26T05:14:30Z",
-  "total_pair_records": 1132
+  "time": "2026-09-26T08:20:29Z",
+  "total_pair_records": 2821,
+  "universe_fingerprint": "cfbeb1dae7e3387eb78d89b0144b77ddf65f9bc73c6af3836144f23032886295"
 }

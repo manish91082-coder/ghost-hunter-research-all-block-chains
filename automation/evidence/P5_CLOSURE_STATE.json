@@ -1,0 +1,11 @@
+{
+  "coverage_complete": true,
+  "eligible_token_count": 457,
+  "fingerprint": "cfbeb1dae7e3387eb78d89b0144b77ddf65f9bc73c6af3836144f23032886295",
+  "processed_eligible_count": 457,
+  "rechecked_eligible_count": 457,
+  "stable_runs": 12,
+  "stage_gate": "CLOSED",
+  "total_pair_records": 2821,
+  "updated_at": "2026-09-26T08:20:29Z"
+}
