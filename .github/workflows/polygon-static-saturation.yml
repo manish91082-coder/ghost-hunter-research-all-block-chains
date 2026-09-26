@@ -5,9 +5,6 @@ on:
       - ".github/workflows/polygon-static-saturation.yml"
       - "tools/polygon_universe_worker.py"
       - "tools/polygon_static_materializer.py"
-      - "automation/universe/**"
-      - "automation/evidence/P5_*.json"
-      - "automation/evidence/P6_*.json"
   workflow_dispatch:
 permissions:
   contents: write
