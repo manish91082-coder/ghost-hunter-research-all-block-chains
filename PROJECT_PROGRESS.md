@@ -802,3 +802,9 @@ P9 exact economic certification: exact-state replay, venue-specific swap math, g
 - The candidate pool is built from documented public endpoint options and remains subject to live runtime verification.
 - The two-independent-endpoint doctrine and fail-closed behavior are inherited from the Polygon evidence discipline.
 - Next atomic step: inspect the exact-SHA CI terminal result and evidence artifact; only then decide whether the Ethereum P2 bootstrap sub-gate can close.
+## 2026-09-26 — Polygon saturation v2 integrity layer
+- Closed the semantic gaps identified after P11 by making pool identity protocol-native rather than pair-address-only.
+- Added explicit coverage for private mempool, AggLayer/Bridge-and-Call, aggregators/RFQ, lending/liquidation, derivatives/prediction, staking/liquid-staking and RWA/stablecoin surfaces.
+- Added dynamic-state, token-taxonomy and route-policy schemas.
+- Added immutable closure provenance and an automated rehydration path that restores the exact 469-token / 2,821-pair sealed snapshot to Git main.
+- Added an independent audit that requires persistence, uniqueness, current-source reachability/markers and complete economic candidate disposition before GREEN.
