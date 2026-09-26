@@ -940,5 +940,23 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertEqual(result["status"], "BLOCKED_RPC_BATCH_UNSUPPORTED")
 
 
+
+
+    def test_p9_non_evm_pool_refs_are_typed_not_probed_as_addresses(self):
+        import importlib.util
+        worker_path = ROOT / "tools" / "polygon_universe_worker.py"
+        spec = importlib.util.spec_from_file_location("polygon_universe_worker_p9_refs", worker_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        self.assertEqual(
+            module._p9_ref_type("balancer", "0xpool-0xaaa-0xbbb"),
+            "balancer_pool_id",
+        )
+        self.assertEqual(
+            module._p9_ref_type("quickswap", "0x1111111111111111111111111111111111111111"),
+            "evm_pair_address",
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

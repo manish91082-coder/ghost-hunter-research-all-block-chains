@@ -2122,6 +2122,20 @@ P9_REQUIRED_CERT_FIELDS = [
 P9_CLOSURE_STATE = EVID / "P9_CLOSURE_STATE.json"
 P9_PROGRESS_STATE = EVID / "P9_CAPABILITY_STATE.json"
 
+def _p9_is_evm_address(value):
+    return isinstance(value, str) and len(value) == 42 and value.lower().startswith("0x") and all(
+        ch in "0123456789abcdef" for ch in value[2:].lower()
+    )
+
+
+def _p9_ref_type(dex, value):
+    if _p9_is_evm_address(value):
+        return "evm_pair_address"
+    if str(dex or "").lower() == "balancer" and isinstance(value, str) and value.count("-") >= 2:
+        return "balancer_pool_id"
+    return "non_evm_pool_ref"
+
+
 def _p9_candidate_rows():
     p8 = load_json(EVID / "P8_FEATURE_SNAPSHOT.json", {})
     rows = []
@@ -2141,7 +2155,19 @@ def _p9_candidate_rows():
             "pair_key": feature.get("pair_key"),
             "venue_count": len(venues),
             "gross_spread_pct": round(float(spread) * 100.0, 8),
-            "venues": venues,
+            "venues": [
+                {
+                    "dex": v.get("dex"),
+                    "pair": v.get("pair"),
+                    "ref_type": _p9_ref_type(v.get("dex"), v.get("pair")),
+                }
+                for v in venues
+            ],
+            "non_evm_refs": [
+                {"dex": v.get("dex"), "pair": v.get("pair"), "ref_type": _p9_ref_type(v.get("dex"), v.get("pair"))}
+                for v in venues
+                if _p9_ref_type(v.get("dex"), v.get("pair")) != "evm_pair_address"
+            ],
         })
     rows.sort(key=lambda row: (-row["gross_spread_pct"], row["pair_key"] or ""))
     return rows
@@ -2231,7 +2257,8 @@ def _p9_probe_pairs(pool, endpoint_ids, pair_addresses):
                 })
     return results
 
-def _p9_exact_requirements(surface_rows):
+def _p9_exact_requirements(surface_rows, non_evm_refs=None):
+    non_evm_refs = non_evm_refs or []
     if not surface_rows:
         return {
             "status": "BLOCKED_NO_RPC_OBSERVATION",
@@ -2256,6 +2283,8 @@ def _p9_exact_requirements(surface_rows):
         }
     surface = valid_rows[0]["surface"]
     blockers = []
+    if non_evm_refs:
+        blockers.append("venue-specific non-EVM pool adapter required")
     if not surface["code_present"]:
         blockers.append("pair contract code unavailable")
     if not surface["token_surface"]:
@@ -2301,7 +2330,7 @@ def task_p9_economics():
         str(v.get("pair")).lower()
         for candidate in selected_candidates
         for v in candidate.get("venues", [])
-        if isinstance(v.get("pair"), str) and len(v.get("pair")) == 42
+        if v.get("ref_type") == "evm_pair_address"
     })
     remaining = [address for address in all_pairs if address not in processed]
 
@@ -2338,16 +2367,14 @@ def task_p9_economics():
             address = str(venue.get("pair", "")).lower()
             if address in merged_observations:
                 surfaces.extend(merged_observations[address])
-        cert = _p9_exact_requirements(surfaces)
+        cert = _p9_exact_requirements(surfaces, candidate.get("non_evm_refs", []))
         ledger.append({
             "pair_key": candidate["pair_key"],
             "gross_spread_pct": candidate["gross_spread_pct"],
             "venue_count": candidate["venue_count"],
-            "venues": [
-                {"dex": v.get("dex"), "pair": v.get("pair")}
-                for v in candidate.get("venues", [])
-            ],
-            "exact_certification": cert,
+            "venues": candidate.get("venues", []),
+        "non_evm_refs": candidate.get("non_evm_refs", []),
+        "exact_certification": cert,
         })
 
     newly_processed = set(processed)
@@ -2371,6 +2398,9 @@ def task_p9_economics():
         "schema": P9_SCHEMA_VERSION,
         "candidate_count": len(candidates),
         "pair_addresses_total": len(all_pairs),
+        "non_evm_pool_refs_total": len({
+            str(ref.get("pair")) for candidate in selected_candidates for ref in candidate.get("non_evm_refs", [])
+        }),
         "processed_pairs_count": len(newly_processed),
         "observations_persisted": len(merged_observations),
         "batch_groups": len(batch_candidates),
@@ -2407,6 +2437,9 @@ def task_p9_economics():
         "ledger_complete": complete,
         "candidate_count": len(candidates),
         "pair_addresses_total": len(all_pairs),
+        "non_evm_pool_refs_total": len({
+            str(ref.get("pair")) for candidate in selected_candidates for ref in candidate.get("non_evm_refs", [])
+        }),
         "processed_pairs_count": len(newly_processed),
         "exactly_certified_count": exact,
     })
