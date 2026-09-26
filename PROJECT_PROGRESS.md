@@ -808,3 +808,12 @@ P9 exact economic certification: exact-state replay, venue-specific swap math, g
 - Added dynamic-state, token-taxonomy and route-policy schemas.
 - Added immutable closure provenance and an automated rehydration path that restores the exact 469-token / 2,821-pair sealed snapshot to Git main.
 - Added an independent audit that requires persistence, uniqueness, current-source reachability/markers and complete economic candidate disposition before GREEN.
+
+## 2026-09-26 — Polygon saturation GREEN closure
+- Rehydrated and re-verified the exact sealed Polygon snapshot: 469 unique tokens and 2,821 unique pair records.
+- Added protocol-native pool identity coverage, opportunity-surface coverage, token taxonomy, dynamic-state schema and declared route-policy boundaries.
+- Independent audit Run `36255914637` returned **GREEN** with zero failures.
+- Current ecosystem source reachability/semantic checks passed across the declared Polygon surface set.
+- Economic candidate disposition is complete at the census boundary: 420 groups have explicit status/blockers; exact profit certification remains 0/420.
+- Polygon research-universe saturation is therefore **CLOSED / GREEN** under the v2 boundary.
+- Exact profitability and live execution remain separate downstream tracks.
