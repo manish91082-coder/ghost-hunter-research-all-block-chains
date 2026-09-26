@@ -1,0 +1,20 @@
+{
+  "schema_version": "polygon-closure-certificate-v2",
+  "source_run_id": 36250240579,
+  "source_artifact_id": 10908519045,
+  "source_artifact_sha256": "ad2505dceb8968c54bc7d0ae23baf44b9f4015d7b86431774c468b92b639ba48",
+  "counts": {
+    "tokens": 469,
+    "pairs": 2821,
+    "routes": 617622,
+    "strategies": 18,
+    "feature_groups": 1891,
+    "economic_candidate_groups": 420,
+    "exact_profit_certified": 0
+  },
+  "files": {
+    "tokens_sha256": "4906e73d59f786707e5b4a6c0f6e908549379aa2a7aab858476aac7c968a28ed",
+    "pairs_sha256": "26da61a5f4d21337f2a93d5f5e3d50718738f57eb0eeb0a82aec53760c8f9e35"
+  },
+  "universe_fingerprint": "cfbeb1dae7e3387eb78d89b0144b77ddf65f9bc73c6af3836144f23032886295"
+}
