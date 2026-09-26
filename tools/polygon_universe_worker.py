@@ -195,7 +195,7 @@ def p3_closure_ready(snapshot, previous_state):
     checks = snapshot.get("checks", {})
     current_fp = snapshot.get("universe_fingerprint")
     previous_fp = previous_state.get("fingerprint")
-    stable_count = int(snapshot.get("stable_runs", 0) or 0)
+    stable_count = int(previous_state.get("stable_runs", 0) or 0)
     return (
         checks.get("defillama_protocols_ok") is True
         and checks.get("geckoterminal_dexes_ok") is True
@@ -1065,7 +1065,7 @@ def p5_closure_ready(snapshot, previous_state):
     checks = snapshot.get("checks", {})
     current_fp = snapshot.get("universe_fingerprint")
     previous_fp = previous_state.get("fingerprint")
-    stable_count = int(previous_state.get("stable_runs", 0) or 0)
+    stable_count = int(snapshot.get("stable_runs", 0) or 0)
     return (
         checks.get("source_requests_complete") is True
         and checks.get("eligible_token_universe_nonempty") is True

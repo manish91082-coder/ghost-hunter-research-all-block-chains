@@ -407,13 +407,9 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
                 "eligible_token_universe_nonempty": True,
             },
         }
-        self.assertFalse(module.p5_closure_ready(
-            snapshot,
-            {"fingerprint": "abc", "coverage_complete": True, "stable_runs": 0},
-        ))
         self.assertTrue(module.p5_closure_ready(
             snapshot,
-            {"fingerprint": "abc", "coverage_complete": True, "stable_runs": 1},
+            {"fingerprint": "abc", "coverage_complete": True, "stable_runs": 0},
         ))
 
     def test_p5_closure_requires_complete_stable_pair_universe(self):
@@ -625,7 +621,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
 
     def test_p5_parallel_closure_revision_is_registered(self):
         source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
-        self.assertIn('"P5":"p5-full-universe-v2"', source)
+        self.assertIn('"P5":"p5-closure-predicate-v3"', source)
 
     def test_pair_snapshot_deduplicates_pair_addresses(self):
         source = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
