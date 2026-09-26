@@ -128,16 +128,14 @@ def main():
       "current_fingerprint":second["fingerprint"]
     }
     out["fingerprint"]=sha({"current":second["fingerprint"],"checks":checks})
-    (EVID/"ETHEREUM_P3_PROTOCOL_SNAPSHOT.json").write_text(json.dumps(out,indent=2,sort_keys=True)+"
-")
+    (EVID/"ETHEREUM_P3_PROTOCOL_SNAPSHOT.json").write_text(json.dumps(out,indent=2,sort_keys=True)+"\n")
     state={
       "fingerprint":second["fingerprint"],
       "stable_runs": 2 if first["fingerprint"]==second["fingerprint"] else 1,
       "stage_gate":"CLOSED" if gate else "OPEN",
       "updated_at":now()
     }
-    closure.write_text(json.dumps(state,indent=2,sort_keys=True)+"
-")
+    closure.write_text(json.dumps(state,indent=2,sort_keys=True)+"\n")
     if not gate:
         raise SystemExit("Ethereum P3 discovery failed closed")
     print("Ethereum P3 discovery CLOSED")
