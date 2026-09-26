@@ -68,3 +68,4 @@ purpose=one-shot live validation of optimized critical lane and repaired P2 evid
 2026-09-26T15:15:00+05:30 P5-P3-closure-contract-separation-bootstrap
 2026-09-26T13:18:00+05:30 P3-P5-regression-contract-alignment-bootstrap
 2026-09-26T13:22:00+05:30 P5-v4-regression-contract-final-alignment-bootstrap
+2026-09-26T13:25:00+05:30 P5-v4-stale-revision-final-fix-bootstrap
