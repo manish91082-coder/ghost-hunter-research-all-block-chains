@@ -460,6 +460,45 @@ def p4_closure_ready(snapshot, previous_state):
     )
 
 
+
+def _p4_rpc_batch_endpoint(pool, endpoint_id, calls, timeout=30):
+    """Send a JSON-RPC batch to one endpoint while preserving per-endpoint pacing."""
+    state = pool.state[endpoint_id]
+    with state["lock"]:
+        now_mono = time.monotonic()
+        wait = state["request_interval"] - (now_mono - state["last_request_at"])
+        if wait > 0:
+            time.sleep(wait)
+        state["last_request_at"] = time.monotonic()
+
+        payload = []
+        for request_id, method, params in calls:
+            payload.append({
+                "jsonrpc": "2.0",
+                "id": request_id,
+                "method": method,
+                "params": params,
+            })
+
+        url = pool.endpoint_url(endpoint_id)
+        if not url.startswith("https://"):
+            raise ValueError("Only HTTPS RPC endpoints are permitted")
+
+        headers = {"Content-Type": "application/json"}
+        if "tatum.io" in url and os.environ.get("TATUM_API_KEY"):
+            headers["X-API-Key"] = os.environ["TATUM_API_KEY"]
+
+        req = urllib.request.Request(url, data=json.dumps(payload).encode(), headers=headers, method="POST")
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as response:
+                body = json.loads(response.read())
+                if not isinstance(body, list):
+                    raise ValueError("JSON-RPC batch endpoint returned non-list response")
+                return response.status, {str(row.get("id")): row for row in body if isinstance(row, dict)}
+        except Exception:
+            raise
+
+
 def _p4_rpc_token_verification(candidates, verification_state):
     try:
         import sys
@@ -474,6 +513,7 @@ def _p4_rpc_token_verification(candidates, verification_state):
     endpoints = load_rpc_endpoints(None, str(RPC_POOL))
     pool = RpcPool(endpoints, 0.35)
     chain_ok = []
+
     for item in pool.ordered():
         eid = item["id"]
         obs = pool.request(eid, "eth_chainId", [], f"p4:{eid}:chain", 12, 1)
@@ -488,28 +528,43 @@ def _p4_rpc_token_verification(candidates, verification_state):
             break
 
     batch = p4_verification_batch(candidates, verification_state)
+    candidate_map = {address: {} for address in batch}
+    endpoint_success = {}
 
-    for address in batch:
-        observations = []
-        errors = []
+    # One HTTP request per endpoint carries all three read-only probes for every
+    # candidate in this bounded batch. This preserves per-endpoint independence
+    # while avoiding hundreds of sequential network round-trips.
+    for eid in chain_ok[:2]:
+        calls = []
+        for address in batch:
+            calls.append((f"p4:{eid}:{address}:code", "eth_getCode", [address, "latest"]))
+            calls.append((f"p4:{eid}:{address}:decimals", "eth_call", [{"to": address, "data": "0x313ce567"}, "latest"]))
+            calls.append((f"p4:{eid}:{address}:supply", "eth_call", [{"to": address, "data": "0x18160ddd"}, "latest"]))
+        try:
+            _, rows = _p4_rpc_batch_endpoint(pool, eid, calls, timeout=30)
+            endpoint_success[eid] = True
+            pool.mark_success(eid)
+        except Exception as exc:
+            endpoint_success[eid] = False
+            pool.mark_failure(eid, {"http_status": None, "rate_limited": False, "message": str(exc)})
+            rows = {}
 
-        def result_of(obs):
-            body = obs.get("body")
-            return body.get("result") if isinstance(body, dict) else None
+        for address in batch:
+            code_row = rows.get(f"p4:{eid}:{address}:code", {})
+            dec_row = rows.get(f"p4:{eid}:{address}:decimals", {})
+            supply_row = rows.get(f"p4:{eid}:{address}:supply", {})
 
-        for eid in chain_ok:
-            code_obs = pool.request(eid, "eth_getCode", [address, "latest"], f"p4:{eid}:{address}:code", 12, 1)
-            dec_obs = pool.request(eid, "eth_call", [{"to": address, "data": "0x313ce567"}, "latest"], f"p4:{eid}:{address}:decimals", 12, 1)
-            supply_obs = pool.request(eid, "eth_call", [{"to": address, "data": "0x18160ddd"}, "latest"], f"p4:{eid}:{address}:supply", 12, 1)
-            for obs in (code_obs, dec_obs, supply_obs):
-                if obs.get("ok"):
-                    pool.mark_success(eid)
-                else:
-                    pool.mark_failure(eid, obs)
+            def row_result(row):
+                return row.get("result") if isinstance(row, dict) else None
 
-            code = result_of(code_obs)
-            decimals = result_of(dec_obs)
-            total_supply = result_of(supply_obs)
+            def row_error(row):
+                err = row.get("error") if isinstance(row, dict) else None
+                return err if isinstance(err, dict) else None
+
+            code = row_result(code_row)
+            decimals = row_result(dec_row)
+            total_supply = row_result(supply_row)
+
             valid_code = isinstance(code, str) and code not in {"", "0x", "0X"}
             valid_decimals = isinstance(decimals, str) and decimals.startswith("0x")
             valid_supply = isinstance(total_supply, str) and total_supply.startswith("0x")
@@ -519,18 +574,31 @@ def _p4_rpc_token_verification(candidates, verification_state):
                 except ValueError:
                     valid_decimals = False
 
-            if valid_code and valid_decimals and valid_supply:
-                observations.append({
-                    "rpc": eid,
-                    "code_hash": hashlib.sha256(code.lower().encode()).hexdigest(),
-                    "decimals": decimals.lower(),
-                    "total_supply": total_supply.lower(),
-                })
-            else:
-                errors.append({"rpc": eid, "code": code, "decimals": decimals, "total_supply": total_supply})
+            observation = candidate_map[address].setdefault(eid, {})
+            observation.update({
+                "code": code,
+                "decimals": decimals,
+                "total_supply": total_supply,
+                "errors": [x for x in (row_error(code_row), row_error(dec_row), row_error(supply_row)) if x],
+                "valid": bool(valid_code and valid_decimals and valid_supply),
+            })
 
-            if len(observations) >= 2:
-                break
+    for address in batch:
+        observations = []
+        endpoint_rows = candidate_map.get(address, {})
+        for eid in chain_ok[:2]:
+            row = endpoint_rows.get(eid, {})
+            if not endpoint_success.get(eid) or not row.get("valid"):
+                continue
+            code = row.get("code")
+            decimals = row.get("decimals")
+            total_supply = row.get("total_supply")
+            observations.append({
+                "rpc": eid,
+                "code_hash": hashlib.sha256(code.lower().encode()).hexdigest(),
+                "decimals": decimals.lower(),
+                "total_supply": total_supply.lower(),
+            })
 
         if len(observations) >= 2:
             fingerprints = {(x["code_hash"], x["decimals"], x["total_supply"]) for x in observations[:2]}
@@ -542,6 +610,7 @@ def _p4_rpc_token_verification(candidates, verification_state):
                 "matching": matching,
                 "conflict": not matching,
                 "last_verified_at": now(),
+                "transport": "json_rpc_batch",
             }
         else:
             verification_state[address] = {
@@ -550,8 +619,8 @@ def _p4_rpc_token_verification(candidates, verification_state):
                 "observations": observations,
                 "matching": False,
                 "conflict": False,
-                "errors": errors[-3:],
                 "last_verified_at": now(),
+                "transport": "json_rpc_batch",
             }
 
     candidate_set = set(candidates)
@@ -569,6 +638,8 @@ def _p4_rpc_token_verification(candidates, verification_state):
         "verified_count": verified_count,
         "verification_cycle_complete": cycle_complete,
         "verification": verification_state,
+        "transport": "json_rpc_batch",
+        "endpoint_success": endpoint_success,
     })
 
     return {
@@ -576,7 +647,7 @@ def _p4_rpc_token_verification(candidates, verification_state):
         "verified_count": verified_count,
         "chain_137_verified_count": verified_count,
         "identity_conflict_count": conflict_count,
-        "error": "" if chain_ok else "No Polygon RPC endpoint returned chainId=137",
+        "error": "" if len([eid for eid in chain_ok[:2] if endpoint_success.get(eid)]) >= 2 else "Fewer than two independent batch endpoints returned usable evidence",
         "batch": batch,
         "cycle_complete": cycle_complete,
     }
