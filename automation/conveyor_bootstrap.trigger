@@ -61,3 +61,4 @@ purpose=one-shot live validation of optimized critical lane and repaired P2 evid
 2026-09-26T14:36:00+05:30 P5-v4-stage-gate-self-reference-fix-bootstrap
 2026-09-26T14:42:00+05:30 P5-stability-state-writer-runtime-fix-bootstrap
 2026-09-26T14:50:00+05:30 P5-full-universe-fingerprint-v1-bootstrap
+2026-09-26T15:00:00+05:30 P5-schema-migration-baseline-reset-v2-bootstrap

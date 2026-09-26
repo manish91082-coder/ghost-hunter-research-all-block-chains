@@ -1015,7 +1015,7 @@ P5_CURSOR_STATE = EVID / "P5_CURSOR.json"
 P5_STABILITY_STATE = EVID / "P5_STABILITY_STATE.json"
 P5_STABILITY_RECHECK = True
 P5_REQUEST_RETRIES = 3
-P5_STABILITY_SCHEMA = "full-pair-universe-v1"
+P5_STABILITY_SCHEMA = "full-pair-universe-v2"
 
 
 def p5_token_eligible(row):
@@ -1117,8 +1117,9 @@ def task_p5_pairs():
     baseline_fp = stability_state.get("baseline_fingerprint")
     baseline_eligibility_fp = stability_state.get("baseline_eligibility_fingerprint")
     stability_schema = stability_state.get("schema")
+    stability_schema_compatible = stability_schema == P5_STABILITY_SCHEMA
 
-    if stability_schema != P5_STABILITY_SCHEMA:
+    if not stability_schema_compatible:
         baseline_fp = None
         baseline_eligibility_fp = None
         stability_processed_addresses = set()
@@ -1132,7 +1133,8 @@ def task_p5_pairs():
     # result but no stability state yet, preserve that complete result as the
     # immutable baseline for the next full stability pass.
     if (
-        not baseline_fp
+        stability_schema_compatible
+        and not baseline_fp
         and previous_complete
         and previous_closure.get("fingerprint")
     ):

@@ -340,6 +340,12 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertNotIn("save_json(", worker)
         self.assertIn("P5_STABILITY_STATE.write_text(", worker)
 
+
+    def test_p5_schema_migration_does_not_reuse_old_closure_baseline(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn("stability_schema_compatible", worker)
+        self.assertIn("stability_schema_compatible\n        and not baseline_fp", worker)
+
     def test_p5_fingerprint_uses_merged_pair_universe_not_current_batch(self):
         import importlib.util
         worker_path = ROOT / "tools" / "polygon_universe_worker.py"
