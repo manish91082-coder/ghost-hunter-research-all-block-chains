@@ -142,6 +142,13 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("except ValueError:", worker)
         self.assertIn("rows = _p4_rpc_single_calls(pool, endpoint_id, calls, timeout=30)", worker)
 
+    def test_p4_has_adaptive_429_chunk_backoff(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn("class P4RateLimitedError", worker)
+        self.assertIn("P4_RPC_MIN_CHUNK_TOKENS = 1", worker)
+        self.assertIn("chunk_size = max(P4_RPC_MIN_CHUNK_TOKENS, chunk_size // 2)", worker)
+        self.assertIn("_p4_rpc_single_calls(pool, eid, calls, timeout=30)", worker)
+
     def test_p4_uses_low_risk_capability_probe_and_micro_batches(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn("P4_RPC_MIN_INTERVAL = 1.0", worker)

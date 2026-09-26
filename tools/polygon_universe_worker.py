@@ -430,6 +430,8 @@ P4_CHAIN_RECOVERY_ROUNDS = 2
 P4_RECOVERY_WAIT_MAX = 60
 P4_RPC_MIN_INTERVAL = 1.0
 P4_RPC_CHUNK_TOKENS = 12
+P4_RPC_MIN_CHUNK_TOKENS = 1
+P4_RPC_MAX_RETRY_WAIT = 30
 
 
 def p4_verification_batch(candidates, verification_state, batch_size=P4_VERIFY_BATCH_SIZE):
@@ -468,6 +470,20 @@ def p4_closure_ready(snapshot, previous_state):
 
 
 
+class P4RateLimitedError(RuntimeError):
+    def __init__(self, retry_after_seconds=5.0, message="P4 RPC rate limited"):
+        super().__init__(message)
+        self.retry_after_seconds = retry_after_seconds
+
+
+def _p4_retry_after(headers):
+    value = headers.get("Retry-After") if headers else None
+    try:
+        return max(1.0, min(float(value), P4_RPC_MAX_RETRY_WAIT))
+    except (TypeError, ValueError):
+        return 5.0
+
+
 def _p4_rpc_batch_endpoint(pool, endpoint_id, calls, timeout=30):
     """Use JSON-RPC batching, falling back only when the endpoint rejects batch shape."""
     state = pool.state[endpoint_id]
@@ -499,7 +515,9 @@ def _p4_rpc_batch_endpoint(pool, endpoint_id, calls, timeout=30):
             if len(calls) == 1 and isinstance(body, dict):
                 return response.status, {str(calls[0][0]): body}
             raise ValueError("JSON-RPC endpoint rejected batch response shape")
-    except urllib.error.HTTPError:
+    except urllib.error.HTTPError as exc:
+        if exc.code == 429:
+            raise P4RateLimitedError(_p4_retry_after(exc.headers))
         raise
 
 
@@ -689,8 +707,10 @@ def _p4_rpc_token_verification(candidates, verification_state):
     def run_endpoint_batch(eid):
         merged_rows = {}
         try:
-            for offset in range(0, len(batch), P4_RPC_CHUNK_TOKENS):
-                chunk = batch[offset:offset + P4_RPC_CHUNK_TOKENS]
+            offset = 0
+            chunk_size = P4_RPC_CHUNK_TOKENS
+            while offset < len(batch):
+                chunk = batch[offset:offset + chunk_size]
                 calls = []
                 for address in chunk:
                     calls.append((f"p4:{eid}:{address}:code", "eth_getCode", [address, "latest"]))
@@ -698,14 +718,22 @@ def _p4_rpc_token_verification(candidates, verification_state):
                     calls.append((f"p4:{eid}:{address}:supply", "eth_call", [{"to": address, "data": "0x18160ddd"}, "latest"]))
                 try:
                     _, rows = _p4_rpc_batch_endpoint(pool, eid, calls, timeout=30)
-                except ValueError as exc:
+                    merged_rows.update(rows)
+                    offset += len(chunk)
+                    chunk_size = min(P4_RPC_CHUNK_TOKENS, max(chunk_size, P4_RPC_MIN_CHUNK_TOKENS))
+                except P4RateLimitedError as exc:
+                    if chunk_size > P4_RPC_MIN_CHUNK_TOKENS:
+                        chunk_size = max(P4_RPC_MIN_CHUNK_TOKENS, chunk_size // 2)
+                        time.sleep(exc.retry_after_seconds)
+                        continue
+                    time.sleep(exc.retry_after_seconds)
                     rows = _p4_rpc_single_calls(pool, eid, calls, timeout=30)
-                    if not rows:
-                        raise exc
-                merged_rows.update(rows)
+                    merged_rows.update(rows)
+                    offset += len(chunk)
             return eid, True, merged_rows, ""
         except Exception as exc:
             return eid, False, merged_rows, f"{type(exc).__name__}: {exc}"
+
 
     worker_count = min(P4_RPC_WORKERS, len(selected_endpoints))
     with ThreadPoolExecutor(max_workers=worker_count or 1) as executor:
