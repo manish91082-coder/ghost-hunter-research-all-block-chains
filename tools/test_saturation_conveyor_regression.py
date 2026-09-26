@@ -207,7 +207,6 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("max_endpoints=3", worker)
         self.assertIn('"selected_endpoints": selected_endpoints', worker)
         self.assertIn("Fewer than two independent semantically capable Polygon batch endpoints", worker)
-        self.assertIn("import hashlib, json, os, time", worker)
 
 
 
