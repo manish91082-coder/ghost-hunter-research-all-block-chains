@@ -5,10 +5,10 @@
   "critical_stage": "P11",
   "cursors": {
     "critical": 1,
-    "shadow": 1
+    "shadow": 2
   },
-  "last_progress_signature": "{\"executed\": [\"P10\", \"P3\"], \"gate\": \"P2_CLOSED\", \"tasks\": {\"P10\": 14, \"P2_CONTROL_FUNCTION\": 3, \"P2_DERIVED\": 2, \"P2_PROVENANCE\": 3, \"P2_REGRESSION\": 4, \"P3\": 12, \"P4\": 26, \"P5\": 57, \"P6\": 9, \"P7\": 9, \"P8\": 12, \"P9\": 19}}",
-  "last_run": "2026-09-26T14:54:51Z",
+  "last_progress_signature": "{\"executed\": [\"P11\", \"P4\"], \"gate\": \"P2_CLOSED\", \"tasks\": {\"P10\": 14, \"P11\": 1, \"P2_CONTROL_FUNCTION\": 3, \"P2_DERIVED\": 2, \"P2_PROVENANCE\": 3, \"P2_REGRESSION\": 4, \"P3\": 12, \"P4\": 27, \"P5\": 57, \"P6\": 9, \"P7\": 9, \"P8\": 12, \"P9\": 19}}",
+  "last_run": "2026-09-26T14:58:22Z",
   "research_gate": "P2_CLOSED",
   "schema_version": 1,
   "shadow_lane": true,
@@ -18,8 +18,8 @@
       "status": "CLOSED"
     },
     "P11": {
-      "mode": "SHADOW",
-      "status": "LOCKED"
+      "mode": "CRITICAL",
+      "status": "READY"
     },
     "P2": {
       "mode": "CRITICAL",
@@ -64,6 +64,16 @@
       "last_run": "2026-09-26T14:54:50Z",
       "ok": true,
       "revision": "p10-polygon-saturation-audit-v2"
+    },
+    "P11": {
+      "attempts": 1,
+      "code_epoch": "90f0a4ceba0feb928823b1f68175259c9abead6aa25568fc26236f8d5d3f3a33",
+      "cooldown_until": 0,
+      "last_error": "",
+      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 0.06, 'stdout': 'automation/evidence/P11_CLOSURE_REPORT.json\\n', 'stderr': ''}",
+      "last_run": "2026-09-26T14:57:46Z",
+      "ok": true,
+      "revision": "p11-research-closure-v2"
     },
     "P2_CONTROL_FUNCTION": {
       "attempts": 3,
@@ -112,12 +122,12 @@
       "revision": "p3-multisource-closure-v1"
     },
     "P4": {
-      "attempts": 26,
-      "code_epoch": "d790a86f74e6fc6e5f0f60ab74159c9b41dfd9f0e209a7aa5e857c1095914e37",
+      "attempts": 27,
+      "code_epoch": "90f0a4ceba0feb928823b1f68175259c9abead6aa25568fc26236f8d5d3f3a33",
       "cooldown_until": 0,
       "last_error": "",
-      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 14.91, 'stdout': 'automation/evidence/P4_TOKEN_SNAPSHOT.json\\n', 'stderr': ''}",
-      "last_run": "2026-09-26T08:20:29Z",
+      "last_result_summary": "{'ok': True, 'returncode': 0, 'elapsed_sec': 35.46, 'stdout': 'automation/evidence/P4_TOKEN_SNAPSHOT.json\\n', 'stderr': ''}",
+      "last_run": "2026-09-26T14:58:22Z",
       "ok": true,
       "revision": "p4-parallel-endpoint-discovery-v3"
     },

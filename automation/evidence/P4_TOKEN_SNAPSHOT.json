@@ -10,14 +10,15 @@
     "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
     "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
     "0x99a57e6c8558bc6689f894e068733adf83c19725",
+    "0x99d11bb9bc5f1ee15a817934f33643dee41026d5",
     "0xab787774bdf01fc22410165ffabf76e0e0ebc94f",
     "0xb5c064f955d8e7f38fe0460c556a72987494ee17",
     "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
     "0xd17c2ae3fb89448991d26bcd877692122341f1d6",
     "0xeb51d9a39ad5eef215dc0bf39a8821ff804a0f01"
   ],
-  "candidate_count": 15,
-  "chain_137_verified_count": 15,
+  "candidate_count": 16,
+  "chain_137_verified_count": 9,
   "chain_id": 137,
   "checks": {
     "dexscreener_profiles_ok": true,
@@ -25,14 +26,14 @@
     "geckoterminal_top_pools_ok": true
   },
   "dexscreener_profile_candidates": 0,
-  "dexscreener_token_confirmations": 15,
+  "dexscreener_token_confirmations": 16,
   "duplicate_address_count": 0,
   "errors": {
     "dexscreener_profiles": null,
     "geckoterminal_top_pools": null
   },
   "evidence_class": "DISCOVERY_PLUS_ONCHAIN_IDENTITY",
-  "gecko_candidates": 14,
+  "gecko_candidates": 15,
   "http": {
     "dexscreener_profiles": 200,
     "geckoterminal_top_pools": 200
@@ -40,7 +41,7 @@
   "identity_conflict_count": 0,
   "network": "polygon",
   "new_unique_candidates": 0,
-  "provider_overlap_count": 14,
+  "provider_overlap_count": 15,
   "rpc_verification_error": "",
   "seed_candidates": 7,
   "sources": [
@@ -48,17 +49,13 @@
     "https://api.dexscreener.com/token-profiles/latest/v1",
     "https://api.dexscreener.com/tokens/v1/polygon/{token_addresses}"
   ],
-  "stable_runs": 3,
-  "stage_gate": "CLOSED",
+  "stable_runs": 0,
+  "stage_gate": "OPEN",
   "task": "p4_token_discovery",
-  "time": "2026-09-26T08:20:29Z",
-  "universe_fingerprint": "bdf419fc157205fe3fa111e77e958c4b1180ffb3e1813332f5ccf6cec3424c31",
+  "time": "2026-09-26T14:58:22Z",
+  "universe_fingerprint": "22906a18653e0b09f3c9d5f0a3060a522e241daf8d2f6a75ab3eb44d95b465d0",
   "universe_total_after_merge": 469,
-  "verification_batch": [],
-  "verification_batch_size": 48,
-  "verification_checkpoint": "automation/evidence/P4_VERIFICATION_STATE.json",
-  "verification_cycle_complete": true,
-  "verified_addresses": [
+  "verification_batch": [
     "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
     "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6",
     "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
@@ -69,11 +66,26 @@
     "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
     "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063",
     "0x99a57e6c8558bc6689f894e068733adf83c19725",
+    "0x99d11bb9bc5f1ee15a817934f33643dee41026d5",
     "0xab787774bdf01fc22410165ffabf76e0e0ebc94f",
     "0xb5c064f955d8e7f38fe0460c556a72987494ee17",
     "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
     "0xd17c2ae3fb89448991d26bcd877692122341f1d6",
     "0xeb51d9a39ad5eef215dc0bf39a8821ff804a0f01"
   ],
-  "verified_token_count": 15
+  "verification_batch_size": 48,
+  "verification_checkpoint": "automation/evidence/P4_VERIFICATION_STATE.json",
+  "verification_cycle_complete": false,
+  "verified_addresses": [
+    "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270",
+    "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6",
+    "0x99a57e6c8558bc6689f894e068733adf83c19725",
+    "0x99d11bb9bc5f1ee15a817934f33643dee41026d5",
+    "0xab787774bdf01fc22410165ffabf76e0e0ebc94f",
+    "0xb5c064f955d8e7f38fe0460c556a72987494ee17",
+    "0xc2132d05d31c914a87c6611c10748aeb04b58e8f",
+    "0xd17c2ae3fb89448991d26bcd877692122341f1d6",
+    "0xeb51d9a39ad5eef215dc0bf39a8821ff804a0f01"
+  ],
+  "verified_token_count": 9
 }
