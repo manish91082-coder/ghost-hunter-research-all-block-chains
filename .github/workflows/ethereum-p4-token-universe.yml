@@ -1,4 +1,5 @@
 name: Ethereum P4 Token Universe
+# P4 optimized-batch trigger
 concurrency:
   group: ethereum-p4-token-universe-main
   cancel-in-progress: true
