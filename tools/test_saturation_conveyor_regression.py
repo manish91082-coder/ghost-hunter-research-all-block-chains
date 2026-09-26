@@ -885,7 +885,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn('EXACT_CERTIFIED', worker)
 
 
-    def test_p9_closure_requires_complete_exact_certification(self):
+    def test_p9_closure_requires_complete_capability_coverage(self):
         import importlib.util
         worker_path = ROOT / "tools" / "polygon_universe_worker.py"
         spec = importlib.util.spec_from_file_location("polygon_universe_worker_p9_gate", worker_path)
@@ -897,9 +897,10 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
                 "candidate_universe_complete": True,
                 "all_capability_batches_complete": True,
                 "all_candidates_have_explicit_certification_status": True,
+                "all_processed_pairs_have_two_endpoint_observations": True,
             },
-            "exactly_certified_count": 10,
-            "uncertified_count": 0,
+            "exactly_certified_count": 0,
+            "uncertified_count": 10,
             "economic_fingerprint": "abc",
             "stable_runs": 1,
         }
@@ -920,7 +921,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
 
     def test_p9_capability_batch_is_bounded_and_persisted(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
-        self.assertIn("P9_BATCH_PAIR_LIMIT = 60", worker)
+        self.assertIn("P9_BATCH_PAIR_LIMIT = 120", worker)
         self.assertIn("persisted_observations", worker)
         self.assertIn("merged_observations", worker)
         self.assertIn('"observations": merged_observations', worker)
