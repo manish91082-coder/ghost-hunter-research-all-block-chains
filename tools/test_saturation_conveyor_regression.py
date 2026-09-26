@@ -299,6 +299,43 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertEqual(result, sorted([token_a, token_b]))
         self.assertNotIn(pool, result)
 
+    def test_p5_token_eligibility_ignores_stale_noneligible_rows(self):
+        import importlib.util
+        worker_path = ROOT / "tools" / "polygon_universe_worker.py"
+        spec = importlib.util.spec_from_file_location("polygon_universe_worker_p5_eligibility", worker_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        self.assertFalse(module.p5_token_eligible({"address": "0x1", "source": "polygon_seed_manifest", "p5_scan_eligible": False}))
+        self.assertTrue(module.p5_token_eligible({"address": "0x2", "evidence_class": "ONCHAIN_SEMANTIC"}))
+        self.assertTrue(module.p5_token_eligible({"address": "0x3", "source": "dexscreener_pair_token"}))
+
+    def test_p5_closure_requires_complete_stable_pair_universe(self):
+        import importlib.util
+        worker_path = ROOT / "tools" / "polygon_universe_worker.py"
+        spec = importlib.util.spec_from_file_location("polygon_universe_worker_p5_closure", worker_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        snapshot = {
+            "coverage_complete": True,
+            "duplicate_pair_count": 0,
+            "total_pair_records": 10,
+            "universe_fingerprint": "abc",
+            "checks": {
+                "source_requests_complete": True,
+                "eligible_token_universe_nonempty": True,
+            },
+        }
+        self.assertFalse(module.p5_closure_ready(
+            snapshot,
+            {"fingerprint": "abc", "stable_runs": 0, "coverage_complete": False},
+        ))
+        self.assertTrue(module.p5_closure_ready(
+            snapshot,
+            {"fingerprint": "abc", "stable_runs": 1, "coverage_complete": True},
+        ))
+
     def test_p4_helper_parses_gecko_and_dex_token_addresses(self):
         import importlib.util
         worker_path = ROOT / "tools" / "polygon_universe_worker.py"

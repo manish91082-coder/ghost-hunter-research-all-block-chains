@@ -1008,53 +1008,221 @@ def task_p4_tokens():
     return write_json("P4_TOKEN_SNAPSHOT.json", snapshot)
 
 
+P5_PAIR_BATCH_SIZE = 60
+P5_PAIR_WORKERS = 8
+P5_CURSOR_STATE = EVID / "P5_CURSOR.json"
+
+
+def p5_token_eligible(row):
+    return bool(
+        row.get("p5_scan_eligible") is True
+        or row.get("evidence_class") == "ONCHAIN_SEMANTIC"
+        or row.get("source") in {"polygon_seed_manifest", "dexscreener_pair_token"}
+    )
+
+
+def p5_closure_ready(snapshot, previous_state):
+    checks = snapshot.get("checks", {})
+    current_fp = snapshot.get("universe_fingerprint")
+    previous_fp = previous_state.get("fingerprint")
+    stable_count = int(previous_state.get("stable_runs", 0) or 0)
+    return (
+        checks.get("source_requests_complete") is True
+        and checks.get("eligible_token_universe_nonempty") is True
+        and snapshot.get("coverage_complete") is True
+        and int(snapshot.get("duplicate_pair_count", 0)) == 0
+        and int(snapshot.get("total_pair_records", 0)) > 0
+        and current_fp
+        and current_fp == previous_fp
+        and previous_state.get("coverage_complete") is True
+        and stable_count >= 1
+    )
+
+
 def task_p5_pairs():
-    rows=[]; token_file=UNIV/"tokens.jsonl"
-    tokens=load_jsonl(token_file)
-    cursor_file=EVID/"P5_CURSOR.json"; cursor=0
-    if cursor_file.exists(): cursor=int(json.loads(cursor_file.read_text()).get("cursor",0))
-    batch=tokens[cursor:cursor+30]
-    for t in batch:
-        a=t.get("address");
-        st,pairs,err=http_json(f"https://api.dexscreener.com/token-pairs/v1/polygon/{a}",timeout=20)
-        if st==200 and isinstance(pairs,list):
-            for pair in pairs:
-                if str(pair.get("chainId","")).lower()=="polygon" and pair.get("pairAddress"):
-                    pair["_snapshot_time"]=now(); pair["_source"]="dexscreener_token_pairs"; rows.append(pair)
-    pair_path=UNIV/"pairs.jsonl"
-    existing_pairs=load_jsonl(pair_path)
-    by_address={str(x.get("pairAddress","")).lower():x for x in existing_pairs if x.get("pairAddress")}
-    before=len(by_address)
-    discovered_tokens={}
+    token_file = UNIV / "tokens.jsonl"
+    raw_tokens = load_jsonl(token_file)
+    tokens_by_address = {
+        str(row.get("address", "")).lower(): row
+        for row in raw_tokens
+        if row.get("address")
+    }
+
+    eligible = []
+    for row in tokens_by_address.values():
+        if p5_token_eligible(row):
+            row["p5_scan_eligible"] = True
+            eligible.append(row)
+
+    eligible.sort(key=lambda row: str(row.get("address", "")).lower())
+
+    cursor_payload = load_json(P5_CURSOR_STATE, {})
+    cursor = int(cursor_payload.get("cursor", 0) or 0)
+    prior_eligibility_fp = cursor_payload.get("eligibility_fingerprint")
+    eligibility_fp = sha([str(row.get("address", "")).lower() for row in eligible])
+    if prior_eligibility_fp and prior_eligibility_fp != eligibility_fp and cursor > len(eligible):
+        cursor = 0
+
+    batch = eligible[cursor:cursor + P5_PAIR_BATCH_SIZE]
+    pair_results = []
+    request_errors = []
+
+    def fetch_pairs(row):
+        address = str(row.get("address", "")).lower()
+        started = time.monotonic()
+        st, pairs, err = http_json(
+            f"https://api.dexscreener.com/token-pairs/v1/polygon/{address}",
+            timeout=20,
+        )
+        return {
+            "address": address,
+            "status": st,
+            "pairs": pairs,
+            "error": err,
+            "elapsed_sec": round(time.monotonic() - started, 3),
+        }
+
+    with ThreadPoolExecutor(max_workers=min(P5_PAIR_WORKERS, max(1, len(batch)))) as executor:
+        futures = [executor.submit(fetch_pairs, row) for row in batch]
+        for future in as_completed(futures):
+            result = future.result()
+            pair_results.append(result)
+            if result.get("status") != 200 or not isinstance(result.get("pairs"), list):
+                request_errors.append({
+                    "address": result.get("address"),
+                    "status": result.get("status"),
+                    "error": result.get("error"),
+                })
+
+    rows = []
+    for result in pair_results:
+        if result.get("status") != 200 or not isinstance(result.get("pairs"), list):
+            continue
+        for pair in result["pairs"]:
+            if str(pair.get("chainId", "")).lower() != "polygon":
+                continue
+            pair_address = pair.get("pairAddress")
+            if not pair_address:
+                continue
+            pair = dict(pair)
+            pair["_snapshot_time"] = now()
+            pair["_source"] = "dexscreener_token_pairs"
+            rows.append(pair)
+
+    pair_path = UNIV / "pairs.jsonl"
+    existing_pairs = load_jsonl(pair_path)
+    by_address = {
+        str(x.get("pairAddress", "")).lower(): x
+        for x in existing_pairs
+        if x.get("pairAddress")
+    }
+    before_pairs = len(by_address)
+
+    discovered_tokens = {}
     for row in rows:
-        address=str(row.get("pairAddress","")).lower()
+        address = str(row.get("pairAddress", "")).lower()
         if address:
-            by_address[address]=row
-        for side in ("baseToken","quoteToken"):
-            token=(row.get(side) or {}).get("address")
-            if token and len(str(token))==42 and str(token).lower().startswith("0x"):
-                discovered_tokens[str(token).lower()]={"address":str(token),"source":"dexscreener_pair_token","first_seen":now()}
-    merged=list(by_address.values())
-    token_path=UNIV/"tokens.jsonl"
-    existing_tokens={str(x.get("address","")).lower():x for x in load_jsonl(token_path)}
-    tokens_before=len(existing_tokens)
-    existing_tokens.update(discovered_tokens)
-    token_path.write_text("".join(json.dumps(x,sort_keys=True)+"\n" for x in existing_tokens.values()),encoding="utf-8")
-    new_tokens=max(0,len(existing_tokens)-tokens_before)
-    pair_path.write_text("".join(json.dumps(x,sort_keys=True)+"\n" for x in merged),encoding="utf-8")
-    cursor=min(len(tokens),cursor+len(batch))
-    write_json("P5_CURSOR.json",{"cursor":cursor,"total_tokens":len(tokens)})
-    return write_json("P5_PAIR_SNAPSHOT.json",{
-        "task":"p5_pair_discovery",
-        "time":now(),
-        "processed_tokens":len(batch),
-        "observed_pair_rows":len(rows),
-        "new_unique_pairs":max(0,len(merged)-before),
-        "new_unique_tokens":new_tokens,
-        "cursor":cursor,
-        "total_pair_records":len(merged),
-        "evidence_class":"DISCOVERY"
+            by_address[address] = row
+        for side in ("baseToken", "quoteToken"):
+            token = (row.get(side) or {}).get("address")
+            if token and len(str(token)) == 42 and str(token).lower().startswith("0x"):
+                token_key = str(token).lower()
+                discovered_tokens[token_key] = {
+                    "address": str(token),
+                    "source": "dexscreener_pair_token",
+                    "first_seen": now(),
+                    "p5_scan_eligible": True,
+                }
+
+    merged_pairs = list(by_address.values())
+    duplicate_pair_count = len(rows) - len({
+        str(x.get("pairAddress", "")).lower()
+        for x in rows
+        if x.get("pairAddress")
     })
+
+    tokens_before = len(tokens_by_address)
+    tokens_by_address.update(discovered_tokens)
+    token_path = UNIV / "tokens.jsonl"
+    token_path.write_text(
+        "".join(json.dumps(row, sort_keys=True) + "\n" for row in tokens_by_address.values()),
+        encoding="utf-8",
+    )
+    pair_path.write_text(
+        "".join(json.dumps(row, sort_keys=True) + "\n" for row in merged_pairs),
+        encoding="utf-8",
+    )
+
+    new_unique_tokens = max(0, len(tokens_by_address) - tokens_before)
+    next_cursor = min(len(eligible), cursor + len(batch))
+    eligible_after_merge = sorted(
+        [row for row in tokens_by_address.values() if p5_token_eligible(row)],
+        key=lambda row: str(row.get("address", "")).lower(),
+    )
+    coverage_complete = next_cursor >= len(eligible_after_merge) and new_unique_tokens == 0
+
+    universe_fingerprint = sha({
+        "eligible_tokens": [str(row.get("address", "")).lower() for row in eligible_after_merge],
+        "pair_addresses": sorted(by_address),
+    })
+
+    previous_closure = load_json(EVID / "P5_CLOSURE_STATE.json", {})
+    previous_complete = bool(previous_closure.get("coverage_complete"))
+    if coverage_complete:
+        if universe_fingerprint == previous_closure.get("fingerprint") and previous_complete:
+            stable_runs = int(previous_closure.get("stable_runs", 0) or 0) + 1
+        else:
+            stable_runs = 1
+    else:
+        stable_runs = 0
+
+    snapshot = {
+        "task": "p5_pair_discovery",
+        "time": now(),
+        "processed_tokens": len(batch),
+        "eligible_token_count": len(eligible_after_merge),
+        "observed_pair_rows": len(rows),
+        "new_unique_pairs": max(0, len(merged_pairs) - before_pairs),
+        "new_unique_tokens": new_unique_tokens,
+        "cursor": next_cursor,
+        "total_pair_records": len(merged_pairs),
+        "duplicate_pair_count": duplicate_pair_count,
+        "coverage_complete": coverage_complete,
+        "stable_runs": stable_runs,
+        "universe_fingerprint": universe_fingerprint,
+        "request_errors": request_errors[-50:],
+        "pair_workers": P5_PAIR_WORKERS,
+        "pair_batch_size": P5_PAIR_BATCH_SIZE,
+        "checks": {
+            "source_requests_complete": len(batch) > 0 and len(request_errors) == 0,
+            "eligible_token_universe_nonempty": len(eligible_after_merge) > 0,
+        },
+        "evidence_class": "DISCOVERY",
+    }
+
+    snapshot["stage_gate"] = "CLOSED" if p5_closure_ready(snapshot, {
+        "fingerprint": previous_closure.get("fingerprint"),
+        "stable_runs": stable_runs,
+        "coverage_complete": previous_complete,
+    }) else "OPEN"
+
+    write_json("P5_CLOSURE_STATE.json", {
+        "fingerprint": universe_fingerprint,
+        "stable_runs": stable_runs,
+        "updated_at": snapshot["time"],
+        "stage_gate": snapshot["stage_gate"],
+        "coverage_complete": coverage_complete,
+        "eligible_token_count": len(eligible_after_merge),
+        "total_pair_records": len(merged_pairs),
+    })
+    write_json("P5_CURSOR.json", {
+        "cursor": next_cursor,
+        "total_eligible_tokens": len(eligible_after_merge),
+        "eligibility_fingerprint": sha(
+            [str(row.get("address", "")).lower() for row in eligible_after_merge]
+        ),
+    })
+    return write_json("P5_PAIR_SNAPSHOT.json", snapshot)
 
 def task_p6_routes():
     pairs=load_jsonl(UNIV/"pairs.jsonl"); adj=defaultdict(list); seen=set()
