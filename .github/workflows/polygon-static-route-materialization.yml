@@ -1,0 +1,59 @@
+name: Polygon Static Route Materialization
+on:
+  push:
+    paths:
+      - ".github/workflows/polygon-static-route-materialization.yml"
+      - "tools/polygon_route_materializer_fast.py"
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: polygon-static-route-materialization
+  cancel-in-progress: false
+jobs:
+  routes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Materialize complete static route universe
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/polygon_route_materializer_fast.py
+          python tools/polygon_route_materializer_fast.py
+
+      - name: Verify route closure
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import gzip,json
+          from pathlib import Path
+          p=Path("chains/polygon-pos")
+          assert (p/"ROUTE_UNIVERSE.jsonl.gz").exists()
+          assert (p/"ROUTE_SAMPLE_5000.jsonl.gz").exists()
+          snap=json.loads(Path("automation/evidence/P6_ROUTE_SNAPSHOT.json").read_text())
+          rules=json.loads((p/"ROUTE_RULES.json").read_text())
+          assert int(rules["route_count"])==int(snap["route_count_total"])==617622
+          with gzip.open(p/"ROUTE_UNIVERSE.jsonl.gz","rt",encoding="utf-8") as f:
+              n=sum(1 for _ in f)
+          assert n==617622,n
+          print("POLYGON_FULL_ROUTE_STATIC_GREEN",n)
+          PY
+
+      - name: Commit canonical route artifact
+        run: |
+          set -euo pipefail
+          git config user.name "ghost-hunter-static-bot"
+          git config user.email "ghost-hunter-static-bot@users.noreply.github.com"
+          git add chains/polygon-pos tools/polygon_route_materializer_fast.py .github/workflows/polygon-static-route-materialization.yml
+          if git diff --cached --quiet; then
+            echo "NO_CHANGES"
+          else
+            git commit -m "feat: persist complete Polygon route topology"
+            git push origin HEAD:main
+          fi
