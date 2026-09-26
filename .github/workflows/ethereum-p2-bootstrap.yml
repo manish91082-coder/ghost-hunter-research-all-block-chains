@@ -1,0 +1,50 @@
+name: Ethereum P2 Read-Only Bootstrap
+
+concurrency:
+  group: ethereum-p2-bootstrap-main
+  cancel-in-progress: true
+
+on:
+  push:
+    paths:
+      - "chains/ethereum-mainnet/**"
+      - "tools/test_ethereum_p2_bootstrap.py"
+      - ".github/workflows/ethereum-p2-bootstrap.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ethereum-p2-bootstrap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout canonical repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate sources
+        run: |
+          set -euo pipefail
+          python -m py_compile chains/ethereum-mainnet/ethereum_p2_bootstrap_verifier.py
+          python tools/test_ethereum_p2_bootstrap.py
+
+      - name: Run Ethereum read-only P2 bootstrap
+        run: |
+          set -euo pipefail
+          python chains/ethereum-mainnet/ethereum_p2_bootstrap_verifier.py
+
+      - name: Upload Ethereum P2 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ethereum-p2-bootstrap
+          path: |
+            automation/evidence/ETHEREUM_P2_BOOTSTRAP_REPORT.json
+            automation/evidence/ETHEREUM_P2_BOOTSTRAP_OBSERVATIONS.jsonl
+          if-no-files-found: warn

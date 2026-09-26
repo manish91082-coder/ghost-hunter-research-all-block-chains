@@ -796,3 +796,9 @@ P9 exact economic certification: exact-state replay, venue-specific swap math, g
 - Added `automation/evidence/ETHEREUM_CANDIDATE_SNAPSHOT.json` with consensus/timing, gas, RPC candidates, market-surface candidates, flash-liquidity candidates, lending candidates, MEV/orderflow, intent/aggregator surfaces and explicit unknowns.
 - No Ethereum saturation gate is closed. P2 is not started until the live RPC bootstrap verifier is implemented.
 - The next stage is read-only Ethereum P2 infrastructure verification using independent RPC quorum, deterministic freshness tolerance and evidence-preserving reconciliation.
+\n## 2026-09-26 — Ethereum P2 bootstrap implementation lock
+- Ethereum candidate evidence remains RECORDED_NOT_VERIFIED.
+- Implemented the first live-read-only Ethereum P2 sub-gate: RPC identity, head freshness and capability evidence.
+- The candidate pool is built from documented public endpoint options and remains subject to live runtime verification.
+- The two-independent-endpoint doctrine and fail-closed behavior are inherited from the Polygon evidence discipline.
+- Next atomic step: inspect the exact-SHA CI terminal result and evidence artifact; only then decide whether the Ethereum P2 bootstrap sub-gate can close.

@@ -367,3 +367,9 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - Current external evidence establishes 12-second protocol slots, PoS checkpoint finality, EIP-1559 gas mechanics, significant Ethereum DeFi/DEX/lending surface, and multiple candidate flash-liquidity/orderflow/routing surfaces.
 - Current Ethereum evidence does NOT establish live RPC quorum, complete pool/token census, exact contract-address matrices, current flash fees, profitability or execution readiness.
 - Future Ethereum promotion must reuse the same fail-closed P2-P11 evidence discipline used for Polygon.
+\n## 2026-09-26 — Ethereum P2 bootstrap verifier lock
+- Ethereum research remains separate from the sealed Polygon P11 census.
+- The new verifier is strictly read-only and uses only explicitly allowed JSON-RPC methods.
+- Identity/head quorum requires two independent chain-1 endpoints and a deterministic two-block freshness tolerance; there is no majority-based conflict resolution.
+- Capability errors, rate limits and transport failures remain distinct from chain-state evidence.
+- The verifier intentionally stops below overall P2 closure. Contract, DEX, pool, token, route, strategy and exact-economic evidence remain downstream.

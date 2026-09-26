@@ -534,3 +534,12 @@ P7 closure certifies strategy-family coverage and matrix schema completeness, no
 - Latest successful saturation conveyor run remains Run 36250240579 on older commit `5bcd7e3f56dee3e12673b6f01f9423e4bd2bf45c`; its conveyor job completed successfully and produced evidence artifacts. It is historical evidence, not current-HEAD CI validation.
 - Live signing, public broadcast and real-money deployment remain OFF.
 - Next atomic action: implement the Ethereum P2 bootstrap verifier contract and candidate RPC capability matrix, then run only read-only evidence probes.
+\n## 2026-09-26 — Ethereum P2 bootstrap verifier implemented
+- Pre-write canonical main HEAD: `4f6a2520770123b6a88999e138330c4c877d0ff0`.
+- Added a read-only Ethereum chain-1 bootstrap verifier and candidate RPC pool.
+- The verifier requires at least two independent chain-1 identity observations and a deterministic fresh-head quorum within a two-block tolerance.
+- Capability probes are limited to read-only JSON-RPC methods. Signing, transaction submission and broadcast methods are explicitly denied.
+- Added regression tests for HTTPS-only endpoints, denied methods, head quorum selection, fail-closed promotion and transport/rate-limit classification.
+- Added `.github/workflows/ethereum-p2-bootstrap.yml`; push/manual execution is observational and artifact-producing only.
+- This is an Ethereum P2 infrastructure sub-gate. It does not close Ethereum P2, P3-P11, certify pools/routes, or certify profitability.
+- Next verification rule: inspect the exact new main HEAD Actions run and its raw evidence artifact before any promotion.

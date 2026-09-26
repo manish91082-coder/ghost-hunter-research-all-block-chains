@@ -1,0 +1,9 @@
+# Ethereum Mainnet read-only public RPC candidate pool.
+# Pool membership is candidate evidence only, not trust or execution authorization.
+# Stable provider labels are used for evidence diversity; endpoint health is verified at runtime.
+cloudflare|https://cloudflare-eth.com
+llamanodes|https://eth.llamarpc.com
+onfinality|https://eth.api.onfinality.io/public
+1rpc|https://public.1rpc.io/eth
+drpc|https://eth.drpc.org/
+blastapi|https://eth-mainnet.public.blastapi.io
