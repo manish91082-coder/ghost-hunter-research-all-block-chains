@@ -1,0 +1,42 @@
+{
+  "schema_version": "ethereum-p3-closure-certificate-v1",
+  "status": "CLOSED",
+  "network": "Ethereum Mainnet",
+  "chain_id": 1,
+  "stage": "P3_PROTOCOL_DISCOVERY",
+  "run_id": 36261835287,
+  "run_number": 7,
+  "head_sha": "4a5c393259d781d6fc6b1eadc35fb8ddd461f7e4",
+  "workflow": ".github/workflows/ethereum-p3-discovery.yml",
+  "artifact_id": 10913180488,
+  "artifact_name": "ethereum-p3-discovery",
+  "artifact_digest": "sha256:72e150a86ae9b064fb270d8463582b351c47faf40f4bf3bc395a4660eb8b9682",
+  "source_script_blob_sha": "946adfb3cade06d7142b6fdaf39492facc783aed",
+  "policy_blob_sha": "df8d868796fa4e0467d5e67a4edd4abe13f47715",
+  "checks": {
+    "validate_step_success": true,
+    "discovery_step_success": true,
+    "artifact_uploaded": true,
+    "defillama_http_200_both_samples": true,
+    "dexscreener_http_200_both_samples": true,
+    "geckoterminal_http_200_both_samples": true,
+    "minimum_cross_source_dex_overlap_met": true,
+    "observed_cross_source_dex_overlap": 13,
+    "duplicate_free": true,
+    "consecutive_sample_stable": true,
+    "json_parse_clean": true,
+    "literal_newline_corruption": false
+  },
+  "sample_fingerprint": "e342cd402671266d80e08a7669c308d9eac48d514164847dd1dbe3079e3642ac",
+  "snapshot_fingerprint": "533bf32d1f3cdac94f122b2017905b584758c2ddd07d19c51cf151b3b77b7a19",
+  "stable_runs": 2,
+  "evidence_class": "DISCOVERY",
+  "boundary": "Discovery convergence only. No Ethereum protocol, contract address, token, pool, route, liquidity or profitability surface is promoted to VERIFIED by P3.",
+  "safety": {
+    "live_signing": false,
+    "public_broadcast": false,
+    "real_money": false
+  },
+  "next_stage": "P4_TOKEN_UNIVERSE",
+  "created_at": "2026-09-26T18:14:41Z"
+}
