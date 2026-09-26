@@ -1,0 +1,24 @@
+name: Polygon Closure Rehydrate
+on:
+  push:
+    paths:
+      - ".github/workflows/polygon-closure-rehydrate.yml"
+      - "tools/polygon_closure_rehydrate.py"
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  rehydrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Restore sealed Polygon universe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python tools/polygon_closure_rehydrate.py
