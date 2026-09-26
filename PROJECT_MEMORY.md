@@ -349,3 +349,12 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - Residual economic work remains explicit: 420 candidate economic adapter/certification items and 112 non-EVM pool references.
 - No live signing or public broadcast is enabled.
 - Next thread must begin from the next chain, not restart Polygon discovery.
+
+
+## 2026-09-26 — Global chain expansion lock
+- Polygon is canonically sealed at P11 READY.
+- P10/P11 closure means Polygon census/audit completeness, not universal profit certification.
+- The 420 exact-economic residual candidate groups remain explicitly tracked.
+- `automation/CHAIN_UNIVERSE_QUEUE.json` is now the control-plane seed for post-Polygon expansion.
+- Ethereum Mainnet (chain ID 1) is the next seeded research target; this is a queue decision, not a permanent global ranking.
+- Every future chain must independently satisfy its own P2-P11 evidence gates before being considered saturated.

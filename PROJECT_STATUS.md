@@ -510,3 +510,14 @@ P7 closure certifies strategy-family coverage and matrix schema completeness, no
 ### Final evidence
 - P10 `stage_gate=CLOSED`, `polygon_universe_status=CENSUS_COMPLETE_FOR_AUDIT`.
 - P11 `status=READY`, `polygon_census_lock=true`, `next_chain_unlock=true`.
+
+
+## CURRENT CANONICAL STATUS — 2026-09-26 — POLYGON P11 READY / GLOBAL CHAIN EXPANSION
+- Canonical main HEAD: `0f7f881a25c5a8cabbdb35ae9be13f30ca5c3fd7`.
+- Polygon P2-P10: CLOSED.
+- Polygon P11: **READY**.
+- Polygon census lock: **true**.
+- Polygon exact-economic residual: **420 candidate groups**, explicitly not profit-certified.
+- Global chain expansion queue is now seeded at `automation/CHAIN_UNIVERSE_QUEUE.json`.
+- Next research target: **Ethereum Mainnet (chain ID 1)**, marked CANDIDATE_SEEDED rather than permanently ranked.
+- The permanent chain order remains evidence-driven and recalculated from fresh research.
