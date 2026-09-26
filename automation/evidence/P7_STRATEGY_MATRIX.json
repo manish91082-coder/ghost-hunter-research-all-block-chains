@@ -1,116 +1,1323 @@
 {
+  "checks": {
+    "p6_route_source_closed": true,
+    "required_fields_complete": true,
+    "strategy_set_complete": true,
+    "unique_strategy_ids": true,
+    "unresolved_fields_explicit": true
+  },
   "count": 18,
-  "evidence_class": "DERIVED",
+  "evidence_class": "DERIVED_COVERAGE",
+  "matrix_complete": true,
+  "matrix_fingerprint": "69f240c85a75cfba73d189e94650c72271ed3368f4268349263d81176c8c949a",
+  "research_boundary": "P7 closes strategy-family coverage/schema completeness only; it does not certify exact contracts, execution, economics, or profitability.",
+  "route_source": {
+    "graph_fingerprint": "e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5",
+    "route_count_total": 617622,
+    "stage_gate": "CLOSED"
+  },
+  "schema": "p7-strategy-matrix-v2",
+  "stable_runs": 2,
+  "stage_gate": "CLOSED",
   "strategies": [
     {
       "candidate": true,
-      "route_context_count": 5000,
-      "status": "RESEARCH_CANDIDATE",
-      "strategy": "dex_dex"
+      "competition_model": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "confidence": {
+        "level": "LOW",
+        "reason": "Strategy-family coverage is established; strategy-specific contract/state/economic evidence is still unresolved."
+      },
+      "cost_model": {
+        "components": [
+          "gas",
+          "venue_fees",
+          "slippage",
+          "execution_cost",
+          "strategy_specific_costs"
+        ],
+        "status": "NOT_CERTIFIED"
+      },
+      "evidence_class": "DERIVED_COVERAGE",
+      "exact_contracts": {
+        "items": [],
+        "status": "NOT_IDENTIFIED"
+      },
+      "failure_modes": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "historical_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "live_shadow_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "mechanism": {
+        "status": "HYPOTHESIS_ONLY",
+        "summary": "Cross-venue price discrepancy candidate."
+      },
+      "prerequisites": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "profitability_status": "NOT_CERTIFIED",
+      "route_context": {
+        "available": true,
+        "graph_fingerprint": "e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5",
+        "mapping_status": "NOT_CLASSIFIED_PER_STRATEGY",
+        "route_count_total": 617622
+      },
+      "simulation_method": {
+        "method": "Pending venue/protocol-specific exact-state simulation.",
+        "status": "EXACT_SIMULATION_REQUIRED"
+      },
+      "state_dependencies": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "status": "RESEARCH_CANDIDATE_UNRESOLVED",
+      "strategy": "dex_dex",
+      "strategy_id": "dex_dex",
+      "unknowns": [
+        "exact contracts and protocol surfaces",
+        "strategy-specific state dependencies",
+        "complete cost model",
+        "failure and competition behavior",
+        "historical/live shadow evidence",
+        "exact economic profitability"
+      ]
     },
     {
       "candidate": true,
-      "route_context_count": 5000,
-      "status": "RESEARCH_CANDIDATE",
-      "strategy": "intra_dex"
+      "competition_model": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "confidence": {
+        "level": "LOW",
+        "reason": "Strategy-family coverage is established; strategy-specific contract/state/economic evidence is still unresolved."
+      },
+      "cost_model": {
+        "components": [
+          "gas",
+          "venue_fees",
+          "slippage",
+          "execution_cost",
+          "strategy_specific_costs"
+        ],
+        "status": "NOT_CERTIFIED"
+      },
+      "evidence_class": "DERIVED_COVERAGE",
+      "exact_contracts": {
+        "items": [],
+        "status": "NOT_IDENTIFIED"
+      },
+      "failure_modes": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "historical_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "live_shadow_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "mechanism": {
+        "status": "HYPOTHESIS_ONLY",
+        "summary": "Single-venue path/state discrepancy candidate."
+      },
+      "prerequisites": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "profitability_status": "NOT_CERTIFIED",
+      "route_context": {
+        "available": true,
+        "graph_fingerprint": "e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5",
+        "mapping_status": "NOT_CLASSIFIED_PER_STRATEGY",
+        "route_count_total": 617622
+      },
+      "simulation_method": {
+        "method": "Pending venue/protocol-specific exact-state simulation.",
+        "status": "EXACT_SIMULATION_REQUIRED"
+      },
+      "state_dependencies": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "status": "RESEARCH_CANDIDATE_UNRESOLVED",
+      "strategy": "intra_dex",
+      "strategy_id": "intra_dex",
+      "unknowns": [
+        "exact contracts and protocol surfaces",
+        "strategy-specific state dependencies",
+        "complete cost model",
+        "failure and competition behavior",
+        "historical/live shadow evidence",
+        "exact economic profitability"
+      ]
     },
     {
       "candidate": true,
-      "route_context_count": 5000,
-      "status": "RESEARCH_CANDIDATE",
-      "strategy": "triangular"
+      "competition_model": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "confidence": {
+        "level": "LOW",
+        "reason": "Strategy-family coverage is established; strategy-specific contract/state/economic evidence is still unresolved."
+      },
+      "cost_model": {
+        "components": [
+          "gas",
+          "venue_fees",
+          "slippage",
+          "execution_cost",
+          "strategy_specific_costs"
+        ],
+        "status": "NOT_CERTIFIED"
+      },
+      "evidence_class": "DERIVED_COVERAGE",
+      "exact_contracts": {
+        "items": [],
+        "status": "NOT_IDENTIFIED"
+      },
+      "failure_modes": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "historical_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "live_shadow_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "mechanism": {
+        "status": "HYPOTHESIS_ONLY",
+        "summary": "Three-asset cyclic conversion discrepancy candidate."
+      },
+      "prerequisites": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "profitability_status": "NOT_CERTIFIED",
+      "route_context": {
+        "available": true,
+        "graph_fingerprint": "e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5",
+        "mapping_status": "NOT_CLASSIFIED_PER_STRATEGY",
+        "route_count_total": 617622
+      },
+      "simulation_method": {
+        "method": "Pending venue/protocol-specific exact-state simulation.",
+        "status": "EXACT_SIMULATION_REQUIRED"
+      },
+      "state_dependencies": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "status": "RESEARCH_CANDIDATE_UNRESOLVED",
+      "strategy": "triangular",
+      "strategy_id": "triangular",
+      "unknowns": [
+        "exact contracts and protocol surfaces",
+        "strategy-specific state dependencies",
+        "complete cost model",
+        "failure and competition behavior",
+        "historical/live shadow evidence",
+        "exact economic profitability"
+      ]
     },
     {
       "candidate": true,
-      "route_context_count": 5000,
-      "status": "RESEARCH_CANDIDATE",
-      "strategy": "multi_hop"
+      "competition_model": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "confidence": {
+        "level": "LOW",
+        "reason": "Strategy-family coverage is established; strategy-specific contract/state/economic evidence is still unresolved."
+      },
+      "cost_model": {
+        "components": [
+          "gas",
+          "venue_fees",
+          "slippage",
+          "execution_cost",
+          "strategy_specific_costs"
+        ],
+        "status": "NOT_CERTIFIED"
+      },
+      "evidence_class": "DERIVED_COVERAGE",
+      "exact_contracts": {
+        "items": [],
+        "status": "NOT_IDENTIFIED"
+      },
+      "failure_modes": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "historical_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "live_shadow_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "mechanism": {
+        "status": "HYPOTHESIS_ONLY",
+        "summary": "Multi-hop path pricing/state discrepancy candidate."
+      },
+      "prerequisites": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "profitability_status": "NOT_CERTIFIED",
+      "route_context": {
+        "available": true,
+        "graph_fingerprint": "e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5",
+        "mapping_status": "NOT_CLASSIFIED_PER_STRATEGY",
+        "route_count_total": 617622
+      },
+      "simulation_method": {
+        "method": "Pending venue/protocol-specific exact-state simulation.",
+        "status": "EXACT_SIMULATION_REQUIRED"
+      },
+      "state_dependencies": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "status": "RESEARCH_CANDIDATE_UNRESOLVED",
+      "strategy": "multi_hop",
+      "strategy_id": "multi_hop",
+      "unknowns": [
+        "exact contracts and protocol surfaces",
+        "strategy-specific state dependencies",
+        "complete cost model",
+        "failure and competition behavior",
+        "historical/live shadow evidence",
+        "exact economic profitability"
+      ]
     },
     {
       "candidate": true,
-      "route_context_count": 5000,
-      "status": "RESEARCH_CANDIDATE",
-      "strategy": "split"
+      "competition_model": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "confidence": {
+        "level": "LOW",
+        "reason": "Strategy-family coverage is established; strategy-specific contract/state/economic evidence is still unresolved."
+      },
+      "cost_model": {
+        "components": [
+          "gas",
+          "venue_fees",
+          "slippage",
+          "execution_cost",
+          "strategy_specific_costs"
+        ],
+        "status": "NOT_CERTIFIED"
+      },
+      "evidence_class": "DERIVED_COVERAGE",
+      "exact_contracts": {
+        "items": [],
+        "status": "NOT_IDENTIFIED"
+      },
+      "failure_modes": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "historical_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "live_shadow_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "mechanism": {
+        "status": "HYPOTHESIS_ONLY",
+        "summary": "Split-flow routing candidate across alternative paths."
+      },
+      "prerequisites": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "profitability_status": "NOT_CERTIFIED",
+      "route_context": {
+        "available": true,
+        "graph_fingerprint": "e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5",
+        "mapping_status": "NOT_CLASSIFIED_PER_STRATEGY",
+        "route_count_total": 617622
+      },
+      "simulation_method": {
+        "method": "Pending venue/protocol-specific exact-state simulation.",
+        "status": "EXACT_SIMULATION_REQUIRED"
+      },
+      "state_dependencies": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "status": "RESEARCH_CANDIDATE_UNRESOLVED",
+      "strategy": "split",
+      "strategy_id": "split",
+      "unknowns": [
+        "exact contracts and protocol surfaces",
+        "strategy-specific state dependencies",
+        "complete cost model",
+        "failure and competition behavior",
+        "historical/live shadow evidence",
+        "exact economic profitability"
+      ]
     },
     {
       "candidate": true,
-      "route_context_count": 5000,
-      "status": "RESEARCH_CANDIDATE",
-      "strategy": "flash_loan"
+      "competition_model": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "confidence": {
+        "level": "LOW",
+        "reason": "Strategy-family coverage is established; strategy-specific contract/state/economic evidence is still unresolved."
+      },
+      "cost_model": {
+        "components": [
+          "gas",
+          "venue_fees",
+          "slippage",
+          "execution_cost",
+          "strategy_specific_costs"
+        ],
+        "status": "NOT_CERTIFIED"
+      },
+      "evidence_class": "DERIVED_COVERAGE",
+      "exact_contracts": {
+        "items": [],
+        "status": "NOT_IDENTIFIED"
+      },
+      "failure_modes": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "historical_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "live_shadow_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "mechanism": {
+        "status": "HYPOTHESIS_ONLY",
+        "summary": "Atomic flash-funded strategy wrapper around an eligible route or state transition."
+      },
+      "prerequisites": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "profitability_status": "NOT_CERTIFIED",
+      "route_context": {
+        "available": true,
+        "graph_fingerprint": "e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5",
+        "mapping_status": "NOT_CLASSIFIED_PER_STRATEGY",
+        "route_count_total": 617622
+      },
+      "simulation_method": {
+        "method": "Pending venue/protocol-specific exact-state simulation.",
+        "status": "EXACT_SIMULATION_REQUIRED"
+      },
+      "state_dependencies": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "status": "RESEARCH_CANDIDATE_UNRESOLVED",
+      "strategy": "flash_loan",
+      "strategy_id": "flash_loan",
+      "unknowns": [
+        "exact contracts and protocol surfaces",
+        "strategy-specific state dependencies",
+        "complete cost model",
+        "failure and competition behavior",
+        "historical/live shadow evidence",
+        "exact economic profitability"
+      ]
     },
     {
       "candidate": true,
-      "route_context_count": 5000,
-      "status": "RESEARCH_CANDIDATE",
-      "strategy": "liquidation"
+      "competition_model": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "confidence": {
+        "level": "LOW",
+        "reason": "Strategy-family coverage is established; strategy-specific contract/state/economic evidence is still unresolved."
+      },
+      "cost_model": {
+        "components": [
+          "gas",
+          "venue_fees",
+          "slippage",
+          "execution_cost",
+          "strategy_specific_costs"
+        ],
+        "status": "NOT_CERTIFIED"
+      },
+      "evidence_class": "DERIVED_COVERAGE",
+      "exact_contracts": {
+        "items": [],
+        "status": "NOT_IDENTIFIED"
+      },
+      "failure_modes": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "historical_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "live_shadow_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "mechanism": {
+        "status": "HYPOTHESIS_ONLY",
+        "summary": "Protocol liquidation incentive/state-transition candidate."
+      },
+      "prerequisites": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "profitability_status": "NOT_CERTIFIED",
+      "route_context": {
+        "available": true,
+        "graph_fingerprint": "e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5",
+        "mapping_status": "NOT_CLASSIFIED_PER_STRATEGY",
+        "route_count_total": 617622
+      },
+      "simulation_method": {
+        "method": "Pending venue/protocol-specific exact-state simulation.",
+        "status": "EXACT_SIMULATION_REQUIRED"
+      },
+      "state_dependencies": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "status": "RESEARCH_CANDIDATE_UNRESOLVED",
+      "strategy": "liquidation",
+      "strategy_id": "liquidation",
+      "unknowns": [
+        "exact contracts and protocol surfaces",
+        "strategy-specific state dependencies",
+        "complete cost model",
+        "failure and competition behavior",
+        "historical/live shadow evidence",
+        "exact economic profitability"
+      ]
     },
     {
       "candidate": true,
-      "route_context_count": 5000,
-      "status": "RESEARCH_CANDIDATE",
-      "strategy": "backrun"
+      "competition_model": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "confidence": {
+        "level": "LOW",
+        "reason": "Strategy-family coverage is established; strategy-specific contract/state/economic evidence is still unresolved."
+      },
+      "cost_model": {
+        "components": [
+          "gas",
+          "venue_fees",
+          "slippage",
+          "execution_cost",
+          "strategy_specific_costs"
+        ],
+        "status": "NOT_CERTIFIED"
+      },
+      "evidence_class": "DERIVED_COVERAGE",
+      "exact_contracts": {
+        "items": [],
+        "status": "NOT_IDENTIFIED"
+      },
+      "failure_modes": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "historical_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "live_shadow_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "mechanism": {
+        "status": "HYPOTHESIS_ONLY",
+        "summary": "Post-transaction state-change opportunity candidate."
+      },
+      "prerequisites": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "profitability_status": "NOT_CERTIFIED",
+      "route_context": {
+        "available": true,
+        "graph_fingerprint": "e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5",
+        "mapping_status": "NOT_CLASSIFIED_PER_STRATEGY",
+        "route_count_total": 617622
+      },
+      "simulation_method": {
+        "method": "Pending venue/protocol-specific exact-state simulation.",
+        "status": "EXACT_SIMULATION_REQUIRED"
+      },
+      "state_dependencies": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "status": "RESEARCH_CANDIDATE_UNRESOLVED",
+      "strategy": "backrun",
+      "strategy_id": "backrun",
+      "unknowns": [
+        "exact contracts and protocol surfaces",
+        "strategy-specific state dependencies",
+        "complete cost model",
+        "failure and competition behavior",
+        "historical/live shadow evidence",
+        "exact economic profitability"
+      ]
     },
     {
       "candidate": true,
-      "route_context_count": 5000,
-      "status": "RESEARCH_CANDIDATE",
-      "strategy": "orderflow_mev"
+      "competition_model": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "confidence": {
+        "level": "LOW",
+        "reason": "Strategy-family coverage is established; strategy-specific contract/state/economic evidence is still unresolved."
+      },
+      "cost_model": {
+        "components": [
+          "gas",
+          "venue_fees",
+          "slippage",
+          "execution_cost",
+          "strategy_specific_costs"
+        ],
+        "status": "NOT_CERTIFIED"
+      },
+      "evidence_class": "DERIVED_COVERAGE",
+      "exact_contracts": {
+        "items": [],
+        "status": "NOT_IDENTIFIED"
+      },
+      "failure_modes": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "historical_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "live_shadow_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "mechanism": {
+        "status": "HYPOTHESIS_ONLY",
+        "summary": "Orderflow-dependent candidate requiring eligible transaction-order information."
+      },
+      "prerequisites": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "profitability_status": "NOT_CERTIFIED",
+      "route_context": {
+        "available": true,
+        "graph_fingerprint": "e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5",
+        "mapping_status": "NOT_CLASSIFIED_PER_STRATEGY",
+        "route_count_total": 617622
+      },
+      "simulation_method": {
+        "method": "Pending venue/protocol-specific exact-state simulation.",
+        "status": "EXACT_SIMULATION_REQUIRED"
+      },
+      "state_dependencies": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "status": "RESEARCH_CANDIDATE_UNRESOLVED",
+      "strategy": "orderflow_mev",
+      "strategy_id": "orderflow_mev",
+      "unknowns": [
+        "exact contracts and protocol surfaces",
+        "strategy-specific state dependencies",
+        "complete cost model",
+        "failure and competition behavior",
+        "historical/live shadow evidence",
+        "exact economic profitability"
+      ]
     },
     {
       "candidate": true,
-      "route_context_count": 5000,
-      "status": "RESEARCH_CANDIDATE",
-      "strategy": "intent_rfq_filler"
+      "competition_model": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "confidence": {
+        "level": "LOW",
+        "reason": "Strategy-family coverage is established; strategy-specific contract/state/economic evidence is still unresolved."
+      },
+      "cost_model": {
+        "components": [
+          "gas",
+          "venue_fees",
+          "slippage",
+          "execution_cost",
+          "strategy_specific_costs"
+        ],
+        "status": "NOT_CERTIFIED"
+      },
+      "evidence_class": "DERIVED_COVERAGE",
+      "exact_contracts": {
+        "items": [],
+        "status": "NOT_IDENTIFIED"
+      },
+      "failure_modes": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "historical_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "live_shadow_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "mechanism": {
+        "status": "HYPOTHESIS_ONLY",
+        "summary": "Intent/RFQ fulfillment candidate subject to solver/filler constraints."
+      },
+      "prerequisites": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "profitability_status": "NOT_CERTIFIED",
+      "route_context": {
+        "available": true,
+        "graph_fingerprint": "e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5",
+        "mapping_status": "NOT_CLASSIFIED_PER_STRATEGY",
+        "route_count_total": 617622
+      },
+      "simulation_method": {
+        "method": "Pending venue/protocol-specific exact-state simulation.",
+        "status": "EXACT_SIMULATION_REQUIRED"
+      },
+      "state_dependencies": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "status": "RESEARCH_CANDIDATE_UNRESOLVED",
+      "strategy": "intent_rfq_filler",
+      "strategy_id": "intent_rfq_filler",
+      "unknowns": [
+        "exact contracts and protocol surfaces",
+        "strategy-specific state dependencies",
+        "complete cost model",
+        "failure and competition behavior",
+        "historical/live shadow evidence",
+        "exact economic profitability"
+      ]
     },
     {
       "candidate": true,
-      "route_context_count": 5000,
-      "status": "RESEARCH_CANDIDATE",
-      "strategy": "solver_relayer"
+      "competition_model": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "confidence": {
+        "level": "LOW",
+        "reason": "Strategy-family coverage is established; strategy-specific contract/state/economic evidence is still unresolved."
+      },
+      "cost_model": {
+        "components": [
+          "gas",
+          "venue_fees",
+          "slippage",
+          "execution_cost",
+          "strategy_specific_costs"
+        ],
+        "status": "NOT_CERTIFIED"
+      },
+      "evidence_class": "DERIVED_COVERAGE",
+      "exact_contracts": {
+        "items": [],
+        "status": "NOT_IDENTIFIED"
+      },
+      "failure_modes": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "historical_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "live_shadow_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "mechanism": {
+        "status": "HYPOTHESIS_ONLY",
+        "summary": "Solver/relayer path candidate subject to protocol-specific settlement rules."
+      },
+      "prerequisites": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "profitability_status": "NOT_CERTIFIED",
+      "route_context": {
+        "available": true,
+        "graph_fingerprint": "e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5",
+        "mapping_status": "NOT_CLASSIFIED_PER_STRATEGY",
+        "route_count_total": 617622
+      },
+      "simulation_method": {
+        "method": "Pending venue/protocol-specific exact-state simulation.",
+        "status": "EXACT_SIMULATION_REQUIRED"
+      },
+      "state_dependencies": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "status": "RESEARCH_CANDIDATE_UNRESOLVED",
+      "strategy": "solver_relayer",
+      "strategy_id": "solver_relayer",
+      "unknowns": [
+        "exact contracts and protocol surfaces",
+        "strategy-specific state dependencies",
+        "complete cost model",
+        "failure and competition behavior",
+        "historical/live shadow evidence",
+        "exact economic profitability"
+      ]
     },
     {
       "candidate": true,
-      "route_context_count": 5000,
-      "status": "RESEARCH_CANDIDATE",
-      "strategy": "liquidity_state_transition"
+      "competition_model": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "confidence": {
+        "level": "LOW",
+        "reason": "Strategy-family coverage is established; strategy-specific contract/state/economic evidence is still unresolved."
+      },
+      "cost_model": {
+        "components": [
+          "gas",
+          "venue_fees",
+          "slippage",
+          "execution_cost",
+          "strategy_specific_costs"
+        ],
+        "status": "NOT_CERTIFIED"
+      },
+      "evidence_class": "DERIVED_COVERAGE",
+      "exact_contracts": {
+        "items": [],
+        "status": "NOT_IDENTIFIED"
+      },
+      "failure_modes": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "historical_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "live_shadow_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "mechanism": {
+        "status": "HYPOTHESIS_ONLY",
+        "summary": "Liquidity-state change candidate independent of simple price spread."
+      },
+      "prerequisites": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "profitability_status": "NOT_CERTIFIED",
+      "route_context": {
+        "available": true,
+        "graph_fingerprint": "e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5",
+        "mapping_status": "NOT_CLASSIFIED_PER_STRATEGY",
+        "route_count_total": 617622
+      },
+      "simulation_method": {
+        "method": "Pending venue/protocol-specific exact-state simulation.",
+        "status": "EXACT_SIMULATION_REQUIRED"
+      },
+      "state_dependencies": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "status": "RESEARCH_CANDIDATE_UNRESOLVED",
+      "strategy": "liquidity_state_transition",
+      "strategy_id": "liquidity_state_transition",
+      "unknowns": [
+        "exact contracts and protocol surfaces",
+        "strategy-specific state dependencies",
+        "complete cost model",
+        "failure and competition behavior",
+        "historical/live shadow evidence",
+        "exact economic profitability"
+      ]
     },
     {
       "candidate": true,
-      "route_context_count": 5000,
-      "status": "RESEARCH_CANDIDATE",
-      "strategy": "cross_domain"
+      "competition_model": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "confidence": {
+        "level": "LOW",
+        "reason": "Strategy-family coverage is established; strategy-specific contract/state/economic evidence is still unresolved."
+      },
+      "cost_model": {
+        "components": [
+          "gas",
+          "venue_fees",
+          "slippage",
+          "execution_cost",
+          "strategy_specific_costs"
+        ],
+        "status": "NOT_CERTIFIED"
+      },
+      "evidence_class": "DERIVED_COVERAGE",
+      "exact_contracts": {
+        "items": [],
+        "status": "NOT_IDENTIFIED"
+      },
+      "failure_modes": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "historical_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "live_shadow_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "mechanism": {
+        "status": "HYPOTHESIS_ONLY",
+        "summary": "Cross-domain opportunity candidate subject to bridge/message/settlement state."
+      },
+      "prerequisites": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "profitability_status": "NOT_CERTIFIED",
+      "route_context": {
+        "available": true,
+        "graph_fingerprint": "e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5",
+        "mapping_status": "NOT_CLASSIFIED_PER_STRATEGY",
+        "route_count_total": 617622
+      },
+      "simulation_method": {
+        "method": "Pending venue/protocol-specific exact-state simulation.",
+        "status": "EXACT_SIMULATION_REQUIRED"
+      },
+      "state_dependencies": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "status": "RESEARCH_CANDIDATE_UNRESOLVED",
+      "strategy": "cross_domain",
+      "strategy_id": "cross_domain",
+      "unknowns": [
+        "exact contracts and protocol surfaces",
+        "strategy-specific state dependencies",
+        "complete cost model",
+        "failure and competition behavior",
+        "historical/live shadow evidence",
+        "exact economic profitability"
+      ]
     },
     {
       "candidate": true,
-      "route_context_count": 5000,
-      "status": "RESEARCH_CANDIDATE",
-      "strategy": "statistical_temporal"
+      "competition_model": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "confidence": {
+        "level": "LOW",
+        "reason": "Strategy-family coverage is established; strategy-specific contract/state/economic evidence is still unresolved."
+      },
+      "cost_model": {
+        "components": [
+          "gas",
+          "venue_fees",
+          "slippage",
+          "execution_cost",
+          "strategy_specific_costs"
+        ],
+        "status": "NOT_CERTIFIED"
+      },
+      "evidence_class": "DERIVED_COVERAGE",
+      "exact_contracts": {
+        "items": [],
+        "status": "NOT_IDENTIFIED"
+      },
+      "failure_modes": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "historical_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "live_shadow_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "mechanism": {
+        "status": "HYPOTHESIS_ONLY",
+        "summary": "Temporal/statistical recurrence candidate requiring historical evidence."
+      },
+      "prerequisites": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "profitability_status": "NOT_CERTIFIED",
+      "route_context": {
+        "available": true,
+        "graph_fingerprint": "e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5",
+        "mapping_status": "NOT_CLASSIFIED_PER_STRATEGY",
+        "route_count_total": 617622
+      },
+      "simulation_method": {
+        "method": "Pending venue/protocol-specific exact-state simulation.",
+        "status": "EXACT_SIMULATION_REQUIRED"
+      },
+      "state_dependencies": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "status": "RESEARCH_CANDIDATE_UNRESOLVED",
+      "strategy": "statistical_temporal",
+      "strategy_id": "statistical_temporal",
+      "unknowns": [
+        "exact contracts and protocol surfaces",
+        "strategy-specific state dependencies",
+        "complete cost model",
+        "failure and competition behavior",
+        "historical/live shadow evidence",
+        "exact economic profitability"
+      ]
     },
     {
       "candidate": true,
-      "route_context_count": 5000,
-      "status": "RESEARCH_CANDIDATE",
-      "strategy": "gas_regime"
+      "competition_model": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "confidence": {
+        "level": "LOW",
+        "reason": "Strategy-family coverage is established; strategy-specific contract/state/economic evidence is still unresolved."
+      },
+      "cost_model": {
+        "components": [
+          "gas",
+          "venue_fees",
+          "slippage",
+          "execution_cost",
+          "strategy_specific_costs"
+        ],
+        "status": "NOT_CERTIFIED"
+      },
+      "evidence_class": "DERIVED_COVERAGE",
+      "exact_contracts": {
+        "items": [],
+        "status": "NOT_IDENTIFIED"
+      },
+      "failure_modes": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "historical_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "live_shadow_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "mechanism": {
+        "status": "HYPOTHESIS_ONLY",
+        "summary": "Gas-regime-dependent opportunity candidate."
+      },
+      "prerequisites": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "profitability_status": "NOT_CERTIFIED",
+      "route_context": {
+        "available": true,
+        "graph_fingerprint": "e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5",
+        "mapping_status": "NOT_CLASSIFIED_PER_STRATEGY",
+        "route_count_total": 617622
+      },
+      "simulation_method": {
+        "method": "Pending venue/protocol-specific exact-state simulation.",
+        "status": "EXACT_SIMULATION_REQUIRED"
+      },
+      "state_dependencies": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "status": "RESEARCH_CANDIDATE_UNRESOLVED",
+      "strategy": "gas_regime",
+      "strategy_id": "gas_regime",
+      "unknowns": [
+        "exact contracts and protocol surfaces",
+        "strategy-specific state dependencies",
+        "complete cost model",
+        "failure and competition behavior",
+        "historical/live shadow evidence",
+        "exact economic profitability"
+      ]
     },
     {
       "candidate": true,
-      "route_context_count": 5000,
-      "status": "RESEARCH_CANDIDATE",
-      "strategy": "failed_tx_retry_state"
+      "competition_model": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "confidence": {
+        "level": "LOW",
+        "reason": "Strategy-family coverage is established; strategy-specific contract/state/economic evidence is still unresolved."
+      },
+      "cost_model": {
+        "components": [
+          "gas",
+          "venue_fees",
+          "slippage",
+          "execution_cost",
+          "strategy_specific_costs"
+        ],
+        "status": "NOT_CERTIFIED"
+      },
+      "evidence_class": "DERIVED_COVERAGE",
+      "exact_contracts": {
+        "items": [],
+        "status": "NOT_IDENTIFIED"
+      },
+      "failure_modes": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "historical_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "live_shadow_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "mechanism": {
+        "status": "HYPOTHESIS_ONLY",
+        "summary": "Failed/retried transaction-state opportunity hypothesis."
+      },
+      "prerequisites": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "profitability_status": "NOT_CERTIFIED",
+      "route_context": {
+        "available": true,
+        "graph_fingerprint": "e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5",
+        "mapping_status": "NOT_CLASSIFIED_PER_STRATEGY",
+        "route_count_total": 617622
+      },
+      "simulation_method": {
+        "method": "Pending venue/protocol-specific exact-state simulation.",
+        "status": "EXACT_SIMULATION_REQUIRED"
+      },
+      "state_dependencies": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "status": "RESEARCH_CANDIDATE_UNRESOLVED",
+      "strategy": "failed_tx_retry_state",
+      "strategy_id": "failed_tx_retry_state",
+      "unknowns": [
+        "exact contracts and protocol surfaces",
+        "strategy-specific state dependencies",
+        "complete cost model",
+        "failure and competition behavior",
+        "historical/live shadow evidence",
+        "exact economic profitability"
+      ]
     },
     {
       "candidate": true,
-      "route_context_count": 5000,
-      "status": "RESEARCH_CANDIDATE",
-      "strategy": "protocol_structural"
+      "competition_model": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "confidence": {
+        "level": "LOW",
+        "reason": "Strategy-family coverage is established; strategy-specific contract/state/economic evidence is still unresolved."
+      },
+      "cost_model": {
+        "components": [
+          "gas",
+          "venue_fees",
+          "slippage",
+          "execution_cost",
+          "strategy_specific_costs"
+        ],
+        "status": "NOT_CERTIFIED"
+      },
+      "evidence_class": "DERIVED_COVERAGE",
+      "exact_contracts": {
+        "items": [],
+        "status": "NOT_IDENTIFIED"
+      },
+      "failure_modes": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "historical_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "live_shadow_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "mechanism": {
+        "status": "HYPOTHESIS_ONLY",
+        "summary": "Protocol-specific structural opportunity hypothesis."
+      },
+      "prerequisites": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "profitability_status": "NOT_CERTIFIED",
+      "route_context": {
+        "available": true,
+        "graph_fingerprint": "e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5",
+        "mapping_status": "NOT_CLASSIFIED_PER_STRATEGY",
+        "route_count_total": 617622
+      },
+      "simulation_method": {
+        "method": "Pending venue/protocol-specific exact-state simulation.",
+        "status": "EXACT_SIMULATION_REQUIRED"
+      },
+      "state_dependencies": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "status": "RESEARCH_CANDIDATE_UNRESOLVED",
+      "strategy": "protocol_structural",
+      "strategy_id": "protocol_structural",
+      "unknowns": [
+        "exact contracts and protocol surfaces",
+        "strategy-specific state dependencies",
+        "complete cost model",
+        "failure and competition behavior",
+        "historical/live shadow evidence",
+        "exact economic profitability"
+      ]
     },
     {
       "candidate": true,
-      "route_context_count": 5000,
-      "status": "RESEARCH_CANDIDATE",
-      "strategy": "negative_space_hypothesis"
+      "competition_model": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "confidence": {
+        "level": "LOW",
+        "reason": "Strategy-family coverage is established; strategy-specific contract/state/economic evidence is still unresolved."
+      },
+      "cost_model": {
+        "components": [
+          "gas",
+          "venue_fees",
+          "slippage",
+          "execution_cost",
+          "strategy_specific_costs"
+        ],
+        "status": "NOT_CERTIFIED"
+      },
+      "evidence_class": "DERIVED_COVERAGE",
+      "exact_contracts": {
+        "items": [],
+        "status": "NOT_IDENTIFIED"
+      },
+      "failure_modes": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "historical_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "live_shadow_evidence": {
+        "sources": [],
+        "status": "NOT_COLLECTED"
+      },
+      "mechanism": {
+        "status": "HYPOTHESIS_ONLY",
+        "summary": "Explicit unknown/negative-space research hypothesis; no profitability assertion."
+      },
+      "prerequisites": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "profitability_status": "NOT_CERTIFIED",
+      "route_context": {
+        "available": true,
+        "graph_fingerprint": "e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5",
+        "mapping_status": "NOT_CLASSIFIED_PER_STRATEGY",
+        "route_count_total": 617622
+      },
+      "simulation_method": {
+        "method": "Pending venue/protocol-specific exact-state simulation.",
+        "status": "EXACT_SIMULATION_REQUIRED"
+      },
+      "state_dependencies": {
+        "items": [],
+        "status": "UNRESOLVED"
+      },
+      "status": "RESEARCH_CANDIDATE_UNRESOLVED",
+      "strategy": "negative_space_hypothesis",
+      "strategy_id": "negative_space_hypothesis",
+      "unknowns": [
+        "exact contracts and protocol surfaces",
+        "strategy-specific state dependencies",
+        "complete cost model",
+        "failure and competition behavior",
+        "historical/live shadow evidence",
+        "exact economic profitability"
+      ]
     }
   ],
+  "strategy_count": 18,
   "task": "p7_strategy_matrix",
-  "time": "2026-09-26T08:49:19Z"
+  "time": "2026-09-26T08:57:51Z"
 }
