@@ -95,7 +95,7 @@ def round_robin_batches(addrs,endpoints,size,worker):
         jobs.append((endpoints[idx],addrs[i:i+size]))
     results={}
     with ThreadPoolExecutor(max_workers=len(endpoints)) as ex:
-        futs={ex.submit(worker,ep[1],chunk): (ep,chunk) for ep,chunk in jobs}
+        futs={ex.submit(worker,ep["url"],chunk): (ep,chunk) for ep,chunk in jobs}
         for fut in as_completed(futs):
             ep,chunk=futs[fut]
             try: results.update(fut.result())
@@ -151,7 +151,7 @@ def main():
         for i in range(0,len(reps),CROSS_PAIR_CHUNK):
             chunk=reps[i:i+CROSS_PAIR_CHUNK]
             ep=endpoints[(i//CROSS_PAIR_CHUNK+1)%len(endpoints)]
-            futs[ex.submit(run_pair_batch,ep[1],chunk,True)]=(ep,chunk)
+            futs[ex.submit(run_pair_batch,ep["url"],chunk,True)]=(ep,chunk)
         for fut in as_completed(futs):
             ep,chunk=futs[fut]
             try:
@@ -170,7 +170,7 @@ def main():
         factories=[addr(o.get("factory"))] if addr(o.get("factory")) else []
         rec["factory_addresses"]=sorted(set(rec.get("factory_addresses",[])+factories))
         rec["representative_pair"]=pair_addr
-        rec["cross_rpc_endpoint"]=ep[0] if ep else None
+        rec["cross_rpc_endpoint"]=ep["name"] if ep else None
         rec["cross_rpc_code_match"]=bool(cross_code and primary.get("code_sha256") and cross_code==primary.get("code_sha256"))
         rec["onchain_binding_status"]="VERIFIED_CROSS_RPC" if rec["cross_rpc_code_match"] else ("VERIFIED_PRIMARY_ONLY" if primary.get("code_sha256") else "OPEN")
 
