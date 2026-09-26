@@ -1,0 +1,89 @@
+name: Polygon Static Saturation
+
+on:
+  push:
+    paths:
+      - ".github/workflows/polygon-static-saturation.yml"
+      - "tools/polygon_static_saturation.py"
+      - "automation/evidence/P11_POLYGON_CLOSURE_CERTIFICATE.json"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: polygon-static-saturation
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout canonical main
+        uses: actions/checkout@v4
+
+      - name: Download sealed Polygon source artifact
+        uses: actions/download-artifact@v4
+        with:
+          github-token: \${{ secrets.GITHUB_TOKEN }}
+          repository: \${{ github.repository }}
+          run-id: 36250240579
+          artifact-ids: 10908519045
+          path: /tmp/polygon-sealed
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate builder syntax
+        run: python -m py_compile tools/polygon_static_saturation.py
+
+      - name: Build canonical static layer
+        run: |
+          set -euo pipefail
+          python tools/polygon_static_saturation.py --sealed-root /tmp/polygon-sealed/saturation-conveyor-state
+
+      - name: Verify exact closure counts
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import gzip, json, hashlib
+          from pathlib import Path
+          p=Path("chains/polygon-pos")
+          m=json.loads((p/"STATIC_SATURATION_MANIFEST.json").read_text())
+          c=m["counts"]
+          assert c["tokens"] == 469, c
+          assert c["pairs"] == 2821, c
+          assert c["pools"] == 2821, c
+          assert c["routes"] == 617622, c
+          assert c["dex_namespaces"] == 67, c
+          assert c["strategies"] == 18, c
+          assert c["feature_groups"] == 1891, c
+          assert c["economic_candidates"] == 420, c
+          assert c["exact_profit_certified"] == 0, c
+          assert len((p/"TOKEN_UNIVERSE.jsonl").read_text().splitlines()) == 469
+          assert len((p/"PAIR_UNIVERSE.jsonl").read_text().splitlines()) == 2821
+          assert len((p/"POOL_UNIVERSE.jsonl").read_text().splitlines()) == 2821
+          route_count=sum(1 for _ in gzip.open(p/"ROUTE_UNIVERSE.jsonl.gz","rt",encoding="utf-8"))
+          assert route_count == 617622, route_count
+          for fn in ["MASTER_INDEX.json","DEX_UNIVERSE.json","PROTOCOL_UNIVERSE.json","STATIC_CONTRACT_UNIVERSE.json","FLASH_LIQUIDITY_UNIVERSE.json","STRATEGY_UNIVERSE.json","FEATURE_SCHEMA.json","ECONOMIC_FRONTIER.json","UNKNOWN_NEGATIVE_SPACE.json","STATIC_EVIDENCE_MANIFEST.json"]:
+              assert (p/fn).exists(), fn
+          print("POLYGON_STATIC_SATURATION_GREEN")
+          print(json.dumps(c, sort_keys=True))
+          PY
+
+      - name: Commit canonical static layer
+        run: |
+          set -euo pipefail
+          git config user.name "ghost-hunter-static-bot"
+          git config user.email "ghost-hunter-static-bot@users.noreply.github.com"
+          git add -A chains/polygon-pos automation/universe
+          if git diff --cached --quiet; then
+            echo "NO_CHANGES"
+            exit 0
+          fi
+          git commit -m "feat: materialize Polygon canonical static hunting universe"
+          git push origin HEAD:main
