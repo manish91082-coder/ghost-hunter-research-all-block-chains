@@ -577,7 +577,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
         self.assertIn('"P3":"p3-multisource-closure-v1"', source)
         self.assertIn('"P4":"p4-parallel-endpoint-discovery-v3"', source)
-        self.assertIn('"P5":"p5-full-universe-v1"', source)
+        self.assertIn('"P5":"p5-full-universe-v2"', source)
         self.assertIn("or (revision and ts.get('revision') != revision)", source)
         self.assertIn("ts['revision']=revision", source)
 
@@ -596,7 +596,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
 
     def test_p5_parallel_closure_revision_is_registered(self):
         source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
-        self.assertIn('"P5":"p5-full-universe-v1"', source)
+        self.assertIn('"P5":"p5-full-universe-v2"', source)
 
     def test_pair_snapshot_deduplicates_pair_addresses(self):
         source = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
