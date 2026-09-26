@@ -975,5 +975,13 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn('"polygon_census_lock"', worker)
 
 
+
+
+    def test_state_restore_has_working_tree_fallback(self):
+        source = (ROOT / "tools" / "automation_state_store.py").read_text(encoding="utf-8")
+        self.assertIn("RESTORE_FALLBACK=WORKING_TREE", source)
+        self.assertIn("ARTIFACT_RESTORE_FALLBACK=", source)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -56,11 +56,20 @@ def restore(target: str):
         ]
         p = run(cmd)
         if p.returncode != 0:
-            raise RuntimeError(f"gh run download failed: {p.stderr.strip()}")
+            # The checked-out main branch is itself canonical working state.
+            # Artifact restore is an optimization, not a prerequisite.
+            print(f"ARTIFACT_RESTORE_FALLBACK={p.stderr.strip()}")
+            if target_path.exists():
+                print("RESTORE_FALLBACK=WORKING_TREE")
+                return 0
+            raise RuntimeError(f"gh run download failed and working-tree state is absent: {p.stderr.strip()}")
 
         files = [p for p in tmp_path.rglob("*") if p.is_file()]
         if not files:
-            raise RuntimeError("downloaded artifact is empty")
+            if target_path.exists():
+                print("RESTORE_FALLBACK=WORKING_TREE_EMPTY_ARTIFACT")
+                return 0
+            raise RuntimeError("downloaded artifact is empty and working-tree state is absent")
 
         # The artifact is created from automation/* and therefore restores only
         # the automation working set. Reject any unexpected archive traversal.
