@@ -1,0 +1,43 @@
+{
+  "schema_version": "ethereum-p4-token-universe-policy-v1",
+  "chain_id": 1,
+  "required_source_count": 5,
+  "required_stable_samples": 2,
+  "minimum_rpc_identity_endpoints": 2,
+  "minimum_code_observation_endpoints": 2,
+  "head_tolerance": 2,
+  "batch_size": 50,
+  "sources": [
+    {
+      "id": "uniswap_default",
+      "url": "https://raw.githubusercontent.com/Uniswap/default-token-list/main/src/tokens/mainnet.json",
+      "class": "community_token_list"
+    },
+    {
+      "id": "coingecko_uniswap",
+      "url": "https://tokens.coingecko.com/uniswap/all.json",
+      "class": "community_token_list"
+    },
+    {
+      "id": "viaprotocol_trusted",
+      "url": "https://raw.githubusercontent.com/viaprotocol/tokenlists/main/tokenlists/ethereum.json",
+      "class": "aggregated_multi_list"
+    },
+    {
+      "id": "compound",
+      "url": "https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json",
+      "class": "protocol_token_list"
+    },
+    {
+      "id": "geckoterminal_recent",
+      "url": "https://api.geckoterminal.com/api/v2/tokens/info_recently_updated?include=network&network=eth",
+      "class": "market_discovery"
+    }
+  ],
+  "promotion_boundary": "Research-universe token candidates only. On-chain verification records runtime-code presence and same-code-hash agreement at a fixed Ethereum block; it does not certify ERC20 semantic compliance, liquidity, pool existence or profitability.",
+  "safety": {
+    "live_signing": false,
+    "public_broadcast": false,
+    "real_money": false
+  }
+}
