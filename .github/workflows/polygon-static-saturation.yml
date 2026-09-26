@@ -58,6 +58,8 @@ jobs:
           set -euo pipefail
           git config user.name "ghost-hunter-static-bot"
           git config user.email "ghost-hunter-static-bot@users.noreply.github.com"
+          git fetch origin main
+          git rebase origin/main
           git add -A chains/polygon-pos automation/universe automation/evidence/P5_CLOSURE_STATE.json automation/evidence/P5_CURSOR.json automation/evidence/P5_STABILITY_STATE.json automation/evidence/P5_PAIR_SNAPSHOT.json automation/evidence/P6_CLOSURE_STATE.json automation/evidence/P6_ROUTE_SNAPSHOT.json
           if git diff --cached --quiet; then
             echo "NO_CHANGES"
