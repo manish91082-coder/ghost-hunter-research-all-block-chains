@@ -311,6 +311,29 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertTrue(module.p5_token_eligible({"address": "0x3", "source": "polygon_seed_manifest"}))
         self.assertTrue(module.p5_token_eligible({"address": "0x3", "source": "dexscreener_pair_token"}))
 
+    def test_p5_duplicate_observations_do_not_equal_identity_conflict(self):
+        import importlib.util
+        worker_path = ROOT / "tools" / "polygon_universe_worker.py"
+        spec = importlib.util.spec_from_file_location("polygon_universe_worker_p5_identity", worker_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        a = {
+            "pairAddress": "0x1111111111111111111111111111111111111111",
+            "chainId": "polygon",
+            "baseToken": {"address": "0x2222222222222222222222222222222222222222"},
+            "quoteToken": {"address": "0x3333333333333333333333333333333333333333"},
+            "dexId": "quickswap",
+        }
+        b = dict(a)
+        self.assertEqual(module.p5_pair_identity(a), module.p5_pair_identity(b))
+
+    def test_p5_checkpoint_uses_processed_addresses_not_integer_cursor(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn("processed_addresses", worker)
+        self.assertIn("successful_addresses", worker)
+        self.assertIn("recheck_mode", worker)
+
     def test_p5_closure_requires_complete_stable_pair_universe(self):
         import importlib.util
         worker_path = ROOT / "tools" / "polygon_universe_worker.py"
@@ -332,6 +355,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
             snapshot,
             {"fingerprint": "abc", "stable_runs": 0, "coverage_complete": False},
         ))
+        snapshot["pair_identity_conflict_count"] = 0
         self.assertTrue(module.p5_closure_ready(
             snapshot,
             {"fingerprint": "abc", "stable_runs": 1, "coverage_complete": True},

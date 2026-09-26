@@ -1011,6 +1011,7 @@ def task_p4_tokens():
 P5_PAIR_BATCH_SIZE = 60
 P5_PAIR_WORKERS = 8
 P5_CURSOR_STATE = EVID / "P5_CURSOR.json"
+P5_STABILITY_RECHECK = True
 
 
 def p5_token_eligible(row):
@@ -1018,6 +1019,15 @@ def p5_token_eligible(row):
         row.get("p5_scan_eligible") is True
         or row.get("evidence_class") == "ONCHAIN_SEMANTIC"
         or row.get("source") in {"polygon_seed_manifest", "dexscreener_pair_token"}
+    )
+
+
+def p5_pair_identity(row):
+    return (
+        str(row.get("chainId", "")).lower(),
+        str((row.get("baseToken") or {}).get("address", "")).lower(),
+        str((row.get("quoteToken") or {}).get("address", "")).lower(),
+        str(row.get("dexId", "")).lower(),
     )
 
 
@@ -1030,7 +1040,7 @@ def p5_closure_ready(snapshot, previous_state):
         checks.get("source_requests_complete") is True
         and checks.get("eligible_token_universe_nonempty") is True
         and snapshot.get("coverage_complete") is True
-        and int(snapshot.get("duplicate_pair_count", 0)) == 0
+        and int(snapshot.get("pair_identity_conflict_count", 0)) == 0
         and int(snapshot.get("total_pair_records", 0)) > 0
         and current_fp
         and current_fp == previous_fp
@@ -1040,8 +1050,7 @@ def p5_closure_ready(snapshot, previous_state):
 
 
 def task_p5_pairs():
-    token_file = UNIV / "tokens.jsonl"
-    raw_tokens = load_jsonl(token_file)
+    raw_tokens = load_jsonl(UNIV / "tokens.jsonl")
     tokens_by_address = {
         str(row.get("address", "")).lower(): row
         for row in raw_tokens
@@ -1053,17 +1062,36 @@ def task_p5_pairs():
         if p5_token_eligible(row):
             row["p5_scan_eligible"] = True
             eligible.append(row)
-
     eligible.sort(key=lambda row: str(row.get("address", "")).lower())
 
     cursor_payload = load_json(P5_CURSOR_STATE, {})
-    cursor = int(cursor_payload.get("cursor", 0) or 0)
-    prior_eligibility_fp = cursor_payload.get("eligibility_fingerprint")
-    eligibility_fp = sha([str(row.get("address", "")).lower() for row in eligible])
-    if prior_eligibility_fp and prior_eligibility_fp != eligibility_fp and cursor > len(eligible):
-        cursor = 0
+    processed_addresses = {
+        str(x).lower()
+        for x in cursor_payload.get("processed_addresses", [])
+        if isinstance(x, str)
+    }
+    previous_eligibility_fp = cursor_payload.get("eligibility_fingerprint")
+    eligibility_addresses = [str(row.get("address", "")).lower() for row in eligible]
+    eligibility_fp = sha(eligibility_addresses)
 
-    batch = eligible[cursor:cursor + P5_PAIR_BATCH_SIZE]
+    # New eligible tokens are merged into the universe without losing progress
+    # already made on older addresses. The processed-address set is therefore
+    # safer than an integer cursor when discovery expands mid-run.
+    if previous_eligibility_fp and previous_eligibility_fp == eligibility_fp:
+        pass
+
+    previous_closure = load_json(EVID / "P5_CLOSURE_STATE.json", {})
+    previous_complete = bool(previous_closure.get("coverage_complete"))
+    recheck_mode = bool(P5_STABILITY_RECHECK and previous_complete)
+
+    if recheck_mode:
+        batch = eligible[:]
+    else:
+        batch = [
+            row for row in eligible
+            if str(row.get("address", "")).lower() not in processed_addresses
+        ][:P5_PAIR_BATCH_SIZE]
+
     pair_results = []
     request_errors = []
 
@@ -1095,9 +1123,11 @@ def task_p5_pairs():
                 })
 
     rows = []
+    successful_addresses = set()
     for result in pair_results:
         if result.get("status") != 200 or not isinstance(result.get("pairs"), list):
             continue
+        successful_addresses.add(result.get("address"))
         for pair in result["pairs"]:
             if str(pair.get("chainId", "")).lower() != "polygon":
                 continue
@@ -1134,12 +1164,20 @@ def task_p5_pairs():
                     "p5_scan_eligible": True,
                 }
 
+    pair_identity_sets = defaultdict(set)
+    for row in rows:
+        address = str(row.get("pairAddress", "")).lower()
+        if address:
+            pair_identity_sets[address].add(p5_pair_identity(row))
+    pair_identity_conflict_count = sum(
+        1 for values in pair_identity_sets.values() if len(values) > 1
+    )
+    duplicate_pair_observation_count = max(
+        0,
+        len(rows) - len({str(x.get("pairAddress", "")).lower() for x in rows if x.get("pairAddress")}),
+    )
+
     merged_pairs = list(by_address.values())
-    duplicate_pair_count = len(rows) - len({
-        str(x.get("pairAddress", "")).lower()
-        for x in rows
-        if x.get("pairAddress")
-    })
 
     tokens_before = len(tokens_by_address)
     tokens_by_address.update(discovered_tokens)
@@ -1154,20 +1192,32 @@ def task_p5_pairs():
     )
 
     new_unique_tokens = max(0, len(tokens_by_address) - tokens_before)
-    next_cursor = min(len(eligible), cursor + len(batch))
+    processed_addresses.update(successful_addresses)
+
     eligible_after_merge = sorted(
         [row for row in tokens_by_address.values() if p5_token_eligible(row)],
         key=lambda row: str(row.get("address", "")).lower(),
     )
-    coverage_complete = next_cursor >= len(eligible_after_merge) and new_unique_tokens == 0
+    processed_eligible_count = sum(
+        1 for row in eligible_after_merge
+        if str(row.get("address", "")).lower() in processed_addresses
+    )
+    coverage_complete = (
+        len(eligible_after_merge) > 0
+        and processed_eligible_count == len(eligible_after_merge)
+        and len(request_errors) == 0
+        and new_unique_tokens == 0
+    )
 
     universe_fingerprint = sha({
         "eligible_tokens": [str(row.get("address", "")).lower() for row in eligible_after_merge],
         "pair_addresses": sorted(by_address),
+        "pair_identities": {
+            address: sorted(values)
+            for address, values in sorted(pair_identity_sets.items())
+        },
     })
 
-    previous_closure = load_json(EVID / "P5_CLOSURE_STATE.json", {})
-    previous_complete = bool(previous_closure.get("coverage_complete"))
     if coverage_complete:
         if universe_fingerprint == previous_closure.get("fingerprint") and previous_complete:
             stable_runs = int(previous_closure.get("stable_runs", 0) or 0) + 1
@@ -1180,21 +1230,25 @@ def task_p5_pairs():
         "task": "p5_pair_discovery",
         "time": now(),
         "processed_tokens": len(batch),
+        "processed_eligible_count": processed_eligible_count,
         "eligible_token_count": len(eligible_after_merge),
         "observed_pair_rows": len(rows),
         "new_unique_pairs": max(0, len(merged_pairs) - before_pairs),
         "new_unique_tokens": new_unique_tokens,
-        "cursor": next_cursor,
         "total_pair_records": len(merged_pairs),
-        "duplicate_pair_count": duplicate_pair_count,
+        "duplicate_pair_observation_count": duplicate_pair_observation_count,
+        "pair_identity_conflict_count": pair_identity_conflict_count,
         "coverage_complete": coverage_complete,
         "stable_runs": stable_runs,
         "universe_fingerprint": universe_fingerprint,
         "request_errors": request_errors[-50:],
         "pair_workers": P5_PAIR_WORKERS,
         "pair_batch_size": P5_PAIR_BATCH_SIZE,
+        "recheck_mode": recheck_mode,
         "checks": {
-            "source_requests_complete": len(batch) > 0 and len(request_errors) == 0,
+            "source_requests_complete": (len(batch) == 0 and recheck_mode) or (
+                len(batch) > 0 and len(request_errors) == 0
+            ),
             "eligible_token_universe_nonempty": len(eligible_after_merge) > 0,
         },
         "evidence_class": "DISCOVERY",
@@ -1213,16 +1267,17 @@ def task_p5_pairs():
         "stage_gate": snapshot["stage_gate"],
         "coverage_complete": coverage_complete,
         "eligible_token_count": len(eligible_after_merge),
+        "processed_eligible_count": processed_eligible_count,
         "total_pair_records": len(merged_pairs),
     })
     write_json("P5_CURSOR.json", {
-        "cursor": next_cursor,
+        "processed_addresses": sorted(processed_addresses),
         "total_eligible_tokens": len(eligible_after_merge),
-        "eligibility_fingerprint": sha(
-            [str(row.get("address", "")).lower() for row in eligible_after_merge]
-        ),
+        "eligibility_fingerprint": eligibility_fp,
+        "last_coverage_complete": coverage_complete,
     })
     return write_json("P5_PAIR_SNAPSHOT.json", snapshot)
+
 
 def task_p6_routes():
     pairs=load_jsonl(UNIV/"pairs.jsonl"); adj=defaultdict(list); seen=set()
