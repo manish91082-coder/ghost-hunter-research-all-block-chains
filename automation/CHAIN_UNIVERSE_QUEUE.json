@@ -1,0 +1,48 @@
+{
+  "schema_version": "global-chain-queue-v1",
+  "generated_at": "2026-09-26",
+  "source_of_truth": "GitHub LIVE main",
+  "purpose": "Evidence-driven chain-by-chain expansion after Polygon P11 closure.",
+  "rules": [
+    "Do not treat the universe as permanently fixed at 28 chains.",
+    "Do not invent chain records.",
+    "A chain enters active research only after candidate evidence is recorded.",
+    "Chain closure requires the same P2-P11 fail-closed evidence discipline used for Polygon."
+  ],
+  "completed": [
+    {
+      "chain": "Polygon PoS",
+      "chain_id": 137,
+      "status": "P11_READY",
+      "census_lock": true,
+      "p10_stage": "CLOSED",
+      "p11_status": "READY",
+      "exact_economic_residual_groups": 420,
+      "note": "Polygon census/audit closure is complete; exact profitability remains explicitly residual."
+    }
+  ],
+  "next_target": {
+    "chain": "Ethereum Mainnet",
+    "chain_id": 1,
+    "classification": "EVM",
+    "status": "CANDIDATE_SEEDED",
+    "selection_basis": "Current evidence-driven expansion seed. DeFiLlama currently reports Ethereum as the largest DeFi chain by TVL among the displayed chain rankings; EIP-2228 canonicalizes Ethereum Mainnet as chain ID 1.",
+    "external_sources": [
+      "https://defillama.com/chains",
+      "https://eips.ethereum.org/EIPS/eip-2228"
+    ],
+    "required_next_research": [
+      "finality and block-time profile",
+      "RPC universe and multi-endpoint quorum",
+      "DEX universe and pool census",
+      "flash-liquidity/lending sources",
+      "liquidation surfaces",
+      "intent/RFQ/solver surfaces",
+      "bridge/cross-domain surfaces",
+      "mempool/orderflow visibility",
+      "gas/execution model",
+      "scanner-family coverage"
+    ]
+  },
+  "queue_policy": "After Ethereum, order is recalculated from fresh evidence rather than permanently hard-coded."
+}
