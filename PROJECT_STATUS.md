@@ -549,3 +549,15 @@ P7 closure certifies strategy-family coverage and matrix schema completeness, no
 - Added sealed-universe rehydration from successful conveyor Run 36250240579 / Artifact 10908519045.
 - Added independent post-closure audit workflow. It is the sole authority for the Polygon research-universe GREEN signal.
 - Exact profit certification remains distinct from census saturation: historical P9 count remains 0/420.
+
+## 2026-09-26 — POLYGON RESEARCH UNIVERSE GREEN SEAL
+- Independent post-closure audit Run `36255914637` completed **SUCCESS**.
+- Regression suite: **SUCCESS**.
+- Independent audit: **SUCCESS**.
+- Audit artifact: `automation/evidence/P11_1_POLYGON_RESIDUAL_AUDIT.json`.
+- Audit status: **GREEN** for `POLYGON_RESEARCH_UNIVERSE_SATURATED`.
+- Verified counts: 469 tokens, 2,821 unique pairs, 67 DEX namespaces, 41 custom/unclassified namespaces routed through CUSTOM_EVM fallback, 420 economic candidate groups, 0 exact-profit-certified.
+- Current-source checks passed for Private Mempool, AggLayer/Bridge-and-Call, Uniswap v4 Polygon, current DEX/aggregator/perps/lending/RWA surfaces and Aave flash/liquidation documentation.
+- Polygon closure provenance remains Run 36250240579 / Artifact 10908519045 with artifact digest `sha256:ad2505dceb8968c54bc7d0ae23baf44b9f4015d7b86431774c468b92b639ba48`.
+- GREEN scope is strictly **research-universe saturation**. It does not certify exact profitability and does not authorize live signing, public broadcast or real-money execution.
+- A scheduled Polygon drift-watch workflow is now canonical; future drift is expected to create a new evidence state rather than mutate this historical seal.
