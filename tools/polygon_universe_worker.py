@@ -2,7 +2,7 @@
 """Autonomous Polygon universe evidence worker for P3-P10 plus P2 provenance replay.
 stdlib-only; every external snapshot is labeled discovery evidence, never VERIFIED.
 """
-import hashlib, json, time, urllib.error, urllib.parse, urllib.request
+import hashlib, json, os, time, urllib.error, urllib.parse, urllib.request
 from collections import defaultdict
 from pathlib import Path
 
@@ -499,6 +499,66 @@ def _p4_rpc_batch_endpoint(pool, endpoint_id, calls, timeout=30):
             raise
 
 
+def _p4_endpoint_probe_addresses(candidates):
+    candidate_set = set(candidates)
+    seeds = []
+    for row in load_seed_tokens():
+        address = _extract_address(row.get("address"))
+        if address and address in candidate_set and address not in seeds:
+            seeds.append(address)
+    for address in candidates:
+        if address not in seeds:
+            seeds.append(address)
+        if len(seeds) >= 2:
+            break
+    return seeds[:2]
+
+
+def _p4_endpoint_semantic_probe(pool, endpoint_id, addresses):
+    calls = []
+    for address in addresses:
+        calls.append((f"p4:probe:{endpoint_id}:{address}:code", "eth_getCode", [address, "latest"]))
+        calls.append((f"p4:probe:{endpoint_id}:{address}:decimals", "eth_call", [{"to": address, "data": "0x313ce567"}, "latest"]))
+        calls.append((f"p4:probe:{endpoint_id}:{address}:supply", "eth_call", [{"to": address, "data": "0x18160ddd"}, "latest"]))
+
+    _, rows = _p4_rpc_batch_endpoint(pool, endpoint_id, calls, timeout=30)
+    usable = True
+    for address in addresses:
+        code = rows.get(f"p4:probe:{endpoint_id}:{address}:code", {}).get("result")
+        decimals = rows.get(f"p4:probe:{endpoint_id}:{address}:decimals", {}).get("result")
+        supply = rows.get(f"p4:probe:{endpoint_id}:{address}:supply", {}).get("result")
+        valid_code = isinstance(code, str) and code not in {"", "0x", "0X"}
+        valid_decimals = isinstance(decimals, str) and decimals.startswith("0x")
+        valid_supply = isinstance(supply, str) and supply.startswith("0x")
+        if valid_decimals:
+            try:
+                valid_decimals = 0 <= int(decimals, 16) <= 255
+            except ValueError:
+                valid_decimals = False
+        usable = usable and valid_code and valid_decimals and valid_supply
+    return usable, rows
+
+
+def _p4_select_capable_endpoints(pool, chain_ok, probe_addresses, max_endpoints=3):
+    selected = []
+    diagnostics = {}
+    for eid in chain_ok:
+        try:
+            usable, _ = _p4_endpoint_semantic_probe(pool, eid, probe_addresses)
+            diagnostics[eid] = {"usable": usable, "error": ""}
+            if usable:
+                selected.append(eid)
+                pool.mark_success(eid)
+            else:
+                pool.mark_failure(eid, {"http_status": 200, "rate_limited": False, "message": "semantic capability probe failed"})
+        except Exception as exc:
+            diagnostics[eid] = {"usable": False, "error": f"{type(exc).__name__}: {exc}"}
+            pool.mark_failure(eid, {"http_status": None, "rate_limited": False, "message": str(exc)})
+        if len(selected) >= max_endpoints:
+            break
+    return selected, diagnostics
+
+
 def _p4_rpc_token_verification(candidates, verification_state):
     try:
         import sys
@@ -524,17 +584,22 @@ def _p4_rpc_token_verification(candidates, verification_state):
         result = ((obs.get("body") or {}).get("result") if isinstance(obs.get("body"), dict) else None)
         if str(result).lower() == "0x89":
             chain_ok.append(eid)
-        if len(chain_ok) >= 3:
+        if len(chain_ok) >= 6:
             break
 
     batch = p4_verification_batch(candidates, verification_state)
-    candidate_map = {address: {} for address in batch}
+    probe_addresses = _p4_endpoint_probe_addresses(candidates)
+    selected_endpoints, capability_probe = _p4_select_capable_endpoints(
+        pool, chain_ok, probe_addresses, max_endpoints=3
+    )
     endpoint_success = {}
 
-    # One HTTP request per endpoint carries all three read-only probes for every
-    # candidate in this bounded batch. This preserves per-endpoint independence
-    # while avoiding hundreds of sequential network round-trips.
-    for eid in chain_ok[:2]:
+    candidate_map = {address: {} for address in batch}
+
+    # Every endpoint in the semantic quorum is independently capable of the
+    # required read-only ERC-20 probes. Three endpoints are allowed as bounded
+    # failover, but no majority is inferred: a conflict remains a conflict.
+    for eid in selected_endpoints:
         calls = []
         for address in batch:
             calls.append((f"p4:{eid}:{address}:code", "eth_getCode", [address, "latest"]))
@@ -554,17 +619,9 @@ def _p4_rpc_token_verification(candidates, verification_state):
             dec_row = rows.get(f"p4:{eid}:{address}:decimals", {})
             supply_row = rows.get(f"p4:{eid}:{address}:supply", {})
 
-            def row_result(row):
-                return row.get("result") if isinstance(row, dict) else None
-
-            def row_error(row):
-                err = row.get("error") if isinstance(row, dict) else None
-                return err if isinstance(err, dict) else None
-
-            code = row_result(code_row)
-            decimals = row_result(dec_row)
-            total_supply = row_result(supply_row)
-
+            code = code_row.get("result")
+            decimals = dec_row.get("result")
+            total_supply = supply_row.get("result")
             valid_code = isinstance(code, str) and code not in {"", "0x", "0X"}
             valid_decimals = isinstance(decimals, str) and decimals.startswith("0x")
             valid_supply = isinstance(total_supply, str) and total_supply.startswith("0x")
@@ -574,54 +631,41 @@ def _p4_rpc_token_verification(candidates, verification_state):
                 except ValueError:
                     valid_decimals = False
 
-            observation = candidate_map[address].setdefault(eid, {})
-            observation.update({
+            candidate_map[address][eid] = {
                 "code": code,
                 "decimals": decimals,
                 "total_supply": total_supply,
-                "errors": [x for x in (row_error(code_row), row_error(dec_row), row_error(supply_row)) if x],
                 "valid": bool(valid_code and valid_decimals and valid_supply),
-            })
+            }
 
     for address in batch:
         observations = []
-        endpoint_rows = candidate_map.get(address, {})
-        for eid in chain_ok[:2]:
-            row = endpoint_rows.get(eid, {})
-            if not endpoint_success.get(eid) or not row.get("valid"):
+        for eid in selected_endpoints:
+            if not endpoint_success.get(eid):
                 continue
-            code = row.get("code")
-            decimals = row.get("decimals")
-            total_supply = row.get("total_supply")
+            row = candidate_map.get(address, {}).get(eid, {})
+            if not row.get("valid"):
+                continue
             observations.append({
                 "rpc": eid,
-                "code_hash": hashlib.sha256(code.lower().encode()).hexdigest(),
-                "decimals": decimals.lower(),
-                "total_supply": total_supply.lower(),
+                "code_hash": hashlib.sha256(row["code"].lower().encode()).hexdigest(),
+                "decimals": row["decimals"].lower(),
+                "total_supply": row["total_supply"].lower(),
             })
 
-        if len(observations) >= 2:
-            fingerprints = {(x["code_hash"], x["decimals"], x["total_supply"]) for x in observations[:2]}
-            matching = len(fingerprints) == 1
-            verification_state[address] = {
-                "chain_id": 137,
-                "rpc_endpoints": [x["rpc"] for x in observations[:2]],
-                "observations": observations[:2],
-                "matching": matching,
-                "conflict": not matching,
-                "last_verified_at": now(),
-                "transport": "json_rpc_batch",
-            }
-        else:
-            verification_state[address] = {
-                "chain_id": 137 if chain_ok else None,
-                "rpc_endpoints": [x["rpc"] for x in observations],
-                "observations": observations,
-                "matching": False,
-                "conflict": False,
-                "last_verified_at": now(),
-                "transport": "json_rpc_batch",
-            }
+        fingerprints = {(x["code_hash"], x["decimals"], x["total_supply"]) for x in observations}
+        matching = len(observations) >= 2 and len(fingerprints) == 1
+        conflict = len(observations) >= 2 and len(fingerprints) > 1
+
+        verification_state[address] = {
+            "chain_id": 137 if chain_ok else None,
+            "rpc_endpoints": [x["rpc"] for x in observations],
+            "observations": observations,
+            "matching": matching,
+            "conflict": conflict,
+            "last_verified_at": now(),
+            "transport": "json_rpc_batch",
+        }
 
     candidate_set = set(candidates)
     verification_state = {address: row for address, row in verification_state.items() if address in candidate_set}
@@ -629,9 +673,7 @@ def _p4_rpc_token_verification(candidates, verification_state):
     conflict_count = sum(1 for x in verification_state.values() if x.get("conflict"))
     cycle_complete = verified_count == len(candidates) and len(candidates) > 0
 
-    P4_VERIFY_STATE.parent.mkdir(parents=True, exist_ok=True)
-    P4_VERIFY_STATE.write_text(
-        json.dumps({
+    save_payload = {
         "universe_fingerprint_context": sha(candidates),
         "updated_at": now(),
         "batch_size": P4_VERIFY_BATCH_SIZE,
@@ -642,16 +684,18 @@ def _p4_rpc_token_verification(candidates, verification_state):
         "verification": verification_state,
         "transport": "json_rpc_batch",
         "endpoint_success": endpoint_success,
-        }, sort_keys=True) + "\n",
-        encoding="utf-8",
-    )
+        "capability_probe": capability_probe,
+        "selected_endpoints": selected_endpoints,
+    }
+    P4_VERIFY_STATE.parent.mkdir(parents=True, exist_ok=True)
+    P4_VERIFY_STATE.write_text(json.dumps(save_payload, sort_keys=True) + "\n", encoding="utf-8")
 
     return {
         "state": verification_state,
         "verified_count": verified_count,
         "chain_137_verified_count": verified_count,
         "identity_conflict_count": conflict_count,
-        "error": "" if len([eid for eid in chain_ok[:2] if endpoint_success.get(eid)]) >= 2 else "Fewer than two independent batch endpoints returned usable evidence",
+        "error": "" if len(selected_endpoints) >= 2 else "Fewer than two independent semantically capable Polygon batch endpoints",
         "batch": batch,
         "cycle_complete": cycle_complete,
     }
