@@ -39,3 +39,4 @@ purpose=one-shot live validation of optimized critical lane and repaired P2 evid
 2026-09-26T13:08:00+05:30 P4-microbatch-test-identifier-fix
 2026-09-26T13:15:00+05:30 P4-expanded-public-rpc-mesh
 2026-09-26T13:20:00+05:30 P4-expanded-rpc-scan-cap-test-fix
+2026-09-26T13:27:00+05:30 P4-adaptive-rate-limit-chunking
