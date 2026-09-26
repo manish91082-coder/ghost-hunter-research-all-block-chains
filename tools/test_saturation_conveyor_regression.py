@@ -37,8 +37,9 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         push_block = self.workflow.split("  push:\n", 1)[1].split("concurrency:\n", 1)[0]
         self.assertNotIn("tools/saturation_conveyor.py", push_block)
 
-    def test_checkpoint_and_actions_read_permission(self):
-        self.assertIn("actions: read", self.workflow)
+    def test_checkpoint_and_actions_write_permission(self):
+        self.assertIn("actions: write", self.workflow)
+        self.assertIn("gh workflow run saturation-conveyor.yml --ref main", self.workflow)
         self.assertIn("saturation-conveyor-state", self.workflow)
         self.assertIn("automation/evidence/", self.workflow)
         self.assertIn("automation/universe/", self.workflow)
