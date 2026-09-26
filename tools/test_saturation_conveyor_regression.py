@@ -698,7 +698,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
 
     def test_p6_worker_writes_explicit_closure_state_and_stage_gate(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
-        self.assertIn("P6_CLOSURE_STATE = EVID / "P6_CLOSURE_STATE.json"", worker)
+        self.assertIn('P6_CLOSURE_STATE = EVID / "P6_CLOSURE_STATE.json"', worker)
         self.assertIn("def p6_route_closure_ready(", worker)
         self.assertIn('snapshot["stage_gate"] = "CLOSED"', worker)
         self.assertIn('"route_enumeration_complete": True', worker)
