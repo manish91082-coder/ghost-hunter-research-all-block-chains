@@ -27,6 +27,16 @@ class P4FanoutRegressionTests(unittest.TestCase):
         self.assertFalse(result["conflict"])
         self.assertFalse(result["total_supply_equal"])
 
+    def test_missing_validity_flags_are_backward_compatible(self):
+        mod = aggregator()
+        observations = [
+            {"rpc":"a","code_hash":"abc","decimals":"0x12","total_supply":"0x1"},
+            {"rpc":"b","code_hash":"abc","decimals":"0x12","total_supply":"0x2"},
+        ]
+        result = mod.reconcile_observations(observations)
+        self.assertTrue(result["matching"])
+        self.assertFalse(result["conflict"])
+
     def test_code_identity_plus_one_semantic_probe_is_sufficient(self):
         mod = aggregator()
         observations = [

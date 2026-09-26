@@ -26,11 +26,11 @@ def reconcile_observations(observations):
     code_hashes = {x.get("code_hash") for x in observations if x.get("code_hash")}
     decimal_values = {
         x.get("decimals") for x in observations
-        if x.get("decimals_valid") and x.get("decimals") is not None
+        if x.get("decimals") is not None and x.get("decimals_valid", True)
     }
     supplies = {
         x.get("total_supply") for x in observations
-        if x.get("total_supply_valid") and x.get("total_supply") is not None
+        if x.get("total_supply") is not None and x.get("total_supply_valid", True)
     }
 
     code_identity_match = len(observations) >= 2 and len(code_hashes) == 1
