@@ -35,3 +35,4 @@ purpose=one-shot live validation of optimized critical lane and repaired P2 evid
 2026-09-26T12:44:00+05:30 P4-capability-single-rpc-fallback
 2026-09-26T12:49:00+05:30 P4-capability-fallback-test-align
 2026-09-26T12:53:00+05:30 P4-capability-fallback-test-final
+2026-09-26T13:03:00+05:30 P4-pacing-and-microbatch-optimization
