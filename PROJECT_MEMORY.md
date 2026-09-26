@@ -328,3 +328,13 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - Canonical P6 fingerprint: `e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5`.
 - Run #136 / Actions `36230852577` completed SUCCESS and advanced the critical stage to P7.
 - P6 does not certify profitability, execution viability, gas/slippage economics, or live trading. Those require downstream evidence.
+
+
+## 2026-09-26 — P7/P8 closure memory lock
+- P7 is canonically CLOSED. Its fingerprint is `69f240c85a75cfba73d189e94650c72271ed3368f4268349263d81176c8c949a`, with 18/18 strategy families and stable_runs=2.
+- P7 does not assert exact contract coverage or profitability; unresolved fields are first-class evidence.
+- P8 is canonically CLOSED. Its fingerprint is `5138bae6d46712f79b83d7ad908ad120087529bd52d2917abbfe63969bdff068`, covering 1,891 pair groups from 2,821 pair records.
+- P8 feature schema contains 12 required domains. Snapshot-supported domains are computed deterministically; true time-series volatility, explicit regime classification, route recurrence, opportunity persistence, gas regime and block activity are not fabricated when unavailable.
+- P8 closure required a matching stable recheck after repairing route-fingerprint provenance.
+- The conveyor now fails closed if an executed task returns non-zero; this is a permanent safety invariant.
+- Current critical stage is P9. The next objective is exact economic certification, not another discovery-only snapshot.

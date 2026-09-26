@@ -731,3 +731,34 @@ Inspect the corrected control-function CI artifact. Then run the corrected conve
 
 ### Next critical objective
 Execute P7 strategy-universe saturation under the same fail-closed discipline. Route existence is research evidence only; no economic or live-trading conclusion is implied by P6 closure.
+
+
+## 2026-09-26 — P7 strategy saturation CLOSED / P8 unlocked
+### Closure evidence
+- P7 v2 replaced the 18-name placeholder with 18 auditable strategy records.
+- Required fields are present for every strategy: mechanism, prerequisites, exact contracts, state dependencies, cost model, failure modes, competition model, simulation method, historical evidence, live/shadow evidence, profitability status, confidence and unknowns.
+- Unresolved fields are explicit rather than invented: exact contracts are `NOT_IDENTIFIED`, profitability is `NOT_CERTIFIED`, and strategy-specific evidence remains pending downstream research.
+- First pass: 18/18 families, stable_runs=1, gate OPEN.
+- Matching recheck: same matrix fingerprint, stable_runs=2, stage_gate=CLOSED.
+- Canonical P7 fingerprint: `69f240c85a75cfba73d189e94650c72271ed3368f4268349263d81176c8c949a`.
+- Gate transition: P7 -> P8.
+
+## 2026-09-26 — P8 deterministic feature matrix CLOSED / P9 unlocked
+### Engineering repair
+- P8 v2 added an explicit feature schema covering spread, volatility, volume, liquidity, imbalance, regime, momentum/reversion, route recurrence, opportunity persistence, gas regime, block activity and flow-toxicity proxy.
+- Snapshot-supported features are computed deterministically; domains without sufficient source evidence are explicitly marked `NOT_AVAILABLE` or `NOT_CLASSIFIED`.
+- P8 route recurrence provenance was corrected to use the persisted P6 closure fingerprint fallback.
+- A missing `math` runtime dependency was found from the actual CI artifact and repaired.
+- The conveyor itself was strengthened to fail closed when an executed task returns non-zero. This prevents a worker failure from appearing as a successful workflow.
+- A stale P4 regression assertion on the old import line was identified from CI logs and removed without weakening the P4 contract.
+
+### Closure evidence
+- Final P8 matrix: 1,891 pair groups over 2,821 pair records.
+- All 12 feature domains present for every group.
+- Deterministic observed features present; unavailable/unclassified domains explicit.
+- P8 fingerprint: `5138bae6d46712f79b83d7ad908ad120087529bd52d2917abbfe63969bdff068`.
+- stable_runs=2, stage_gate=CLOSED.
+- GitHub Actions Run #143 (`36231631950`) completed SUCCESS and advanced to P9.
+
+### Next critical objective
+P9 exact economic certification: exact-state replay, venue-specific swap math, gas, flash premium, fees, slippage, transfer taxes, failure cost, competition, minimum profit threshold, sensitivity and simulated-vs-realized error. Gross spread remains screening-only.

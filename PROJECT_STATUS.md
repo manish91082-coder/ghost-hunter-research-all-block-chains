@@ -466,3 +466,19 @@ P3 closure confirms multi-source discovery convergence and snapshot stability on
 
 ### P6 evidence boundary
 P6 closure certifies complete deterministic route-graph enumeration over the persisted P5 pair universe and matching graph stability. It does not certify swap execution, gas, slippage, competition, profitability, or live-trade viability. Those remain downstream P8/P9/P10 evidence tasks.
+
+
+## CURRENT CANONICAL STATUS — 2026-09-26 — P8 CLOSED / P9 ACTIVE
+- Canonical main HEAD before this documentation lock: `e521154057005e5cc08544fd4cd46d9226fdaea7`.
+- Research gate: **P2_CLOSED**.
+- P2, P3, P4, P5, P6, P7 and P8: **CLOSED**.
+- Current critical stage: **P9 OPEN**.
+- P6: 451 graph nodes, 2,821 unique pairs, 617,622 route candidates, stable graph fingerprint `e3fa1495cc17172b95dd76c7f1e87655d356d4c8445c60a4733acf8b72e6caa5`.
+- P7: 18/18 required strategy families, schema-complete matrix, explicit unresolved/economic boundaries, stable fingerprint `69f240c85a75cfba73d189e94650c72271ed3368f4268349263d81176c8c949a`.
+- P8: 1,891 pair groups over 2,821 pair records, 12 deterministic/proxy feature domains, explicit unavailable domains, stable fingerprint `5138bae6d46712f79b83d7ad908ad120087529bd52d2917abbfe63969bdff068`.
+- P8 closure: `stable_runs=2`, stage_gate=CLOSED.
+- GitHub Actions Run #143 (`36231631950`) completed **SUCCESS** and advanced the critical stage to P9.
+- Live trading: **OFF**. P9 remains the exact economic certification boundary.
+
+### P7/P8 evidence boundary
+P7 closure certifies strategy-family coverage and matrix schema completeness, not exact contract discovery or profitability. P8 closure certifies deterministic feature coverage over the available pair snapshot; proxy features and unavailable domains are explicitly labeled. Neither stage certifies profitable execution.
