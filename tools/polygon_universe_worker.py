@@ -2102,7 +2102,8 @@ def task_p8_features():
     return write_json("P8_FEATURE_SNAPSHOT.json", snapshot)
 
 P9_SCHEMA_VERSION = "p9-economic-certification-v2"
-P9_CANDIDATE_BATCH_GROUPS = 40
+P9_CANDIDATE_BATCH_GROUPS = 20
+P9_BATCH_PAIR_LIMIT = 60
 P9_PROBE_CHUNK_PAIRS = 10
 P9_REQUIRED_CERT_FIELDS = [
     "exact_state_replay",
@@ -2277,6 +2278,7 @@ def task_p9_economics():
     candidates = _p9_candidate_rows()
     progress = load_json(P9_PROGRESS_STATE, {})
     processed = set(str(x).lower() for x in progress.get("processed_pairs", []))
+    persisted_observations = progress.get("observations", {}) if isinstance(progress.get("observations", {}), dict) else {}
     selected_candidates = candidates[:]
     all_pairs = sorted({
         str(v.get("pair")).lower()
@@ -2288,26 +2290,37 @@ def task_p9_economics():
 
     pool = _p9_load_rpc()
     endpoint_ids, endpoint_diagnostics = _p9_select_endpoints(pool)
-    batch_candidates = [
-        candidate for candidate in selected_candidates
-        if any(str(v.get("pair")).lower() in remaining for v in candidate.get("venues", []))
-    ][:P9_CANDIDATE_BATCH_GROUPS]
+    batch_candidates = []
+    batch_pairs = []
+    for candidate in selected_candidates:
+        candidate_pairs = sorted({
+            str(v.get("pair")).lower()
+            for v in candidate.get("venues", [])
+            if isinstance(v.get("pair"), str) and len(v.get("pair")) == 42
+            and str(v.get("pair")).lower() in remaining
+        })
+        if not candidate_pairs:
+            continue
+        if batch_candidates and len(batch_pairs) + len(candidate_pairs) > P9_BATCH_PAIR_LIMIT:
+            break
+        batch_candidates.append(candidate)
+        batch_pairs.extend(candidate_pairs)
+        if len(batch_candidates) >= P9_CANDIDATE_BATCH_GROUPS or len(batch_pairs) >= P9_BATCH_PAIR_LIMIT:
+            break
 
-    batch_pairs = sorted({
-        str(v.get("pair")).lower()
-        for candidate in batch_candidates
-        for v in candidate.get("venues", [])
-        if isinstance(v.get("pair"), str) and len(v.get("pair")) == 42
-    })
+    batch_pairs = sorted(set(batch_pairs))
     observed = _p9_probe_pairs(pool, endpoint_ids, batch_pairs) if endpoint_ids else {}
+    merged_observations = dict(persisted_observations)
+    for address, rows in observed.items():
+        merged_observations[address] = rows
 
     ledger = []
     for candidate in selected_candidates:
         surfaces = []
         for venue in candidate.get("venues", []):
             address = str(venue.get("pair", "")).lower()
-            if address in observed:
-                surfaces.extend(observed[address])
+            if address in merged_observations:
+                surfaces.extend(merged_observations[address])
         cert = _p9_exact_requirements(surfaces)
         ledger.append({
             "pair_key": candidate["pair_key"],
@@ -2342,6 +2355,7 @@ def task_p9_economics():
         "candidate_count": len(candidates),
         "pair_addresses_total": len(all_pairs),
         "processed_pairs_count": len(newly_processed),
+        "observations_persisted": len(merged_observations),
         "batch_groups": len(batch_candidates),
         "batch_pair_count": len(batch_pairs),
         "exactly_certified_count": exact,
@@ -2383,6 +2397,7 @@ def task_p9_economics():
         "schema": P9_SCHEMA_VERSION,
         "fingerprint": fingerprint,
         "processed_pairs": sorted(newly_processed),
+        "observations": merged_observations,
         "stable_runs": stable_runs,
         "ledger_complete": complete,
         "updated_at": now(),

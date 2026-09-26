@@ -916,5 +916,15 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn('"P9":"p9-economic-certification-v2"', source)
 
 
+
+
+    def test_p9_capability_batch_is_bounded_and_persisted(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn("P9_BATCH_PAIR_LIMIT = 60", worker)
+        self.assertIn("persisted_observations", worker)
+        self.assertIn("merged_observations", worker)
+        self.assertIn('"observations": merged_observations', worker)
+
+
 if __name__ == "__main__":
     unittest.main()
