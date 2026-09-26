@@ -497,7 +497,9 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
 
     def test_p3_revision_resets_stale_cooldown(self):
         source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
-        self.assertIn('TASK_REVISIONS={"P3":"p3-multisource-closure-v1","P4":"p4-parallel-endpoint-discovery-v3"}', source)
+        self.assertIn('"P3":"p3-multisource-closure-v1"', source)
+        self.assertIn('"P4":"p4-parallel-endpoint-discovery-v3"', source)
+        self.assertIn('"P5":"p5-parallel-closure-v1"', source)
         self.assertIn("or (revision and ts.get('revision') != revision)", source)
         self.assertIn("ts['revision']=revision", source)
 
@@ -514,6 +516,10 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn('if not checks[2][1]:', source)
         self.assertIn('if int(load_json(p6,{}).get("pair_nodes",0)) <= 0:', source)
 
+    def test_p5_parallel_closure_revision_is_registered(self):
+        source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
+        self.assertIn('"P5":"p5-parallel-closure-v1"', source)
+
     def test_pair_snapshot_deduplicates_pair_addresses(self):
         source = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn('by_address={str(x.get("pairAddress","")).lower():x for x in existing_pairs if x.get("pairAddress")}', source)
@@ -522,7 +528,10 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
     def test_jsonl_recovery_and_real_newlines_are_present(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn('for chunk in line.split("\\\\n"):', worker)
-        self.assertIn('json.dumps(x,sort_keys=True)+"\\n"', worker)
+        self.assertTrue(
+            'json.dumps(row, sort_keys=True) + "\\n"' in worker
+            or 'json.dumps(x,sort_keys=True)+"\\n"' in worker
+        )
 
     def test_polygon_seed_manifest_and_pair_expansion_are_present(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
