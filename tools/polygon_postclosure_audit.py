@@ -1,7 +1,7 @@
 import hashlib,json,re,time
 from pathlib import Path
 from urllib.request import Request,urlopen
-ROOT=Path("."); E=ROOT/"automation/evidence"; U=ROOT/"automation/universe"; P=ROOT/"chains/polygon-pos"
+AUDIT_MARKER="2026-09-26-polygon-green-verification-pass"\nROOT=Path("."); E=ROOT/"automation/evidence"; U=ROOT/"automation/universe"; P=ROOT/"chains/polygon-pos"
 def J(p): return json.loads(p.read_text())
 def records(p): return [json.loads(x) for x in p.read_text().splitlines() if x.strip()]
 def probe(src):
