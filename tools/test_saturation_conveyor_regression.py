@@ -142,6 +142,10 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("except ValueError:", worker)
         self.assertIn("rows = _p4_rpc_single_calls(pool, endpoint_id, calls, timeout=30)", worker)
 
+    def test_checkpoint_restore_ignores_failed_runs(self):
+        source = (ROOT / "tools" / "automation_state_store.py").read_text(encoding="utf-8")
+        self.assertIn('and r.get("conclusion") == "success"', source)
+
     def test_checkpoint_restore_supports_p4_fanout_workflow(self):
         source = (ROOT / "tools" / "automation_state_store.py").read_text(encoding="utf-8")
         self.assertIn('"p4-rpc-fanout.yml"', source)
