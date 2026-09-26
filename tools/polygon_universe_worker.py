@@ -428,6 +428,8 @@ P4_RPC_WORKERS = 6
 P4_ENDPOINT_SCAN_MAX = 12
 P4_CHAIN_RECOVERY_ROUNDS = 2
 P4_RECOVERY_WAIT_MAX = 60
+P4_RPC_MIN_INTERVAL = 1.0
+P4_RPC_CHUNK_TOKENS = 12
 
 
 def p4_verification_batch(candidates, verification_state, batch_size=P4_VERIFY_BATCH_SIZE):
@@ -525,9 +527,9 @@ def _p4_endpoint_probe_addresses(candidates):
     for address in candidates:
         if address not in seeds:
             seeds.append(address)
-        if len(seeds) >= 2:
+        if len(seeds) >= 1:
             break
-    return seeds[:2]
+    return seeds[:1]
 
 
 def _p4_endpoint_semantic_probe(pool, endpoint_id, addresses):
@@ -672,7 +674,7 @@ def _p4_rpc_token_verification(candidates, verification_state):
         return {"state": verification_state, "verified_count": 0, "chain_137_verified_count": 0, "identity_conflict_count": 0, "error": "RPC pool file missing", "batch": [], "cycle_complete": False}
 
     endpoints = load_rpc_endpoints(None, str(RPC_POOL))
-    pool = RpcPool(endpoints, 0.35)
+    pool = RpcPool(endpoints, P4_RPC_MIN_INTERVAL)
     chain_ok, chain_probe = _p4_discover_chain_endpoints(pool)
 
     batch = p4_verification_batch(candidates, verification_state)
@@ -685,21 +687,25 @@ def _p4_rpc_token_verification(candidates, verification_state):
     candidate_map = {address: {} for address in batch}
 
     def run_endpoint_batch(eid):
-        calls = []
-        for address in batch:
-            calls.append((f"p4:{eid}:{address}:code", "eth_getCode", [address, "latest"]))
-            calls.append((f"p4:{eid}:{address}:decimals", "eth_call", [{"to": address, "data": "0x313ce567"}, "latest"]))
-            calls.append((f"p4:{eid}:{address}:supply", "eth_call", [{"to": address, "data": "0x18160ddd"}, "latest"]))
+        merged_rows = {}
         try:
-            try:
-                _, rows = _p4_rpc_batch_endpoint(pool, eid, calls, timeout=30)
-            except ValueError as exc:
-                rows = _p4_rpc_single_calls(pool, eid, calls, timeout=30)
-                if not rows:
-                    raise exc
-            return eid, True, rows, ""
+            for offset in range(0, len(batch), P4_RPC_CHUNK_TOKENS):
+                chunk = batch[offset:offset + P4_RPC_CHUNK_TOKENS]
+                calls = []
+                for address in chunk:
+                    calls.append((f"p4:{eid}:{address}:code", "eth_getCode", [address, "latest"]))
+                    calls.append((f"p4:{eid}:{address}:decimals", "eth_call", [{"to": address, "data": "0x313ce567"}, "latest"]))
+                    calls.append((f"p4:{eid}:{address}:supply", "eth_call", [{"to": address, "data": "0x18160ddd"}, "latest"]))
+                try:
+                    _, rows = _p4_rpc_batch_endpoint(pool, eid, calls, timeout=30)
+                except ValueError as exc:
+                    rows = _p4_rpc_single_calls(pool, eid, calls, timeout=30)
+                    if not rows:
+                        raise exc
+                merged_rows.update(rows)
+            return eid, True, merged_rows, ""
         except Exception as exc:
-            return eid, False, {}, f"{type(exc).__name__}: {exc}"
+            return eid, False, merged_rows, f"{type(exc).__name__}: {exc}"
 
     worker_count = min(P4_RPC_WORKERS, len(selected_endpoints))
     with ThreadPoolExecutor(max_workers=worker_count or 1) as executor:
@@ -794,6 +800,8 @@ def _p4_rpc_token_verification(candidates, verification_state):
         "endpoint_scan_max": P4_ENDPOINT_SCAN_MAX,
         "chain_recovery_rounds": P4_CHAIN_RECOVERY_ROUNDS,
         "recovery_wait_max": P4_RECOVERY_WAIT_MAX,
+        "rpc_min_interval": P4_RPC_MIN_INTERVAL,
+        "rpc_chunk_tokens": P4_RPC_CHUNK_TOKENS,
     }
     P4_VERIFY_STATE.parent.mkdir(parents=True, exist_ok=True)
     P4_VERIFY_STATE.write_text(json.dumps(save_payload, sort_keys=True) + "\n", encoding="utf-8")
