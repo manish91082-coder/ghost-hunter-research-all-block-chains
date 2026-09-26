@@ -570,3 +570,11 @@ P7 closure certifies strategy-family coverage and matrix schema completeness, no
 - Ethereum P2 is therefore **CLOSED** under the current infrastructure/control boundary.
 - P3 is now the active critical stage. DEX/protocol discovery remains candidate/discovery evidence until explicit P3 closure predicates pass.
 - Live signing, public broadcast and real-money execution remain OFF.
+### 2026-09-26 — Ethereum P3 discovery CLOSED / P4 unlocked
+- Canonical Ethereum P3 closure certificate: `automation/evidence/ETHEREUM_P3_CLOSURE_CERTIFICATE.json`.
+- Authoritative P3 CI Run `36261835287` (run #7) completed **SUCCESS** on HEAD `4a5c393259d781d6fc6b1eadc35fb8ddd461f7e4`.
+- Artifact `10913180488` digest: `sha256:72e150a86ae9b064fb270d8463582b351c47faf40f4bf3bc395a4660eb8b9682`.
+- Independent artifact inspection: JSON parses cleanly; both samples returned HTTP 200 from DeFiLlama, DexScreener and GeckoTerminal; DEX-name overlap was 13; duplicates were 0; consecutive normalized fingerprints matched.
+- P3 is **CLOSED** only for multi-source discovery convergence. It does not verify protocol addresses, token contracts, pools, routes, liquidity, execution or profitability.
+- Ethereum next critical stage is now **P4_TOKEN_UNIVERSE**. Live signing, public broadcast and real-money execution remain OFF.
+
