@@ -55,10 +55,32 @@ class EthereumP2BootstrapTests(unittest.TestCase):
             {"endpoint_id": "b", "method": "eth_blockNumber", "classification": "SUCCESS", "raw_result": "0x65"},
             {"endpoint_id": "a", "method": "eth_getBlockByNumber", "classification": "SUCCESS", "raw_result": {"number": "0x64"}},
             {"endpoint_id": "b", "method": "eth_getBlockByNumber", "classification": "SUCCESS", "raw_result": {"number": "0x65"}},
+            {"endpoint_id": "a", "method": "eth_getCode", "classification": "SUCCESS", "raw_result": "0x6000"},
+            {"endpoint_id": "b", "method": "eth_getCode", "classification": "SUCCESS", "raw_result": "0x6000"},
+            {"endpoint_id": "a", "method": "eth_getStorageAt", "classification": "SUCCESS", "raw_result": "0x" + "00" * 32},
+            {"endpoint_id": "b", "method": "eth_getStorageAt", "classification": "SUCCESS", "raw_result": "0x" + "00" * 32},
         ]
         report = m.build_report(rows, tolerance=2, min_identity=2, min_heads=2)
         self.assertEqual(report["promotion"]["sub_gate"], "CLOSED")
         self.assertEqual(report["promotion"]["overall_ethereum_p2"], "NOT_CLOSED")
+
+    def test_capability_quorum_is_required_for_sub_gate(self):
+        m = load_module()
+        rows = [
+            {"endpoint_id": "a", "method": "eth_chainId", "classification": "SUCCESS", "raw_result": "0x1"},
+            {"endpoint_id": "b", "method": "eth_chainId", "classification": "SUCCESS", "raw_result": "0x1"},
+            {"endpoint_id": "a", "method": "eth_blockNumber", "classification": "SUCCESS", "raw_result": "0x64"},
+            {"endpoint_id": "b", "method": "eth_blockNumber", "classification": "SUCCESS", "raw_result": "0x65"},
+            {"endpoint_id": "a", "method": "eth_getBlockByNumber", "classification": "SUCCESS", "raw_result": {"number": "0x64"}},
+            {"endpoint_id": "b", "method": "eth_getBlockByNumber", "classification": "SUCCESS", "raw_result": {"number": "0x65"}},
+            {"endpoint_id": "a", "method": "eth_getCode", "classification": "SUCCESS", "raw_result": "0x6000"},
+            {"endpoint_id": "b", "method": "eth_getCode", "classification": "SUCCESS", "raw_result": "0x6000"},
+            {"endpoint_id": "a", "method": "eth_getStorageAt", "classification": "SUCCESS", "raw_result": "0x" + "00" * 32},
+        ]
+        report = m.build_report(rows, tolerance=2, min_identity=2, min_heads=2)
+        self.assertEqual(report["capability_quorum"]["eth_getCode"], ["a", "b"])
+        self.assertEqual(report["capability_quorum"]["eth_getStorageAt"], ["a"])
+        self.assertEqual(report["promotion"]["sub_gate"], "OPEN")
 
     def test_report_fails_closed_on_single_endpoint(self):
         m = load_module()
