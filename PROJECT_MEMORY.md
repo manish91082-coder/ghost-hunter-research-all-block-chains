@@ -358,3 +358,12 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - `automation/CHAIN_UNIVERSE_QUEUE.json` is now the control-plane seed for post-Polygon expansion.
 - Ethereum Mainnet (chain ID 1) is the next seeded research target; this is a queue decision, not a permanent global ranking.
 - Every future chain must independently satisfy its own P2-P11 evidence gates before being considered saturated.
+
+## 2026-09-26 — Global expansion: Ethereum bootstrap lock
+- Canonical Polygon closure remains P11 READY with 420 explicit exact-economic residual groups; these are not discarded or silently converted into profit certification.
+- The post-Polygon control plane is `automation/CHAIN_UNIVERSE_QUEUE.json`.
+- Ethereum Mainnet (chain ID 1) is now the active research candidate after candidate evidence recording.
+- The Ethereum bootstrap record intentionally distinguishes external web evidence from live/on-chain verification.
+- Current external evidence establishes 12-second protocol slots, PoS checkpoint finality, EIP-1559 gas mechanics, significant Ethereum DeFi/DEX/lending surface, and multiple candidate flash-liquidity/orderflow/routing surfaces.
+- Current Ethereum evidence does NOT establish live RPC quorum, complete pool/token census, exact contract-address matrices, current flash fees, profitability or execution readiness.
+- Future Ethereum promotion must reuse the same fail-closed P2-P11 evidence discipline used for Polygon.

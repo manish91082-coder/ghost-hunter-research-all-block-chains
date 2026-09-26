@@ -25,7 +25,7 @@
     "chain": "Ethereum Mainnet",
     "chain_id": 1,
     "classification": "EVM",
-    "status": "CANDIDATE_SEEDED",
+    "status": "RESEARCH_ACTIVE",
     "selection_basis": "Current evidence-driven expansion seed. DeFiLlama currently reports Ethereum as the largest DeFi chain by TVL among the displayed chain rankings; EIP-2228 canonicalizes Ethereum Mainnet as chain ID 1.",
     "external_sources": [
       "https://defillama.com/chains",
@@ -42,7 +42,14 @@
       "mempool/orderflow visibility",
       "gas/execution model",
       "scanner-family coverage"
-    ]
+    ],
+    "research_phase": "BOOTSTRAP_EVIDENCE",
+    "candidate_evidence_recorded": true,
+    "candidate_evidence_recorded_at": "2026-09-26T15:28:00Z",
+    "profile_path": "chains/ethereum-mainnet/CHAIN_PROFILE.md",
+    "evidence_path": "automation/evidence/ETHEREUM_CANDIDATE_SNAPSHOT.json",
+    "live_chain_verification": "NOT_YET_RUN",
+    "stage_gate": "P2_NOT_STARTED"
   },
   "queue_policy": "After Ethereum, order is recalculated from fresh evidence rather than permanently hard-coded."
 }

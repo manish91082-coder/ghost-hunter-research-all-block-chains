@@ -788,3 +788,11 @@ P9 exact economic certification: exact-state replay, venue-specific swap math, g
 - Created `automation/CHAIN_UNIVERSE_QUEUE.json` as the new global expansion control-plane artifact.
 - Polygon is marked completed; Ethereum Mainnet (chain ID 1) is seeded as the next research target.
 - Next-chain sequencing is intentionally not hard-coded permanently. Fresh external evidence must recalculate the queue after each chain closure.
+
+## 2026-09-26 — Ethereum chain bootstrap evidence recorded
+- Polygon P2-P11 closure remains intact and is not reopened.
+- Global chain queue advanced from `CANDIDATE_SEEDED` to `RESEARCH_ACTIVE` for Ethereum Mainnet (chain ID 1) after recording a candidate evidence snapshot.
+- Added `chains/ethereum-mainnet/CHAIN_PROFILE.md` preserving verified-vs-candidate boundaries.
+- Added `automation/evidence/ETHEREUM_CANDIDATE_SNAPSHOT.json` with consensus/timing, gas, RPC candidates, market-surface candidates, flash-liquidity candidates, lending candidates, MEV/orderflow, intent/aggregator surfaces and explicit unknowns.
+- No Ethereum saturation gate is closed. P2 is not started until the live RPC bootstrap verifier is implemented.
+- The next stage is read-only Ethereum P2 infrastructure verification using independent RPC quorum, deterministic freshness tolerance and evidence-preserving reconciliation.

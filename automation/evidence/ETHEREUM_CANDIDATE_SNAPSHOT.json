@@ -1,0 +1,172 @@
+{
+  "schema_version": "ethereum-candidate-v1",
+  "evidence_class": "CANDIDATE_EVIDENCE",
+  "status": "RECORDED_NOT_VERIFIED",
+  "research_timestamp": "2026-09-26T15:28:00Z",
+  "source_commit": "351be1f671aa08d89f5dafb32bb0a6044749633d",
+  "chain": {
+    "name": "Ethereum Mainnet",
+    "chain_id": 1,
+    "classification": "EVM",
+    "native_asset": "ETH",
+    "identity_source": "https://eips.ethereum.org/EIPS/eip-2228"
+  },
+  "consensus_and_timing": {
+    "slot_seconds": 12,
+    "epoch_slots": 32,
+    "epoch_minutes": 6.4,
+    "finality_model": "Proof-of-Stake with checkpoint finality via Casper FFG; finalized checkpoints require >=2/3 of staked ETH voting and a later justified checkpoint.",
+    "evidence_urls": [
+      "https://ethereum.org/developers/docs/blocks/",
+      "https://ethereum.org/developers/docs/consensus-mechanisms/pos/",
+      "https://ethereum.org/developers/docs/consensus-mechanisms/pos/block-proposal/"
+    ]
+  },
+  "gas_and_execution": {
+    "model": "EIP-1559",
+    "fee_components": [
+      "base_fee_per_gas",
+      "priority_fee_per_gas"
+    ],
+    "base_fee_burned": true,
+    "documented_block_target_gas": 30000000,
+    "documented_block_limit_gas": 60000000,
+    "evidence_urls": [
+      "https://eips.ethereum.org/EIPS/eip-1559",
+      "https://ethereum.org/developers/docs/blocks/"
+    ],
+    "exact_current_values": "Require live RPC/header observation before execution modelling."
+  },
+  "rpc_candidate_universe": [
+    {
+      "provider": "Alchemy",
+      "access_model": "Public Ethereum endpoint advertised with no API key; keyed HTTP/WSS endpoints also available.",
+      "evidence_url": "https://www.alchemy.com/rpc/ethereum",
+      "verification": "candidate_only"
+    },
+    {
+      "provider": "QuickNode",
+      "access_model": "Ethereum HTTP and WSS endpoints; account-created endpoint model.",
+      "evidence_url": "https://www.quicknode.com/docs/ethereum/endpoints",
+      "verification": "candidate_only"
+    },
+    {
+      "provider": "Native Ethereum JSON-RPC ecosystem",
+      "access_model": "Client-standard JSON-RPC methods; specific free endpoints must be tested independently.",
+      "evidence_url": "https://ethereum.org/developers/docs/apis/json-rpc/",
+      "verification": "candidate_only"
+    }
+  ],
+  "market_surface": {
+    "web_snapshot_date": "2026-09-26",
+    "metrics": {
+      "defi_tvl_usd_approx": 53501000000,
+      "dex_volume_24h_usd_approx": 1481000000,
+      "lending_tvl_ethereum_usd_approx": 30709000000,
+      "active_loans_usd_approx": 19721000000
+    },
+    "observed_dex_surface_candidates": [
+      "Uniswap",
+      "Fluid"
+    ],
+    "observed_aggregator_surface_candidates": [
+      "0x Protocol",
+      "CoWSwap",
+      "KyberSwap",
+      "Bebop",
+      "1inch",
+      "Velora"
+    ],
+    "evidence_urls": [
+      "https://defillama.com/chain/ethereum",
+      "https://defillama.com/dexs/chain/ethereum",
+      "https://defillama.com/dex-aggregators/chain/ethereum"
+    ],
+    "boundary": "These are current web-observation candidates, not a complete DEX/pool census."
+  },
+  "flash_liquidity": {
+    "candidates": [
+      {
+        "protocol": "Aave V3",
+        "capability": "Atomic flashLoan/flashLoanSimple",
+        "fee_note": "Official documentation says flash-loan premium is governance-configurable and was initialized at 0.05%; current premium must be read from chain before certification.",
+        "evidence_url": "https://www.aave.com/docs/aave-v3/guides/flash-loans"
+      },
+      {
+        "protocol": "Balancer Vault",
+        "capability": "Vault-level flashLoan over consolidated token balances",
+        "fee_note": "Protocol fee is applied and must be read from current contract state.",
+        "evidence_url": "https://github.com/balancer/docs-developers/blob/main/resources/flash-loans.md"
+      },
+      {
+        "protocol": "Uniswap V2",
+        "capability": "Atomic flash swaps",
+        "fee_note": "Historical/implementation-specific fee treatment must be verified per deployed pool and current configuration.",
+        "evidence_url": "https://docs.uniswap.org/whitepaper.pdf"
+      }
+    ]
+  },
+  "lending_and_liquidation": {
+    "observed_protocol_candidates": [
+      "Aave",
+      "SparkLend",
+      "Morpho",
+      "Sky"
+    ],
+    "web_snapshot_date": "2026-09-26",
+    "evidence_urls": [
+      "https://defillama.com/protocols/lending/ethereum",
+      "https://defillama.com/chain/ethereum",
+      "https://defillama.com/protocol/morpho?borrowed=true"
+    ],
+    "boundary": "Liquidation contract/address matrices and current liquidation parameters remain to be verified on-chain."
+  },
+  "orderflow_and_mev": {
+    "documented_surfaces": [
+      "public transaction propagation/mempool",
+      "permissioned/private transaction paths",
+      "Proposer-Builder Separation (PBS)",
+      "builder/validator orderflow"
+    ],
+    "evidence_url": "https://ethereum.org/developers/docs/mev",
+    "verification": "architecture-level only; endpoint/provider reachability and latency are not yet measured"
+  },
+  "intent_rfq_solver": {
+    "candidate_surfaces": [
+      {
+        "protocol": "CoW Protocol",
+        "mechanism": "permissionless fair combinatorial batch auctions",
+        "evidence_url": "https://docs.cow.fi/"
+      },
+      {
+        "protocol": "0x / KyberSwap / Bebop / 1inch / Velora",
+        "mechanism": "aggregator/routing surface observed in current Ethereum DEX-aggregator data",
+        "evidence_url": "https://defillama.com/dex-aggregators/chain/ethereum"
+      }
+    ],
+    "boundary": "Exact RFQ, intent, solver, filler and settlement semantics require protocol-specific verification."
+  },
+  "cross_chain": {
+    "status": "DISCOVERY_PENDING",
+    "boundary": "No bridge/solver/address is promoted from this bootstrap snapshot."
+  },
+  "strategies": {
+    "research_candidates": [
+      "atomic multi-venue DEX arbitrage",
+      "flash-liquidity-assisted arbitrage",
+      "liquidation capture",
+      "cross-venue/aggregator routing arbitrage",
+      "MEV-aware backrun/orderflow research",
+      "intent/RFQ/solver opportunity research"
+    ],
+    "execution_authorization": "none"
+  },
+  "verification_state": {
+    "live_rpc_quorum": "NOT_RUN",
+    "live_address_census": "NOT_RUN",
+    "pool_census": "NOT_RUN",
+    "exact_economic_certification": "NOT_RUN",
+    "stage_gate": "P2_NOT_STARTED",
+    "saturation_status": "CANDIDATE_ONLY"
+  }
+}

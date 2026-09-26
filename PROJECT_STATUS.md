@@ -521,3 +521,16 @@ P7 closure certifies strategy-family coverage and matrix schema completeness, no
 - Global chain expansion queue is now seeded at `automation/CHAIN_UNIVERSE_QUEUE.json`.
 - Next research target: **Ethereum Mainnet (chain ID 1)**, marked CANDIDATE_SEEDED rather than permanently ranked.
 - The permanent chain order remains evidence-driven and recalculated from fresh research.
+
+## 2026-09-26 — Ethereum global-expansion bootstrap started
+- Verified live canonical main HEAD before this atomic write: `351be1f671aa08d89f5dafb32bb0a6044749633d`.
+- Polygon remains P11 **READY**, census lock **true**, next-chain unlock **true**.
+- Ethereum Mainnet (chain ID 1) is now **RESEARCH_ACTIVE** in `automation/CHAIN_UNIVERSE_QUEUE.json` after candidate evidence was recorded.
+- Candidate chain profile: `chains/ethereum-mainnet/CHAIN_PROFILE.md`.
+- Machine-readable candidate evidence: `automation/evidence/ETHEREUM_CANDIDATE_SNAPSHOT.json`.
+- Ethereum live RPC verification has **not** been run yet.
+- No Ethereum protocol/address/pool/route has been promoted to VERIFIED.
+- Current exact-HEAD CI state: no GitHub Actions runs or status checks are attached to `351be1f671aa08d89f5dafb32bb0a6044749633d`; therefore no current-HEAD GREEN claim is made.
+- Latest successful saturation conveyor run remains Run 36250240579 on older commit `5bcd7e3f56dee3e12673b6f01f9423e4bd2bf45c`; its conveyor job completed successfully and produced evidence artifacts. It is historical evidence, not current-HEAD CI validation.
+- Live signing, public broadcast and real-money deployment remain OFF.
+- Next atomic action: implement the Ethereum P2 bootstrap verifier contract and candidate RPC capability matrix, then run only read-only evidence probes.
