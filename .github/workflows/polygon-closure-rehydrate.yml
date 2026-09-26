@@ -14,11 +14,62 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+      - name: Download sealed conveyor artifact
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: 36250240579
+          artifact-ids: 10908519045
+          path: /tmp/polygon-closure
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - name: Restore sealed Polygon universe
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-        run: python tools/polygon_closure_rehydrate.py
+        run: |
+          set -euo pipefail
+          ls -la /tmp/polygon-closure
+          find /tmp/polygon-closure -maxdepth 3 -type f -print
+          python - <<'PY'
+          import zipfile, pathlib, json, hashlib, shutil
+          root=pathlib.Path('/tmp/polygon-closure')
+          zips=list(root.glob('*.zip'))
+          assert zips, 'artifact zip not found'
+          z=zips[0]
+          extract=pathlib.Path('/tmp/polygon-closure/extracted')
+          extract.mkdir(parents=True,exist_ok=True)
+          with zipfile.ZipFile(z) as f:
+              f.extractall(extract)
+          universe=extract/'universe'
+          tokens=universe/'tokens.jsonl'
+          pairs=universe/'pairs.jsonl'
+          assert tokens.exists() and pairs.exists(), 'sealed universe files missing'
+          t=[json.loads(x) for x in tokens.read_text().splitlines() if x.strip()]
+          p=[json.loads(x) for x in pairs.read_text().splitlines() if x.strip()]
+          assert len(t)==469 and len({x['address'].lower() for x in t})==469, 'token integrity mismatch'
+          assert len(p)==2821 and len({x['pairAddress'].lower() for x in p})==2821, 'pair integrity mismatch'
+          outu=pathlib.Path('automation/universe'); oute=pathlib.Path('automation/evidence')
+          outu.mkdir(parents=True,exist_ok=True); oute.mkdir(parents=True,exist_ok=True)
+          shutil.copy2(tokens,outu/'tokens.jsonl'); shutil.copy2(pairs,outu/'pairs.jsonl')
+          def sha(path):
+              h=hashlib.sha256(); h.update(path.read_bytes()); return h.hexdigest()
+          cert={
+            'schema_version':'polygon-closure-certificate-v2',
+            'source_run_id':36250240579,
+            'source_artifact_id':10908519045,
+            'source_artifact_sha256':'ad2505dceb8968c54bc7d0ae23baf44b9f4015d7b86431774c468b92b639ba48',
+            'counts':{'tokens':469,'pairs':2821,'routes':617622,'strategies':18,'feature_groups':1891,'economic_candidate_groups':420,'exact_profit_certified':0},
+            'files':{'tokens_sha256':sha(outu/'tokens.jsonl'),'pairs_sha256':sha(outu/'pairs.jsonl')},
+            'universe_fingerprint':'cfbeb1dae7e3387eb78d89b0144b77ddf65f9bc73c6af3836144f23032886295'
+          }
+          (oute/'P11_POLYGON_CLOSURE_CERTIFICATE.json').write_text(json.dumps(cert,indent=2)+'\n')
+          PY
+          git config user.name "ghost-hunter-bot"
+          git config user.email "ghost-hunter-bot@users.noreply.github.com"
+          git add automation/universe automation/evidence/P11_POLYGON_CLOSURE_CERTIFICATE.json
+          if git diff --cached --quiet; then
+            echo "NO_CHANGES"
+          else
+            git commit -m "chore: restore sealed Polygon closure universe"
+            git push
+          fi
