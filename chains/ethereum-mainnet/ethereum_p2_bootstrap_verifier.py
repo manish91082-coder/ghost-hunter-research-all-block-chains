@@ -46,6 +46,7 @@ DENIED_METHODS = {
 
 ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"
 ZERO_SLOT = "0x" + "00" * 32
+REQUIRED_CAPABILITY_METHODS = ("eth_getBlockByNumber", "eth_getCode", "eth_getStorageAt")
 
 
 def utc_now():
@@ -302,7 +303,13 @@ def build_report(rows, tolerance, min_identity, min_heads):
     quorum = best_head_quorum(heads, min_heads, tolerance)
     chain_id_values = sorted(set(identity.values()))
 
-    core_methods = {"eth_chainId", "eth_blockNumber", "eth_getBlockByNumber"}
+    core_methods = {
+        "eth_chainId",
+        "eth_blockNumber",
+        "eth_getBlockByNumber",
+        "eth_getCode",
+        "eth_getStorageAt",
+    }
     core_matrix = {}
     for method in sorted(core_methods):
         core_matrix[method] = {
@@ -316,6 +323,23 @@ def build_report(rows, tolerance, min_identity, min_heads):
 
     exact_identity_quorum = len(identity) >= min_identity and chain_id_values == [CHAIN_ID]
     head_quorum = len(quorum) >= min_heads
+    capability_quorum = {
+        method: sorted(
+            endpoint_id
+            for endpoint_id in eligible
+            if any(
+                row["endpoint_id"] == endpoint_id
+                and row["method"] == method
+                and row["classification"] == "SUCCESS"
+                for row in rows
+            )
+        )
+        for method in REQUIRED_CAPABILITY_METHODS
+    }
+    capabilities_ready = all(
+        len(endpoints) >= min_heads
+        for endpoints in capability_quorum.values()
+    )
 
     fingerprint_input = {
         "chain_ids": identity,
@@ -358,10 +382,15 @@ def build_report(rows, tolerance, min_identity, min_heads):
         "endpoint_count": len(by_endpoint),
         "eligible_chain1_endpoint_count": len(eligible),
         "deterministic_fingerprint": sha256(fingerprint_input),
+        "capability_quorum": capability_quorum,
         "promotion": {
-            "sub_gate": "CLOSED" if exact_identity_quorum and head_quorum else "OPEN",
+            "sub_gate": "CLOSED" if exact_identity_quorum and head_quorum and capabilities_ready else "OPEN",
             "overall_ethereum_p2": "NOT_CLOSED",
-            "reason": "RPC identity/head bootstrap only; contract/protocol/pool evidence is still required.",
+            "reason": (
+                "RPC identity/head/capability bootstrap closed; protocol/address/pool evidence is still required."
+                if exact_identity_quorum and head_quorum and capabilities_ready
+                else "Ethereum P2 bootstrap failed closed: identity/head/capability quorum incomplete."
+            ),
         },
         "diagnostics": rows,
     }
