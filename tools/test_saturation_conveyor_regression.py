@@ -146,7 +146,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn("json_rpc_batch", worker)
         self.assertIn("def _p4_rpc_batch_endpoint", worker)
-        self.assertIn("for eid in chain_ok[:2]", worker)
+        self.assertIn("for eid in selected_endpoints", worker)
         self.assertIn('"transport": "json_rpc_batch"', worker)
 
 
