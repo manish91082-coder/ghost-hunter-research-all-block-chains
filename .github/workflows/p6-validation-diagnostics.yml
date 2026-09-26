@@ -1,0 +1,61 @@
+name: P6 Validation Diagnostics
+
+on:
+  push:
+    paths:
+      - 'automation/validation_debug.trigger'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnostics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout canonical repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run each validation command independently
+        run: |
+          set +e
+          : > validation_results.txt
+          run_check() {
+            label="$1"
+            shift
+            echo "===== $label =====" | tee -a validation_results.txt
+            echo "CMD: $*" | tee -a validation_results.txt
+            "$@" >> validation_results.txt 2>&1
+            rc=$?
+            echo "RETURN_CODE=$rc" | tee -a validation_results.txt
+            echo "" | tee -a validation_results.txt
+          }
+
+          run_check "py_compile saturation_conveyor" python -m py_compile tools/saturation_conveyor.py
+          run_check "py_compile polygon_universe_worker" python -m py_compile tools/polygon_universe_worker.py
+          run_check "py_compile automation_state_store" python -m py_compile tools/automation_state_store.py
+          run_check "py_compile p4_rpc_fanout" python -m py_compile tools/p4_rpc_fanout.py
+          run_check "py_compile p4_fanout_aggregate" python -m py_compile tools/p4_fanout_aggregate.py
+          run_check "p2 regression" python chains/polygon-pos/test_p2_control_function_regression.py
+          run_check "saturation regression" python tools/test_saturation_conveyor_regression.py
+          run_check "p4 fanout regression" python tools/test_p4_fanout_regression.py
+
+          echo "===== SUMMARY =====" | tee -a validation_results.txt
+          grep -E '^RETURN_CODE=' validation_results.txt | tee -a validation_results.txt
+          if grep -q '^RETURN_CODE=[1-9]' validation_results.txt; then
+            exit 1
+          fi
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p6-validation-diagnostics-${{ github.run_id }}
+          path: validation_results.txt
+          retention-days: 7
+          if-no-files-found: error
