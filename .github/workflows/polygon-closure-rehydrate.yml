@@ -28,19 +28,10 @@ jobs:
       - name: Restore sealed Polygon universe
         run: |
           set -euo pipefail
-          ls -la /tmp/polygon-closure
-          find /tmp/polygon-closure -maxdepth 3 -type f -print
           python - <<'PY'
-          import zipfile, pathlib, json, hashlib, shutil
-          root=pathlib.Path('/tmp/polygon-closure')
-          zips=list(root.glob('*.zip'))
-          assert zips, 'artifact zip not found'
-          z=zips[0]
-          extract=pathlib.Path('/tmp/polygon-closure/extracted')
-          extract.mkdir(parents=True,exist_ok=True)
-          with zipfile.ZipFile(z) as f:
-              f.extractall(extract)
-          universe=extract/'universe'
+          import pathlib, json, hashlib, shutil
+          root=pathlib.Path('/tmp/polygon-closure/saturation-conveyor-state')
+          universe=root/'universe'
           tokens=universe/'tokens.jsonl'
           pairs=universe/'pairs.jsonl'
           assert tokens.exists() and pairs.exists(), 'sealed universe files missing'
