@@ -397,3 +397,12 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - The closure certificate is `automation/evidence/ETHEREUM_P2_CLOSURE_CERTIFICATE.json`.
 - Boundary remains strict: P3-P11 are not closed, no protocol/pool/route/economic surface is promoted from discovery alone, and live execution remains disabled.
 - Ethereum critical stage is now **P3**.
+## 2026-09-26 — Ethereum P3 closure memory lock
+- Ethereum Mainnet P3 is canonically **CLOSED**.
+- Authoritative CI evidence: Run `36261835287` / run #7 / HEAD `4a5c393259d781d6fc6b1eadc35fb8ddd461f7e4`.
+- Artifact: `10913180488`, digest `sha256:72e150a86ae9b064fb270d8463582b351c47faf40f4bf3bc395a4660eb8b9682`.
+- P3 closure predicate passed: three required sources reachable with HTTP 200 in both samples, cross-source DEX overlap 13, zero duplicates, consecutive normalized fingerprints equal, and artifact JSON independently parseable.
+- P3 fingerprint: `533bf32d1f3cdac94f122b2017905b584758c2ddd07d19c51cf151b3b77b7a19`.
+- P3 remains discovery evidence only. No protocol/address/pool/token/route/liquidity/profitability object is promoted to VERIFIED from this gate.
+- Main research gate advances to **P4_TOKEN_UNIVERSE**. Polygon remains sealed and is not reopened.
+
