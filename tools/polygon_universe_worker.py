@@ -1942,7 +1942,7 @@ def _p8_group_feature(pair_key, rows, p6):
             },
             "route_recurrence": {
                 "status": "NOT_CLASSIFIED",
-                "route_graph_fingerprint": p6.get("graph_fingerprint"),
+                "route_graph_fingerprint": p6.get("graph_fingerprint") or p6.get("fingerprint"),
             },
             "opportunity_persistence": {
                 "status": "NOT_AVAILABLE",

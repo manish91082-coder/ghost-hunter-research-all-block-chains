@@ -862,5 +862,12 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("import hashlib, json, math, os, time", worker)
 
 
+
+
+    def test_p8_route_recurrence_uses_p6_closure_fingerprint_fallback(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        self.assertIn('p6.get("graph_fingerprint") or p6.get("fingerprint")', worker)
+
+
 if __name__ == "__main__":
     unittest.main()
