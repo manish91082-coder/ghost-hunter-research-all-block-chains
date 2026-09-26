@@ -537,7 +537,10 @@ def _p4_endpoint_semantic_probe(pool, endpoint_id, addresses):
         calls.append((f"p4:probe:{endpoint_id}:{address}:decimals", "eth_call", [{"to": address, "data": "0x313ce567"}, "latest"]))
         calls.append((f"p4:probe:{endpoint_id}:{address}:supply", "eth_call", [{"to": address, "data": "0x18160ddd"}, "latest"]))
 
-    _, rows = _p4_rpc_batch_endpoint(pool, endpoint_id, calls, timeout=30)
+    try:
+        _, rows = _p4_rpc_batch_endpoint(pool, endpoint_id, calls, timeout=30)
+    except ValueError:
+        rows = _p4_rpc_single_calls(pool, endpoint_id, calls, timeout=30)
     usable = True
     for address in addresses:
         code = rows.get(f"p4:probe:{endpoint_id}:{address}:code", {}).get("result")

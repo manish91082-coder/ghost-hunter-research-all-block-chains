@@ -137,6 +137,11 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
         self.assertIn("as_completed", worker)
         self.assertIn('"rpc_workers": P4_RPC_WORKERS', worker)
 
+    def test_p4_capability_probe_falls_back_to_single_rpc_calls(self):
+        worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
+        needle = 'except ValueError:\\n        rows = _p4_rpc_single_calls(pool, endpoint_id, calls, timeout=30)'
+        self.assertIn(needle, worker)
+
     def test_p4_has_bounded_429_recovery_and_batch_fallback(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn("P4_CHAIN_RECOVERY_ROUNDS = 2", worker)
