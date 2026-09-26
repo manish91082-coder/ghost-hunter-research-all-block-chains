@@ -1,0 +1,68 @@
+name: Polygon Static Identity Fast
+on:
+  push:
+    paths:
+      - ".github/workflows/polygon-static-identity-fast.yml"
+      - "tools/polygon_static_identity_fast.py"
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: polygon-static-identity-fast
+  cancel-in-progress: false
+jobs:
+  identity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build fast static identity layer
+        run: |
+          set -euo pipefail
+          python -m py_compile tools/polygon_static_identity_fast.py
+          python tools/polygon_static_identity_fast.py
+
+      - name: Validate terminal static identity gate
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("chains/polygon-pos")
+          b=json.loads((p/"STATIC_ONCHAIN_BINDING.json").read_text())
+          assert b["chain_id"]==137
+          assert b["status"]=="GREEN",b
+          assert b["tokens"]==b["token_primary_bound"]==469,b
+          assert b["pairs"]==b["pair_primary_bound"]==2821,b
+          assert b["dex_namespaces"]==b["dex_cross_rpc_verified"]==67,b
+          m=json.loads((p/"STATIC_SATURATION_MANIFEST.json").read_text())
+          assert m["status"]=="STATIC_MARKET_UNIVERSE_GREEN_WITH_PRIMARY_BINDING_AND_DEX_CROSSCHECK",m
+          print("POLYGON_STATIC_IDENTITY_TERMINAL_GREEN")
+          print(json.dumps({
+            "primary_rpc_endpoints":b["primary_rpc_endpoints"],
+            "primary_rpc_blocks":b["primary_rpc_blocks"],
+            "tokens":b["tokens"],
+            "pairs":b["pairs"],
+            "pair_token_binding_verified":b["pair_token_binding_verified"],
+            "dex_namespaces":b["dex_namespaces"],
+            "dex_cross_rpc_verified":b["dex_cross_rpc_verified"]
+          },sort_keys=True))
+          PY
+
+      - name: Commit canonical static identity layer
+        run: |
+          set -euo pipefail
+          git config user.name "ghost-hunter-static-bot"
+          git config user.email "ghost-hunter-static-bot@users.noreply.github.com"
+          git add chains/polygon-pos tools/polygon_static_identity_fast.py .github/workflows/polygon-static-identity-fast.yml
+          if git diff --cached --quiet; then
+            echo "NO_CHANGES"
+          else
+            git commit -m "feat: close Polygon static identity saturation"
+            git push origin HEAD:main
+          fi
