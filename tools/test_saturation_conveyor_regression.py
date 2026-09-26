@@ -132,7 +132,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
     def test_p4_parallel_rpc_and_larger_batch_are_locked(self):
         worker = (ROOT / "tools" / "polygon_universe_worker.py").read_text(encoding="utf-8")
         self.assertIn("P4_VERIFY_BATCH_SIZE = 48", worker)
-        self.assertIn("P4_RPC_WORKERS = 3", worker)
+        self.assertIn("P4_RPC_WORKERS = 6", worker)
         self.assertIn("ThreadPoolExecutor", worker)
         self.assertIn("as_completed", worker)
         self.assertIn('"rpc_workers": P4_RPC_WORKERS', worker)
@@ -377,7 +377,7 @@ class SaturationConveyorRegressionTests(unittest.TestCase):
 
     def test_p3_revision_resets_stale_cooldown(self):
         source = (ROOT / "tools" / "saturation_conveyor.py").read_text(encoding="utf-8")
-        self.assertIn('TASK_REVISIONS={"P3":"p3-multisource-closure-v1","P4":"p4-batched-verification-v2"}', source)
+        self.assertIn('TASK_REVISIONS={"P3":"p3-multisource-closure-v1","P4":"p4-parallel-endpoint-discovery-v3"}', source)
         self.assertIn("or (revision and ts.get('revision') != revision)", source)
         self.assertIn("ts['revision']=revision", source)
 
