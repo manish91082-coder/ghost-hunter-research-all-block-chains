@@ -1,0 +1,40 @@
+{
+  "schema_version": "ethereum-p2-system-targets-v1",
+  "chain": {
+    "name": "Ethereum Mainnet",
+    "chain_id": 1
+  },
+  "safety": {
+    "read_only": true,
+    "signing": false,
+    "broadcast": false,
+    "real_money": false
+  },
+  "system_caller": "0xfffffffffffffffffffffffffffffffffffffffe",
+  "targets": [
+    {
+      "id": "deposit_contract",
+      "address": "0x00000000219ab540356cBB839Cbe05303d7705Fa",
+      "role": "Beacon validator deposit contract / EIP-6110",
+      "source": "https://eips.ethereum.org/EIPS/eip-6110"
+    },
+    {
+      "id": "beacon_roots",
+      "address": "0x000F3df6D732807Ef1319fB7B8bB8522d0Beac02",
+      "role": "Beacon block roots contract / EIP-4788",
+      "source": "https://eips.ethereum.org/EIPS/eip-4788"
+    },
+    {
+      "id": "withdrawal_requests",
+      "address": "0x00000961Ef480Eb55e80D19ad83579A64c007002",
+      "role": "Execution-layer triggerable withdrawal request contract / EIP-7002",
+      "source": "https://eips.ethereum.org/EIPS/eip-7002"
+    },
+    {
+      "id": "consolidation_requests",
+      "address": "0x0000BBdDc7CE488642fb579F8B00f3a590007251",
+      "role": "Validator consolidation request contract / EIP-7251",
+      "source": "https://eips.ethereum.org/EIPS/eip-7251"
+    }
+  ]
+}
