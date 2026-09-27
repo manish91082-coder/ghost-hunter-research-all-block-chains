@@ -63,3 +63,14 @@ Layer 1 = taxonomy + evidence discipline. Next layer = exact venue math and Poly
 - Balancer official protocol documentation/whitepaper for non-constant-product AMM architecture.
 ### Layer-2 conclusion
 The fundamental object is a profit surface P(Q,S,O). The next layer must map this mathematics venue-by-venue on Polygon, preserving protocol-specific fee, callback, liquidity and settlement rules.
+
+## 2026-09-27 — Polygon Flash-Loan Profit Research Layer 3A: Uniswap V2
+### Findings
+- Official Uniswap documentation currently lists Polygon V2 Factory and Router02 deployments; these remain deployment evidence until live chain-137 verification.
+- The Pair contract, not Router02, is the economic enforcement layer.
+- Standard V2 exact-input math uses the 997/1000 fee-adjustment model.
+- Flash swaps enforce repayment through the pair's adjusted-balance invariant after callback execution.
+- Optimal arbitrage size must be solved against the composed route function, not inferred from displayed spot spread.
+- Fee-on-transfer, rebasing and unknown token behavior can invalidate standard V2 formulas and therefore block exact profitability certification.
+### Layer-3A conclusion
+Uniswap V2 arbitrage is a constrained state-transition optimization problem. Next layer: QuickSwap V2 protocol-native comparison.
