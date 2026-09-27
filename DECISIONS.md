@@ -37,3 +37,22 @@ Reason: Prevent stale, copied, guessed or fictitious data from entering the exec
 Date: 2026-09-25
 Decision: Research may rank positive-EV candidates only after exact state, all known costs, execution constraints and simulation gates are satisfied. No external-market outcome is represented as mathematically guaranteed profit.
 Reason: Avoid confusing deterministic calculation under assumptions with guaranteed realized profit.
+## D-011 — Post-Saturation Polygon Economic Deep-Dive
+Date: 2026-09-27
+Decision: Polygon P2-P11 census gates remain sealed; exact economic/profit research proceeds as a separate post-saturation track using the sealed universe as the bounded search space.
+Reason: Census completeness and profitability certification are different problems and must not be conflated.
+
+## D-012 — Three-Level Profit Certification
+Date: 2026-09-27
+Decision: Profit claims are separated into theoretical positive, executable positive and realized positive. Only confirmed on-chain realized PnL is called realized profit.
+Reason: Prevent theoretical spread and simulation output from being mistaken for actual economic outcome.
+
+## D-013 — No-Code Economic Research Lock
+Date: 2026-09-27
+Decision: The Polygon profit research track contains no implementation/code work until the user explicitly authorizes coding. Technical requirements may be documented conceptually.
+Reason: Keep this stage focused on mechanism discovery, evidence and exact economics.
+
+## D-014 — Authorized Profit Universe
+Date: 2026-09-27
+Decision: Oracle manipulation, contract exploitation, theft, sandwiching, access-control bypass and other malicious extraction are excluded from the authorized profit universe. They may be studied only as defense/risk surfaces.
+Reason: Separate legitimate economic arbitrage from adversarial protocol abuse.
