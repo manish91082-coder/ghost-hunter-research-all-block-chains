@@ -589,3 +589,13 @@ P7 closure certifies strategy-family coverage and matrix schema completeness, no
 - Current authoritative engineering HEAD: `0a666db75d7a224296300bab89568a8a8cfae2ec`.
 - Current P4 Actions state is **NOT GREEN**: Run #3 `36262108128` is still marked IN_PROGRESS on the pre-optimization implementation; Run #4 `36262165960` is PENDING; Run #5 `36262194895` is QUEUED on the latest optimized implementation.
 - P4 is not CLOSED and must not be promoted until the latest terminal run and artifact independently verify the declared closure predicate.
+## 2026-09-27 — Polygon Flash-Loan Profit Research Track LOCKED
+- Polygon P11/census saturation remains **SEALED** and is not reopened.
+- A separate post-saturation economic research track is now ACTIVE: `docs/research/POLYGON_FLASH_LOAN_PROFIT_RESEARCH_V1.md`.
+- Sole research objective: identify and eventually certify every legitimate mechanism that can produce realized positive net PnL from atomic flash-funded trading on Polygon after all applicable costs.
+- Current historical boundary remains **0/420 exact-profit-certified**; no profitability claim is created by this new research track.
+- Research is **no-code until explicit user authorization**. Technical/code requirements may be described conceptually.
+- New research rules: mechanism-level taxonomy, protocol-native economics, exact-state verification, historical on-chain evidence, simulation-vs-realized separation, negative-space search, and fail-closed AI-agent behavior.
+- Authorized profit universe excludes exploitation, oracle manipulation, theft, sandwiching, access-control bypass and other malicious extraction. Those remain defense/risk research only.
+- Safety: live signing, public broadcast and real-money deployment remain OFF.
+- Next research step: descend from taxonomy into exact profit equations and Polygon venue-specific mechanisms, starting with the highest-leverage atomic arbitrage families and liquidation economics.
