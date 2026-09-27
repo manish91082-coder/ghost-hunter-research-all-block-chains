@@ -609,3 +609,11 @@ P7 closure certifies strategy-family coverage and matrix schema completeness, no
 - Historical exact-profit certification remains 0/420.
 - No code, signing, broadcast or real-money execution was enabled.
 - Next research step: venue-by-venue Polygon protocol-native economic equations and historical evidence.
+
+## 2026-09-27 — Polygon Profit Research Layer 3A
+- Added Uniswap V2 protocol-native economic model.
+- Polygon deployment references were captured from current official Uniswap documentation; live chain-137 verification remains separate.
+- Exact V2 swap, inverse swap, reserve-transition and flash-swap invariant behavior documented.
+- Token transfer behavior is now an explicit exact-profit gate.
+- No Uniswap V2 opportunity is profit-certified.
+- Next research step: QuickSwap V2 economic comparison.
