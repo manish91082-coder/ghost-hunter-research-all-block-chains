@@ -436,3 +436,13 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - Flash premium is a live state variable and must be read from current protocol state.
 - Polygon low gas is never treated as a standalone profitability proof.
 - Layer 2 is complete; next step is venue-by-venue protocol-native economic modeling.
+
+## 2026-09-27 — Uniswap V2 Layer 3A memory lock
+- Uniswap V2 is modeled as a state-transition optimization machine.
+- Pair-level reserves and invariant are authoritative for exact economics.
+- Router quotes are discovery evidence, not execution certification.
+- Standard 997/1000 math is valid only when token transfer behavior matches assumptions.
+- Flash swaps are a distinct liquidity source with pair-enforced repayment.
+- Optimal Q must be evaluated rather than inferred from spot spread.
+- Polygon Factory/Router addresses from official deployment documentation remain unverified until live chain-137 evidence.
+- Next layer is QuickSwap V2.
