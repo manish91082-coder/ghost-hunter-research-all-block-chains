@@ -416,3 +416,12 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - Performance optimization must not weaken fail-closed rules: minimum two chain-1 RPC identities, same-block verification, dual independent observations, zero code-hash conflicts, stable source fingerprints and complete classification remain mandatory.
 - Current authoritative main HEAD: `0a666db75d7a224296300bab89568a8a8cfae2ec`.
 - Latest authoritative P4 validation candidate is Run `36262194895` (#5), currently QUEUED. Earlier Run `36262108128` (#3) is still IN_PROGRESS on the older serial worker; it is not a closure source.
+## 2026-09-27 — Polygon Flash-Loan Profit Research Constitution
+- User-defined research mission is now a dedicated Polygon economic track: discover how real positive net PnL can arise from flash-funded atomic trading, without coding until explicitly authorized.
+- Polygon census/P11 remains sealed; this track does not reopen discovery gates.
+- Canonical research document: `docs/research/POLYGON_FLASH_LOAN_PROFIT_RESEARCH_V1.md`.
+- Profit certification must remain separate at three levels: theoretical positive, executable positive, realized positive.
+- Flash loans are classified as temporary balance-sheet capacity, not a profit source by themselves.
+- Authorized research must cover known, uncommon and negative-space mechanisms, while excluding exploitative/malicious extraction as profit strategies.
+- AI-agent rules are locked: evidence-first, no stale-state promotion, no hard-coded current fees, no gross-spread-as-profit, preserve contradictions, search negative space, separate discovery/ranking/authorization, and fail closed.
+- Live signing/public broadcast remain prohibited throughout research.
