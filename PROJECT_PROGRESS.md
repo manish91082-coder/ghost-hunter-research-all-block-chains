@@ -854,3 +854,15 @@ P9 exact economic certification: exact-state replay, venue-specific swap math, g
 - Explicitly excluded malicious extraction classes from the authorized profit universe.
 - First research conclusion: flash liquidity is balance-sheet capacity; the economic edge must come from a real market/protocol surplus and survive flash premium, venue fees, price impact, gas, ordering, competition and other applicable costs.
 - No code was added. No execution capability was enabled.
+
+## 2026-09-27 — Polygon Flash-Loan Profit Research Layer 2 completed
+- Descended from mechanism taxonomy into exact economic modeling.
+- Established NetPnL(Q,S,O) as the canonical research object.
+- Established optimal trade size as a first-class variable rather than a fixed scanner amount.
+- Added conceptual models for V2 constant-product routes, native flash swaps, concentrated liquidity/ticks, split-route optimization, triangular cycles, Aave flash premiums and liquidation economics.
+- Added fixed-cost/variable-cost/mixed regime analysis.
+- Confirmed that low Polygon gas is an advantage only within the complete cost function.
+- No implementation/code added.
+- No profitability claim promoted.
+### Next atomic research objective
+Polygon venue-by-venue protocol-native economics, starting with Uniswap V2, QuickSwap V2, Uniswap V3, QuickSwap Algebra V3, other sealed AMM families, Aave, Balancer and RFQ/intent/orderflow surfaces.
