@@ -846,3 +846,11 @@ P9 exact economic certification: exact-state replay, venue-specific swap math, g
 - CI Run #3 entered the discovery/verification step on the corrected test but was too slow under the serial implementation.
 - The serial worker was superseded by the parallel implementation at `4a93c267f75b0e140cc564dbd9015d95608fad52`, followed by a deterministic CI trigger commit `0a666db75d7a224296300bab89568a8a8cfae2ec`.
 - Latest P4 CI Run #5 is QUEUED and is the authoritative pending validation run. No P4 closure claim is allowed yet.
+## 2026-09-27 — Polygon Flash-Loan Profit Research Track initiated
+- The sealed Polygon census is now being used as a bounded economic search space rather than reopened.
+- Added `docs/research/POLYGON_FLASH_LOAN_PROFIT_RESEARCH_V1.md`.
+- The new track defines a 3-level profit certification hierarchy: theoretical positive, executable positive, realized positive.
+- Initial mechanism taxonomy now covers cross-venue, intra-venue, triangular, multi-hop/split routing, concentrated-liquidity/tick, weighted/stable/hybrid AMM, reactive/backrun, RFQ/intent, liquidation, collateral/debt restructuring, incentives/rebates, spot/derivative basis, stablecoin convergence, same-chain representation dislocations and protocol-state transition surplus.
+- Explicitly excluded malicious extraction classes from the authorized profit universe.
+- First research conclusion: flash liquidity is balance-sheet capacity; the economic edge must come from a real market/protocol surplus and survive flash premium, venue fees, price impact, gas, ordering, competition and other applicable costs.
+- No code was added. No execution capability was enabled.
