@@ -425,3 +425,14 @@ Important: non-zero ERC-1967 storage does not by itself prove the complete proxy
 - Authorized research must cover known, uncommon and negative-space mechanisms, while excluding exploitative/malicious extraction as profit strategies.
 - AI-agent rules are locked: evidence-first, no stale-state promotion, no hard-coded current fees, no gross-spread-as-profit, preserve contradictions, search negative space, separate discovery/ranking/authorization, and fail closed.
 - Live signing/public broadcast remain prohibited throughout research.
+
+## 2026-09-27 — Polygon Profit Research Layer 2 memory lock
+- Canonical economic object: NetPnL(Q,S,O).
+- Trade amount Q is an optimization variable; no fixed-size spread threshold is accepted as a profitability certificate.
+- V2 routes use protocol-specific constant-product and flash-swap repayment rules.
+- Concentrated-liquidity routes require tick/range-aware state-transition modeling.
+- Split routing is treated as a mathematical optimization problem.
+- Liquidation profit requires current eligibility, bonus, close-factor, collateral disposal and all execution costs.
+- Flash premium is a live state variable and must be read from current protocol state.
+- Polygon low gas is never treated as a standalone profitability proof.
+- Layer 2 is complete; next step is venue-by-venue protocol-native economic modeling.
