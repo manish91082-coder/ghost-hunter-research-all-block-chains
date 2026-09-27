@@ -866,3 +866,13 @@ P9 exact economic certification: exact-state replay, venue-specific swap math, g
 - No profitability claim promoted.
 ### Next atomic research objective
 Polygon venue-by-venue protocol-native economics, starting with Uniswap V2, QuickSwap V2, Uniswap V3, QuickSwap Algebra V3, other sealed AMM families, Aave, Balancer and RFQ/intent/orderflow surfaces.
+
+## 2026-09-27 — Polygon Flash-Loan Profit Layer 3A completed
+- Completed Uniswap V2 economic-machine analysis.
+- Locked Pair-level invariant as the economic authority; Router02 remains a routing/convenience surface.
+- Locked 997/1000 standard V2 math and integer rounding implications.
+- Added flash-swap repayment/invariant analysis.
+- Added quantity optimization, stale-state, competition and token-behavior failure taxonomy.
+- No code or execution capability added.
+### Next atomic objective
+QuickSwap V2 protocol-native economic comparison against Uniswap V2.
