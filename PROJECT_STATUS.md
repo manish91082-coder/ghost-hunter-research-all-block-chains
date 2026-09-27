@@ -599,3 +599,13 @@ P7 closure certifies strategy-family coverage and matrix schema completeness, no
 - Authorized profit universe excludes exploitation, oracle manipulation, theft, sandwiching, access-control bypass and other malicious extraction. Those remain defense/risk research only.
 - Safety: live signing, public broadcast and real-money deployment remain OFF.
 - Next research step: descend from taxonomy into exact profit equations and Polygon venue-specific mechanisms, starting with the highest-leverage atomic arbitrage families and liquidation economics.
+
+## 2026-09-27 — Polygon Profit Research Layer 2
+- Added docs/research/POLYGON_FLASH_LOAN_PROFIT_RESEARCH_LAYER_2.md.
+- Economic model is now formally defined as NetPnL(Q,S,O) with Q as an optimization variable.
+- V2 constant-product, native flash-swap repayment, concentrated-liquidity/tick, split-route, triangular and liquidation economics are explicitly modeled conceptually.
+- Aave flash premium is treated as current on-chain state, not a permanent constant.
+- Polygon low-gas advantage is treated only as one cost component.
+- Historical exact-profit certification remains 0/420.
+- No code, signing, broadcast or real-money execution was enabled.
+- Next research step: venue-by-venue Polygon protocol-native economic equations and historical evidence.
